@@ -1,0 +1,110 @@
+package com.daloji.core.blockchain.net;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.slf4j.LoggerFactory;
+
+import com.daloji.core.blockchain.Utils;
+import com.daloji.core.blockchain.commons.Pair;
+import com.daloji.core.blockchain.commons.Retour;
+
+import ch.qos.logback.classic.Logger;
+
+public class DnsLookUp {
+
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(DnsLookUp.class);
+
+	private static final DnsLookUp instance = new DnsLookUp();
+
+	/**
+	 * singleton
+	 * 
+	 * @return
+	 */
+	public static DnsLookUp getInstance()
+	{
+		return instance;
+	}
+
+
+	/**
+	 *  recuperation de la liste des Noeuds du réseau via le DNS SEED Bitcoin
+	 *  
+	 * @return Retour OK et la liste des noeuds du reseaux bitcoin 
+	 */
+	public Pair<Retour,List<PeerNode>> getAllNodePeer(){
+		List<PeerNode> listNodePeer =null;
+		Retour retour = Utils.createRetourOK();
+		logger.info("Node discovery :  ");
+
+		try {
+			InetAddress[] listhost=InetAddress.getAllByName(Utils.DNS_SEED);
+			if(listhost!=null) {
+				listNodePeer = new ArrayList<PeerNode>();
+				for(InetAddress netAddr:listhost) {
+
+					IPVersion ipversion = getVersionIp(netAddr.getHostAddress());
+					PeerNode peer = new PeerNode(ipversion);
+					peer.setHost(netAddr.getHostAddress());
+					peer.setPort(8333);
+					listNodePeer.add(peer);
+					logger.info("peer  " +peer.getHost()  +"        " + peer.getVersion() );
+				}
+			}
+		} catch (UnknownHostException e) {
+			logger.error(e.getMessage());
+			retour = Utils.createRetourNOK(Utils.FATAL_ERROR, e.getMessage());
+		}
+		return new Pair<Retour, List<PeerNode>>(retour, listNodePeer);
+
+	}
+
+	/**
+	 *  prends un noeud aleatoire seulement IPV4
+	 *  
+	 * @return noeud bitcoin
+	 */
+
+	public PeerNode getBestPeer(List<PeerNode> listpeer) {
+		PeerNode peernode = null;
+		if(listpeer !=null) {
+			boolean find = false;	
+			int randomNum = ThreadLocalRandom.current().nextInt(0, listpeer.size() + 1);
+			while(!find) {
+				 randomNum = ThreadLocalRandom.current().nextInt(0, listpeer.size() + 1);
+				 peernode = listpeer.get(randomNum);
+				 if(IPVersion.IPV4.equals(peernode.getVersion())) {
+					 find = true;
+				 }
+			}
+		}
+
+		return peernode;
+	}
+
+	/**
+	 * recuperation du type d'adresse IP (IPV4 ou IPV6)
+	 * 
+	 * @param host
+	 * adresse IP
+	 * @return Type d'adresse IP (IPV4 ou IPV6)
+	 */
+
+	private IPVersion getVersionIp(final String host) {
+		IPVersion ipversion = IPVersion.IPV4;
+		if(host!=null) {
+			if(host.contains(":")) {
+				ipversion = IPVersion.IPV6;
+			}
+		}
+		return ipversion;
+	}
+
+
+}
