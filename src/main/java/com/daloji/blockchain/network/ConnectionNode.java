@@ -124,27 +124,20 @@ public class ConnectionNode  implements Callable<Object>{
 
 
 				case SENDHEADERS_RECEIVE:
-					
 					break;
 
 
 				case SENDHEADERS_SEND:
 					break;
+					
+				case INV_RECEIVE:
+					break;
+					
+				case INV_SEND:
+					break;
 
 				}
-				/*
-				if(versionTrame == null) {
-					//send Version Trame
-					versionTrame  = openSessionNode(out,netParameters,peerNode,version,data);
-
-				}else {
-
-				}
-
-				count = dis.read(data);
-				System.out.println(Utils.bytesToHex(data));
-
-				 */
+				
 				count = dis.read(data);
 				TrameType trametype = Utils.findTrameCommande(data);
 				state = whoIsNextStep(trametype);
@@ -179,6 +172,9 @@ public class ConnectionNode  implements Callable<Object>{
 		}
 		if(TrameType.VERSION == trametype) {
 			state = STATE_ENGINE.VERSION_RECEIVE;
+		}
+		if(TrameType.INV == trametype) {
+			state = STATE_ENGINE.INV_RECEIVE;
 		}
 
 		return state;

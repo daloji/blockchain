@@ -23,6 +23,10 @@ public enum STATE_ENGINE {
 	TX_SEND("TX send"),
 	
 	TX_RECEIVE("TX receive"),
+	
+	INV_SEND("inv send"),
+	
+	INV_RECEIVE("inv receive"),
 
 	ERROR("ERROR");
 

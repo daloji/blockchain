@@ -36,11 +36,9 @@ public class VersionTrameMessage  extends TrameHeader{
 	 */
 	private static final String sub_version ="/daloji:0.0.1/";
 
-	private static final String IP_CONST ="00000000000000000000ffff";
+	
 
 	private static final String commande="version";
-
-	private static final int port=8333;
 
 	private static final int protocol= 70015;
 	

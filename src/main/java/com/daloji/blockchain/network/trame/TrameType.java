@@ -11,8 +11,12 @@ public enum TrameType {
 	TX("747800000000000000000000"),
 
 	SENDHEADERS("73656E646865616465727300"),
+	
+	INV("696E76000000000000000000"),
 
 	ERROR("error");
+	
+	
 	
 	protected String info;
 

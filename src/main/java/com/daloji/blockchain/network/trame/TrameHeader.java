@@ -37,11 +37,13 @@ public abstract class TrameHeader implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	protected static final String IP_CONST ="00000000000000000000ffff";
 
+	protected static final String COMMANDE_VERSION = "version";
 
-	protected static final String COMMANDE_VERSION ="version";
-
-	protected static final String COMMANDE_VERACK ="verack";
+	protected static final String COMMANDE_VERACK = "verack";
+	
+	protected static final int port = 8333;
 
 	//Serveur qui permet de trouver l IP externe
 	private static final String WHOIS_MY_IP="http://checkip.amazonaws.com";
