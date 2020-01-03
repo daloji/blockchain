@@ -1,4 +1,4 @@
-package com.daloji.core.blockchain;
+package com.daloji.blockchain.core;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;

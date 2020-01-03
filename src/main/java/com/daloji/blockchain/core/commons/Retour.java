@@ -1,7 +1,12 @@
-package com.daloji.core.blockchain.commons;
+package com.daloji.blockchain.core.commons;
 
 import java.io.Serializable;
 
+/**
+ * Objet Retour
+ * @author daloji
+ *
+ */
 public class Retour implements Serializable{
 
 	/**
