@@ -12,8 +12,6 @@ import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.commons.Retour;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
-import com.google.common.hash.Hashing;
-
 import ch.qos.logback.classic.Logger;
 
 

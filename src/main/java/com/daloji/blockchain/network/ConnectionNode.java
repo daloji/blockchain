@@ -6,16 +6,14 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.Callable;
 
-import com.daloji.blockchain.core.Messages;
 import com.daloji.blockchain.core.Utils;
-import com.daloji.blockchain.core.commons.Pair;
-import com.daloji.blockchain.core.commons.Retour;
 import com.daloji.blockchain.network.peers.PeerNode;
 import com.daloji.blockchain.network.trame.STATE_ENGINE;
 import com.daloji.blockchain.network.trame.TrameType;
 import com.daloji.blockchain.network.trame.VersionAckTrame;
 import com.daloji.blockchain.network.trame.VersionTrameMessage;
 import com.daloji.blockchain.network.trame.VersionTrameReceive;
+
 
 
 /**
@@ -126,6 +124,7 @@ public class ConnectionNode  implements Callable<Object>{
 
 
 				case SENDHEADERS_RECEIVE:
+					
 					break;
 
 
