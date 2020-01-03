@@ -34,6 +34,4 @@ public class VersionTrameReceive implements Serializable {
 		this.versionAck = versionAck;
 	}
 	
-	
-
 }

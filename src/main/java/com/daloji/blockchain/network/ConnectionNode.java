@@ -6,13 +6,19 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.Callable;
 
+import org.slf4j.LoggerFactory;
+
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.network.peers.PeerNode;
+import com.daloji.blockchain.network.trame.NetworkMessagingProxy;
 import com.daloji.blockchain.network.trame.STATE_ENGINE;
+import com.daloji.blockchain.network.trame.SendHeadersTrame;
 import com.daloji.blockchain.network.trame.TrameType;
 import com.daloji.blockchain.network.trame.VersionAckTrame;
 import com.daloji.blockchain.network.trame.VersionTrameMessage;
 import com.daloji.blockchain.network.trame.VersionTrameReceive;
+
+import ch.qos.logback.classic.Logger;
 
 
 
@@ -24,6 +30,9 @@ import com.daloji.blockchain.network.trame.VersionTrameReceive;
  *
  */
 public class ConnectionNode  implements Callable<Object>{
+	
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(ConnectionNode.class);
+
 
 	private NetworkHandler networkListener;
 
@@ -124,6 +133,8 @@ public class ConnectionNode  implements Callable<Object>{
 
 
 				case SENDHEADERS_RECEIVE:
+					SendHeadersTrame sendTrame = new SendHeadersTrame();
+					sendTrame.receiveMessage(netParameters, data);
 					break;
 
 
@@ -135,6 +146,13 @@ public class ConnectionNode  implements Callable<Object>{
 					
 				case INV_SEND:
 					break;
+					
+					
+				case SENDCMPCT_RECEIVE:
+					break;
+					
+				case SENDCMPCT_SEND:
+					break;
 
 				}
 				
@@ -142,10 +160,11 @@ public class ConnectionNode  implements Callable<Object>{
 				TrameType trametype = Utils.findTrameCommande(data);
 				state = whoIsNextStep(trametype);
 				System.out.println(Utils.bytesToHex(data));
+				logger.info("Trame recu "+Utils.bytesToHex(data));
 			}
 
 		}catch (Exception e) {
-			System.err.println(e.getMessage());		
+			logger.error(e.getMessage());		
 		}finally {
 			if(socket !=null) {
 				socket.close();
@@ -175,6 +194,9 @@ public class ConnectionNode  implements Callable<Object>{
 		}
 		if(TrameType.INV == trametype) {
 			state = STATE_ENGINE.INV_RECEIVE;
+		}
+		if(TrameType.SENDCMPCT == trametype) {
+			state = STATE_ENGINE.SENDCMPCT_RECEIVE;
 		}
 
 		return state;

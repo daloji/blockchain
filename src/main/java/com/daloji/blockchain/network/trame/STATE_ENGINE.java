@@ -28,6 +28,11 @@ public enum STATE_ENGINE {
 	
 	INV_RECEIVE("inv receive"),
 
+	SENDCMPCT_SEND("sendcmpct send"),
+	
+	SENDCMPCT_RECEIVE("sendcmpct receive"),
+	
+	
 	ERROR("ERROR");
 
 	protected String info;

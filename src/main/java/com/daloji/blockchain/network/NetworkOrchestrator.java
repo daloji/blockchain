@@ -54,6 +54,7 @@ public class  NetworkOrchestrator  implements NetworkHandler {
 		if(Utils.isRetourOK(retour)) {
 			listPeer = dnslookup._second;
 			PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
+			peer.setHost("168.235.74.116");
 			ConnectionNode connectionNode = new ConnectionNode(this, NetParameters.MainNet, peer);
 			listThreadNode.add(connectionNode);
 			executorService.invokeAll(listThreadNode);

@@ -276,6 +276,5 @@ public abstract class TrameHeader implements Serializable {
 	
 	public abstract String generateMessage(NetParameters network,PeerNode peer);
 
-
 	public abstract <T> T receiveMessage(NetParameters network,byte[] msg);
 }
