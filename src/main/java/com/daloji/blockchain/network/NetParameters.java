@@ -4,7 +4,7 @@ public enum NetParameters {
 	
 	MainNet(8333,"F9BEB4D9"),
 
-	TestNet(18333,null);
+	TestNet(18333,"FABFB5DA");
 
 	protected long port;
 	

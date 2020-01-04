@@ -37,35 +37,12 @@ public class AddrTrame  extends TrameHeader{
 		//get Epoch Time
 		epoch  = Instant.now().getEpochSecond();
 		setAddressTrans(peer.getHost());
-		String message =addrMessage(network);
+		String message = generatePayload(network);
 		return message;
 	}
 
 
-	private String addrMessage(NetParameters network) {
-		logger.debug("construction addr Trame");	
-		String message ="";
-		message = message + getMagic();
-		logger.debug("magic :"+getMagic());
-		message = message + Utils.convertStringToHex(commande,12);
-		logger.debug("commande :"+Utils.convertStringToHex(commande,12));	
-		logger.debug("version  :"+Utils.intHexpadding(1, 8));
-		String payload = createPayload();
-		int length =payload.length()/2;
-		logger.debug("length :"+length);	
-		message=message+Utils.intHexpadding(length, 4);
-		byte[] payloadbyte =Utils.hexStringToByteArray(payload);
-		//4 premier octet seulement pour le chechsum
-		byte[] array =Crypto.doubleSha256(payloadbyte);
-		String checksum =Utils.bytesToHex(array);
-		checksum =checksum.substring(0, 8);
-		logger.debug("checksum : "+checksum);	
-		message = message +checksum;
-		//ajout de la payload 
-		message = message +payload;
-		logger.debug("Addr envoyé : "+message);	
-		return message;
-	}
+	
 
 	public String createPayload() {
 		String payload ="";
@@ -88,6 +65,32 @@ public class AddrTrame  extends TrameHeader{
 	public <T> T receiveMessage(NetParameters network, byte[] msg) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String generatePayload(NetParameters network) {
+		logger.debug("construction addr Trame");	
+		String message ="";
+		message = message + getMagic();
+		logger.debug("magic :"+getMagic());
+		message = message + Utils.convertStringToHex(commande,12);
+		logger.debug("commande :"+Utils.convertStringToHex(commande,12));	
+		logger.debug("version  :"+Utils.intHexpadding(1, 8));
+		String payload = createPayload();
+		int length =payload.length()/2;
+		logger.debug("length :"+length);	
+		message=message+Utils.intHexpadding(length, 4);
+		byte[] payloadbyte =Utils.hexStringToByteArray(payload);
+		//4 premier octet seulement pour le chechsum
+		byte[] array =Crypto.doubleSha256(payloadbyte);
+		String checksum =Utils.bytesToHex(array);
+		checksum =checksum.substring(0, 8);
+		logger.debug("checksum : "+checksum);	
+		message = message +checksum;
+		//ajout de la payload 
+		message = message +payload;
+		logger.debug("Addr envoyé : "+message);	
+		return message;
 	}
 
 }

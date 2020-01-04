@@ -22,7 +22,7 @@ import ch.qos.logback.classic.Logger;
 public class VersionAckTrame  extends TrameHeader{
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(VersionAckTrame.class);
-	
+
 	private static final String commande="verack";
 
 	/**
@@ -36,19 +36,23 @@ public class VersionAckTrame  extends TrameHeader{
 		//get Epoch Time
 		epoch  = Instant.now().getEpochSecond();
 		setAddressTrans(peer.getHost());
-		String message =versionTrameAck(network);
+		String message =generatePayload(network);
 		return message;
 	}
-	
-	
-	private String versionTrameAck(NetParameters network) {
+
+
+
+
+
+	@Override
+	public String generatePayload(NetParameters network) {
 		logger.debug("construction du Header Verack");	
 		String message ="";
 		message = message + getMagic();
 		logger.debug("magic :"+getMagic());	
 		message = message + Utils.convertStringToHex(commande,12);
 		logger.debug("commande :"+Utils.convertStringToHex(commande,12));	
-	    byte[] payload = new byte[0]; 
+		byte[] payload = new byte[0]; 
 		logger.debug("payload :" +payload);	
 		byte[] array = Crypto.doubleSha256(payload);
 		String checksum =Utils.bytesToHex(array);
@@ -57,31 +61,14 @@ public class VersionAckTrame  extends TrameHeader{
 		message = message + "00000000" +checksum;
 		logger.debug("Trame Verack envoyé : "+message);	
 		return message;
-
 	}
-
+	/*
+	 * (non-Javadoc)
+	 * @see com.daloji.blockchain.network.trame.TrameHeader#deserialise(byte[])
+	 */
 
 	@Override
-	public Pair<Retour, TrameHeader> receiveMessage(NetParameters network, byte[] msg) {
-
-		VersionAckTrame version = new VersionAckTrame();
-		byte[] buffer = new byte[4];
-		System.arraycopy(msg, 0, buffer, 0, 4);
-		version.setMagic(Utils.bytesToHex(buffer));
-		buffer = new byte[12];
-		System.arraycopy(msg, 4, buffer, 0, 12);
-		version.setCommande(Utils.bytesToHex(buffer));
-		buffer = new byte[4];
-		System.arraycopy(msg, 16, buffer, 0, 4);
-		String hex = Utils.bytesToHex(buffer);
-		long length=Utils.little2big(hex);
-		version.setLength((int)length);
-		return null;
-	}
-
-
-	@Override
-	public VersionAckTrame deserialise(byte[] msg) {
+	public <T> T deserialise(byte[] msg) {
 		VersionAckTrame version = new VersionAckTrame();
 		byte[] buffer = new byte[4];
 		int offset = 0;
@@ -111,16 +98,33 @@ public class VersionAckTrame  extends TrameHeader{
 			}
 
 		}else {
+
 			version = null;	
 		}
-		//buffer = new byte[4];
 
-		return version;
+		return (T) version;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.daloji.blockchain.network.trame.TrameHeader#receiveMessage(com.daloji.blockchain.network.NetParameters, byte[])
+	 */
+	@Override
+	public <T> T receiveMessage(NetParameters network, byte[] msg) {
+		VersionAckTrame version = new VersionAckTrame();
+		byte[] buffer = new byte[4];
+		System.arraycopy(msg, 0, buffer, 0, 4);
+		version.setMagic(Utils.bytesToHex(buffer));
+		buffer = new byte[12];
+		System.arraycopy(msg, 4, buffer, 0, 12);
+		version.setCommande(Utils.bytesToHex(buffer));
+		buffer = new byte[4];
+		System.arraycopy(msg, 16, buffer, 0, 4);
+		String hex = Utils.bytesToHex(buffer);
+		long length=Utils.little2big(hex);
+		version.setLength((int)length);
 
-
-
-
+		return (T) version;
+	}
 
 }

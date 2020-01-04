@@ -1,6 +1,5 @@
 package com.daloji.blockchain.network.trame;
 
-import com.daloji.blockchain.core.Messages;
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
@@ -44,6 +43,12 @@ public class SendHeadersTrame extends TrameHeader{
 			sendHeadersTrame = deserialise(msg);
 		}
 		return (T) sendHeadersTrame;
+	}
+
+	@Override
+	public String generatePayload(NetParameters network) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

@@ -137,8 +137,8 @@ public class Block implements Serializable{
 		info = info + Utils.intHexpadding((int)difficultyTarget,4);
 		info = info + Utils.intHexpadding((int)nonce,4);
 		byte[] hashbyte = Crypto.doubleSha256(Utils.hexStringToByteArray(info));
-		byte[] revertbyte = Utils.revBytes(hashbyte);
-		return Utils.bytesToHex(revertbyte);
+		//byte[] revertbyte = Utils.revBytes(hashbyte);
+		return Utils.bytesToHex(hashbyte);
 	}
 
 

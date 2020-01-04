@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.network.peers.PeerNode;
+import com.daloji.blockchain.network.trame.GetBlocksTrame;
 import com.daloji.blockchain.network.trame.STATE_ENGINE;
 import com.daloji.blockchain.network.trame.SendHeadersTrame;
 import com.daloji.blockchain.network.trame.TrameType;
@@ -115,7 +116,10 @@ public class ConnectionNode  implements Callable<Object>{
 						logger.error("erreur lors de l'echange de version vers"+peerNode.getHost());
 						networkListener.onNodeConnectHasError(this);
 					}
-					
+					//construction de la blockchaine
+					GetBlocksTrame getblock = new GetBlocksTrame();
+					String message = getblock.generateMessage(netParameters, peerNode);
+					sendGetBlock(outPut, netParameters, peerNode, Utils.hexStringToByteArray(message));
 					break;
 
 				case VER_ACK_SEND:
@@ -168,8 +172,7 @@ public class ConnectionNode  implements Callable<Object>{
 				count = input.read(data);
 				TrameType trametype = Utils.findTrameCommande(data);
 				state = whoIsNextStep(trametype);
-				System.out.println(Utils.bytesToHex(data));
-				logger.info("Trame recu "+Utils.bytesToHex(data));
+				logger.info("["+peerNode.getHost()+"]"+"Trame recu "+Utils.bytesToHex(data));
 			}
 
 		}catch (Exception e) {
@@ -241,7 +244,6 @@ public class ConnectionNode  implements Callable<Object>{
 				String trame = verAck.generateMessage(netparam, peernode);
 				byte[] dataoutput = Utils.hexStringToByteArray(trame);
 				outPut.write(dataoutput, 0, dataoutput.length);
-				state = STATE_ENGINE.ERROR_PROTOCOLE;
 
 			}
 		}
@@ -250,7 +252,11 @@ public class ConnectionNode  implements Callable<Object>{
 	}
 
 	
-	
+	private void sendGetBlock(DataOutputStream outPut,NetParameters netparam,PeerNode peernode,byte[] data) throws IOException {
+		if(data!=null) {
+			outPut.write(data, 0, data.length);
+		}
+	}
 	
 	
 

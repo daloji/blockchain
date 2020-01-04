@@ -45,6 +45,9 @@ public abstract class TrameHeader implements Serializable {
 	protected static final String COMMANDE_VERACK = "verack";
 	
 	protected static final int port = 8333;
+	
+	
+	protected static final int protocol= 70015;
 
 	//Serveur qui permet de trouver l IP externe
 	private static final String WHOIS_MY_IP="http://checkip.amazonaws.com";
@@ -274,7 +277,21 @@ public abstract class TrameHeader implements Serializable {
 
 	}
 
+	/**
+	 *  generation de la payload de la trame
+	 * 
+	 * @param network
+	 *     network
+	 * @return payload
+	 */
+	public abstract String generatePayload(NetParameters network);
 	
+	/**
+	 *  deserialisation de la message recu
+	 * @param msg
+	 *  message recu
+	 * @return
+	 */
 	public abstract <T> T deserialise(final byte[] msg);
 	
 	public abstract String generateMessage(NetParameters network,PeerNode peer);
