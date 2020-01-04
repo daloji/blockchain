@@ -1,11 +1,18 @@
 package com.daloji.blockchain.network;
 
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Utils;
@@ -21,13 +28,16 @@ public class  NetworkOrchestrator  implements NetworkHandler {
 
 	private ExecutorService executorService;
 
-	
+	private static final int sizePool = 2;
+
 	private  CopyOnWriteArrayList<ConnectionNode> listPeerConnected = new CopyOnWriteArrayList<ConnectionNode>(); 
 
 	/*
 	 * List des Threads clients
 	 */
-	private List<ConnectionNode> listThreadNode;
+	private List<ConnectionNode> listThreadNodeRunning;
+
+	private List<ConnectionNode> listThreadInPool;
 
 	private List<PeerNode> listPeer;
 
@@ -47,20 +57,25 @@ public class  NetworkOrchestrator  implements NetworkHandler {
 	@Override
 	public void onStart() throws Exception {
 		logger.info("onStart NetworkOrchestrator");
-		executorService = Executors.newFixedThreadPool(10);
-		listThreadNode = new ArrayList<ConnectionNode>();
+		ConnectionNode connectionNode = null;
+		executorService = Executors.newFixedThreadPool(sizePool);
+		listThreadNodeRunning = new ArrayList<ConnectionNode>();
+		listThreadInPool = new ArrayList<ConnectionNode>();
 		Pair<Retour, List<PeerNode>> dnslookup = DnsLookUp.getInstance().getAllNodePeer();
 		Retour retour = dnslookup._first;
 		if(Utils.isRetourOK(retour)) {
 			listPeer = dnslookup._second;
-			PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
-			peer.setHost("168.235.74.116");
-			ConnectionNode connectionNode = new ConnectionNode(this, NetParameters.MainNet, peer);
-			listThreadNode.add(connectionNode);
-			executorService.invokeAll(listThreadNode);
+			for (int i = 0; i < sizePool; i++) {
+				PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
+				peer.setHost("168.235.74.116");
+			//	connectionNode = new ConnectionNode(this, NetParameters.MainNet, peer);
+				listThreadInPool.add(connectionNode);
+			}
+
+			executorService.invokeAll(listThreadInPool);
 			executorService.shutdown();
 
-
+			List<Future<ConnectionNode>> resultList = null;
 		}
 	}
 	@Override
@@ -69,7 +84,7 @@ public class  NetworkOrchestrator  implements NetworkHandler {
 
 	}
 
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.daloji.core.blockchain.net.NetworkHandler#onNodeConnected(com.daloji.core.blockchain.net.ConnectionNode)
@@ -79,6 +94,35 @@ public class  NetworkOrchestrator  implements NetworkHandler {
 		logger.info("onNodeConnected connecté au noeud :"+ connectionNode.getPeerNode().getHost() +"  port "+connectionNode.getPeerNode().getPort());
 		listPeerConnected.add(connectionNode);
 	}
+
+	@Override
+	public void onNodeConnectHasError(ConnectionNode connectionNode) {
+		logger.info("Erreur lors de la lecture de la trame venant de :"+connectionNode.getPeerNode().getHost());
+		logger.info("fermture de la connexion");
+		try {
+			DataInputStream dataInput = connectionNode.getInput();
+			if(dataInput !=null) {
+				dataInput.close();
+			}
+			DataOutputStream dataOutput = connectionNode.getOutPut();
+			if(dataOutput!=null) {
+				dataOutput.close();
+			}
+			Socket socket = connectionNode.getSocketClient();
+			if(socket!=null) {
+
+				socket.close();
+			}
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+
+		}
+
+
+
+	}
+
+
 
 
 

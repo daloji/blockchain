@@ -32,6 +32,7 @@ public enum STATE_ENGINE {
 	
 	SENDCMPCT_RECEIVE("sendcmpct receive"),
 	
+	ERROR_PROTOCOLE("ERROR"),
 	
 	ERROR("ERROR");
 

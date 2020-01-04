@@ -241,9 +241,11 @@ public abstract class TrameHeader implements Serializable {
 			if(Arrays.equals(checksumcompute, checksum)) {
 				value =true;	
 			}else {
+				
 				logger.error("checksum invalid" );
 				logger.error("cheksum read :  "+Utils.bytesToHex(checksum));
 				logger.error("cheksum compute :  "+Utils.bytesToHex(checksumcompute));
+				logger.error("chaine complete :" +Utils.bytesToHex(payload) );
 
 			}
 

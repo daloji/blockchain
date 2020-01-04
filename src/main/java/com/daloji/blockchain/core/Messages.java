@@ -7,7 +7,7 @@ public class Messages {
 	/**
 	 * the internal BUNDLE_NAME.
 	 */
-	private static final String BUNDLE_NAME = "com.daloji.core.blockchain.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "com.daloji.blockchain.core.messages"; //$NON-NLS-1$
 
 	/**
 	 * the internal RESOURCE_BUNDLE.

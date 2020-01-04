@@ -5,16 +5,20 @@ import java.net.Socket;
 public interface NetworkHandler {
 
 	/**
-	 *  callback lors de la connection a un noeud 
-	 *  
-	 * @param peernode
-	 *      noeud bitcoin 
-	 * @param socket
-	 *      socket 
+	 * callback lors de la connection a un noeud 
+	 * 
+	 * @param connectionNode
+	 * Connection node
 	 */
-	//public void onNodeConnected(PeerNode peernode,Socket socket)
-	
 	public void onNodeConnected(ConnectionNode connectionNode);
+
+	/**
+	 * Callback lorsque le noeud distant a des comportements qui ne correspond
+	 *  au protocole du reseau
+	 * @param connectionNode
+	 * Connection node
+	 */
+	public void onNodeConnectHasError(ConnectionNode connectionNode);
 
 	public void onNodeDisconnected();
 

@@ -30,7 +30,7 @@ import ch.qos.logback.classic.Logger;
  *
  */
 public class ConnectionNode  implements Callable<Object>{
-	
+
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(ConnectionNode.class);
 
 
@@ -94,24 +94,30 @@ public class ConnectionNode  implements Callable<Object>{
 	public Object call() throws Exception {
 		byte[] data = new byte[Utils.BUFFER_SIZE];
 		VersionTrameReceive versionTrame = null;
-		Socket socket =null;
+		
 		try{
-			socket = new Socket(peerNode.getHost(),peerNode.getPort());
-			socket.setSoTimeout(Utils.timeoutPeer);
+			socketClient = new Socket(peerNode.getHost(),peerNode.getPort());
+			socketClient.setSoTimeout(Utils.timeoutPeer);
 			VersionTrameMessage version = new VersionTrameMessage();
 			String trame = version.generateMessage(netParameters, peerNode);
 			byte[] dataoutput = Utils.hexStringToByteArray(trame);
-			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-			out.write(dataoutput, 0, dataoutput.length);
+			 outPut = new DataOutputStream(socketClient.getOutputStream());
+			 outPut.write(dataoutput, 0, dataoutput.length);
 			state = STATE_ENGINE.VERSION_SEND;
-			DataInputStream dis = new DataInputStream(socket.getInputStream()); 
+			input = new DataInputStream(socketClient.getInputStream()); 
 			networkListener.onNodeConnected(this);
-			int count = dis.read(data);
+			int count = input.read(data);
 			while(count>0) {
 				switch(state){
 
-				case VERSION_SEND:versionTrame  = openSessionNode(out,netParameters,peerNode,version,data);
+				case VERSION_SEND: 
+					versionTrame  = openSessionNode(outPut,netParameters,peerNode,version,data);
+					if(versionTrame == null ) {
+						logger.error("erreur lors de l'echange de version vers"+peerNode.getHost());
+						networkListener.onNodeConnectHasError(this);
+					}
 					break;
+
 				case VER_ACK_SEND:
 					break;
 
@@ -140,23 +146,26 @@ public class ConnectionNode  implements Callable<Object>{
 
 				case SENDHEADERS_SEND:
 					break;
-					
+
 				case INV_RECEIVE:
 					break;
-					
+
 				case INV_SEND:
 					break;
-					
-					
+
+
 				case SENDCMPCT_RECEIVE:
 					break;
-					
+
 				case SENDCMPCT_SEND:
 					break;
-
+				case ERROR_PROTOCOLE:
+					logger.error("erreur lors de l'echange de version vers"+peerNode.getHost());
+					networkListener.onNodeConnectHasError(this);
+					break;
 				}
-				
-				count = dis.read(data);
+
+				count = input.read(data);
 				TrameType trametype = Utils.findTrameCommande(data);
 				state = whoIsNextStep(trametype);
 				System.out.println(Utils.bytesToHex(data));
@@ -166,8 +175,8 @@ public class ConnectionNode  implements Callable<Object>{
 		}catch (Exception e) {
 			logger.error(e.getMessage());		
 		}finally {
-			if(socket !=null) {
-				socket.close();
+			if(socketClient !=null) {
+				socketClient.close();
 			}
 		}
 
@@ -220,18 +229,21 @@ public class ConnectionNode  implements Callable<Object>{
 	 */
 	private VersionTrameReceive openSessionNode(DataOutputStream outPut,NetParameters netparam,PeerNode peernode,VersionTrameMessage version,byte[] data) throws IOException {
 		VersionTrameReceive versionTrame = version.receiveMessage(netparam, data);
-		//check VerAck trame receive
-		if(versionTrame.getVersion() != null) {
-			state = STATE_ENGINE.VERSION_RECEIVE;
-		}
-		if(versionTrame.getVersionAck()!= null) {
-			state = STATE_ENGINE.VER_ACK_RECEIVE;
-			VersionAckTrame verAck = new VersionAckTrame();
-			String trame = verAck.generateMessage(netparam, peernode);
-			byte[] dataoutput = Utils.hexStringToByteArray(trame);
-			outPut.write(dataoutput, 0, dataoutput.length);
-			state = STATE_ENGINE.VER_ACK_SEND;
 
+		if(versionTrame != null) {
+			//check VerAck trame receive
+			if(versionTrame.getVersion() != null) {
+				state = STATE_ENGINE.VERSION_RECEIVE;
+			}
+			if(versionTrame.getVersionAck()!= null) {
+				state = STATE_ENGINE.VER_ACK_RECEIVE;
+				VersionAckTrame verAck = new VersionAckTrame();
+				String trame = verAck.generateMessage(netparam, peernode);
+				byte[] dataoutput = Utils.hexStringToByteArray(trame);
+				outPut.write(dataoutput, 0, dataoutput.length);
+				state = STATE_ENGINE.ERROR_PROTOCOLE;
+
+			}
 		}
 
 		return  versionTrame;
