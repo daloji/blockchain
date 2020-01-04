@@ -1,7 +1,5 @@
 package com.daloji.blockchain.network;
 
-import java.net.Socket;
-
 public interface NetworkHandler {
 
 	/**

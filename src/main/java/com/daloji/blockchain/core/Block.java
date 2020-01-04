@@ -1,5 +1,6 @@
 package com.daloji.blockchain.core;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -47,29 +48,35 @@ public class Block implements Serializable{
 	 * nombre de transaction en entree
 	 */
 	private int  txn_count = 0;
-	
-	
+
+
 	private List<Transaction> listTransaction;
-	
+
 	public long getVersion() {
 		return version;
 	}
+
 	public void setVersion(long version) {
 		this.version = version;
 	}
+
 	public String getPrevBlockHash() {
 		return prevBlockHash;
 	}
+
 	public void setPrevBlockHash(String prevBlockHash) {
 		this.prevBlockHash = prevBlockHash;
 	}
+
 	public String getMerkleRoot() {
 		return merkleRoot;
 	}
+
 	public void setMerkleRoot(String merkleRoot) {
 		this.merkleRoot = merkleRoot;
 	}
 	public long getTime() {
+
 		return time;
 	}
 	public void setTime(long time) {
@@ -93,8 +100,8 @@ public class Block implements Serializable{
 	public void setTxn_count(int txn_count) {
 		this.txn_count = txn_count;
 	}
-	
-	
+
+
 	/**
 	 * Block genesis du le blockchain crée par Satoshi Nakamoto
 	 * @return
@@ -110,11 +117,47 @@ public class Block implements Serializable{
 		block.setNonce(2083236893);
 		return block;
 	}
+
+
 	public List<Transaction> getListTransaction() {
 		return listTransaction;
 	}
+
+	/**
+	 * generation hash du bloc
+	 * @return
+	 * @throws IOException 
+	 */
+	public String generateHash() throws IOException {
+		String info = "";
+		info = info + Utils.intHexpadding((int)version,4);
+		info = info + prevBlockHash;
+		info = info + merkleRoot;
+		info = info + Utils.convertDateString(time, 4);
+		info = info + Utils.intHexpadding((int)difficultyTarget,4);
+		info = info + Utils.intHexpadding((int)nonce,4);
+		byte[] hashbyte = Crypto.doubleSha256(Utils.hexStringToByteArray(info));
+		byte[] revertbyte = Utils.revBytes(hashbyte);
+		return Utils.bytesToHex(revertbyte);
+	}
+
+
+	/**
+	 * 
+	 * Recuperation du hash de la genesis block
+	 * @throws IOException 
+	 * 
+	 */
+
+	public String getHashGenesisBloc() throws IOException {
+		Block bl =createGenesisBlock();
+		return bl.generateHash();
+	}
+
+
 	public void setListTransaction(List<Transaction> listTransaction) {
 		this.listTransaction = listTransaction;
 	}
+
 
 }

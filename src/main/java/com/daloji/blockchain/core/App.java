@@ -14,9 +14,12 @@ public class App
 	public static void main( String[] args ) throws Exception
 	{ 
 		NetworkOrchestrator networkOrch = new NetworkOrchestrator();
-		networkOrch.onStart();
-		String payloda ="73656E646865616465727300"; 
-		//System.out.println(Utils.hexToAscii(payloda));
+		//networkOrch.onStart();
+		Block bl = new Block();
+		String info = bl.getHashGenesisBloc();
+		System.out.println(info);
+		
+		
 	}
 
 }

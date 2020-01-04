@@ -14,4 +14,10 @@ public enum IPVersion {
 		version =	iPversion;
 	}
 
+
+	public String getVersion() {
+		return version;
+	}
+
+
 }

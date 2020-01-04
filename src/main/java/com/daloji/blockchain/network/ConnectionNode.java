@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.network.peers.PeerNode;
-import com.daloji.blockchain.network.trame.NetworkMessagingProxy;
 import com.daloji.blockchain.network.trame.STATE_ENGINE;
 import com.daloji.blockchain.network.trame.SendHeadersTrame;
 import com.daloji.blockchain.network.trame.TrameType;
@@ -116,6 +115,7 @@ public class ConnectionNode  implements Callable<Object>{
 						logger.error("erreur lors de l'echange de version vers"+peerNode.getHost());
 						networkListener.onNodeConnectHasError(this);
 					}
+					
 					break;
 
 				case VER_ACK_SEND:
@@ -249,5 +249,9 @@ public class ConnectionNode  implements Callable<Object>{
 		return  versionTrame;
 	}
 
+	
+	
+	
+	
 
 }

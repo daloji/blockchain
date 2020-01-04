@@ -1,8 +1,6 @@
 package com.daloji.blockchain.network;
 
-import java.io.DataInput;
 import java.io.DataInputStream;
-import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -28,7 +26,7 @@ public class  NetworkOrchestrator  implements NetworkHandler {
 
 	private ExecutorService executorService;
 
-	private static final int sizePool = 2;
+	private static final int sizePool = 1;
 
 	private  CopyOnWriteArrayList<ConnectionNode> listPeerConnected = new CopyOnWriteArrayList<ConnectionNode>(); 
 
@@ -67,8 +65,8 @@ public class  NetworkOrchestrator  implements NetworkHandler {
 			listPeer = dnslookup._second;
 			for (int i = 0; i < sizePool; i++) {
 				PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
-				//peer.setHost("168.235.74.116");
-			 	connectionNode = new ConnectionNode(this, NetParameters.MainNet, peer);
+				peer.setHost("168.235.74.116");
+				connectionNode = new ConnectionNode(this, NetParameters.MainNet, peer);
 				listThreadInPool.add(connectionNode);
 			}
 
@@ -98,7 +96,7 @@ public class  NetworkOrchestrator  implements NetworkHandler {
 	@Override
 	public void onNodeConnectHasError(ConnectionNode connectionNode) {
 		logger.info("Erreur lors de la lecture de la trame venant de :"+connectionNode.getPeerNode().getHost());
-		logger.info("fermture de la connexion");
+		logger.info("fermeture de la connexion");
 		try {
 			DataInputStream dataInput = connectionNode.getInput();
 			if(dataInput !=null) {
