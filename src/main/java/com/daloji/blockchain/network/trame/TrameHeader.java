@@ -249,7 +249,7 @@ public abstract class TrameHeader implements Serializable {
 				logger.error("checksum invalid" );
 				logger.error("cheksum read :  "+Utils.bytesToHex(checksum));
 				logger.error("cheksum compute :  "+Utils.bytesToHex(checksumcompute));
-				logger.error("chaine complete :" +Utils.bytesToHex(payload) );
+				logger.error("chaine complete :" +Utils.bytesToHex(msg) );
 
 			}
 

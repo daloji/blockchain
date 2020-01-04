@@ -78,13 +78,14 @@ public class DnsLookUp {
 			boolean find = false;	
 			int randomNum = ThreadLocalRandom.current().nextInt(0, listpeer.size() + 1);
 			while(!find) {
-				 randomNum = ThreadLocalRandom.current().nextInt(0, listpeer.size() + 1);
-				 if(randomNum<listpeer.size()) {
-					 peernode = listpeer.get(randomNum);
-				 }
-				 if(IPVersion.IPV4.equals(peernode.getVersion())) {
-					 find = true;
-				 }
+				randomNum = ThreadLocalRandom.current().nextInt(0, listpeer.size() + 1);
+				if(randomNum<listpeer.size()) {
+					peernode = listpeer.get(randomNum);
+				}if(peernode !=null) {
+					if(IPVersion.IPV4.equals(peernode.getVersion())) {
+						find = true;
+					}
+				}
 			}
 		}
 

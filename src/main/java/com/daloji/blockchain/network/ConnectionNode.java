@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.network.peers.PeerNode;
 import com.daloji.blockchain.network.trame.GetBlocksTrame;
+import com.daloji.blockchain.network.trame.GetHeadersTrame;
 import com.daloji.blockchain.network.trame.STATE_ENGINE;
 import com.daloji.blockchain.network.trame.SendHeadersTrame;
 import com.daloji.blockchain.network.trame.TrameType;
@@ -115,11 +116,13 @@ public class ConnectionNode  implements Callable<Object>{
 					if(versionTrame == null ) {
 						logger.error("erreur lors de l'echange de version vers"+peerNode.getHost());
 						networkListener.onNodeConnectHasError(this);
+					}else {
+						//construction de la blockchain
+						GetHeadersTrame getblock = new GetHeadersTrame();
+						String message = getblock.generateMessage(netParameters, peerNode);
+						sendGetBlock(outPut, netParameters, peerNode, Utils.hexStringToByteArray(message));
 					}
-					//construction de la blockchaine
-					GetBlocksTrame getblock = new GetBlocksTrame();
-					String message = getblock.generateMessage(netParameters, peerNode);
-					sendGetBlock(outPut, netParameters, peerNode, Utils.hexStringToByteArray(message));
+
 					break;
 
 				case VER_ACK_SEND:
@@ -164,7 +167,7 @@ public class ConnectionNode  implements Callable<Object>{
 				case SENDCMPCT_SEND:
 					break;
 				case ERROR_PROTOCOLE:
-					logger.error("erreur lors de l'echange de version vers"+peerNode.getHost());
+					logger.error("erreur lors de l'echange de version vers "+peerNode.getHost());
 					networkListener.onNodeConnectHasError(this);
 					break;
 				}

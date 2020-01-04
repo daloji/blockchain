@@ -4,11 +4,6 @@ package com.daloji.blockchain.core;
 
 import com.daloji.blockchain.network.NetworkOrchestrator;
 
-
-/**
- * Hello world!
- *
- */
 public class App 
 {
 	public static void main( String[] args ) throws Exception

@@ -26,7 +26,7 @@ public class  NetworkOrchestrator  implements NetworkHandler {
 
 	private ExecutorService executorService;
 
-	private static final int sizePool = 2;
+	private static final int sizePool = 1;
 
 	private  CopyOnWriteArrayList<ConnectionNode> listPeerConnected = new CopyOnWriteArrayList<ConnectionNode>(); 
 
