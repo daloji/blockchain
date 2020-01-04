@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import org.slf4j.LoggerFactory;
 
+import com.daloji.blockchain.core.Crypto;
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.commons.Retour;
@@ -49,7 +50,7 @@ public class VersionAckTrame  extends TrameHeader{
 		logger.debug("commande :"+Utils.convertStringToHex(commande,12));	
 	    byte[] payload = new byte[0]; 
 		logger.debug("payload :" +payload);	
-		byte[] array = Utils.checksum(payload);
+		byte[] array = Crypto.doubleSha256(payload);
 		String checksum =Utils.bytesToHex(array);
 		checksum =checksum.substring(0, 8);
 		logger.debug("checksum : "+checksum);	
@@ -98,7 +99,7 @@ public class VersionAckTrame  extends TrameHeader{
 			//init buffer zero
 			byte [] zero = new byte[0];
 			//checksum comput
-			byte[] generateZeroChecksum=Utils.checksum(zero);
+			byte[] generateZeroChecksum = Crypto.doubleSha256(zero);
 			System.arraycopy(generateZeroChecksum, 0, checksumCompute, 0, 4);
 			if(Arrays.equals(checksumCompute, checksum)) {
 				version.setChecksum(Utils.bytesToHex(checksum));

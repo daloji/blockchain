@@ -6,6 +6,7 @@ import java.time.Instant;
 
 import org.slf4j.LoggerFactory;
 
+import com.daloji.blockchain.core.Crypto;
 import com.daloji.blockchain.core.Messages;
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.core.commons.Pair;
@@ -154,7 +155,7 @@ public class VersionTrameMessage  extends TrameHeader{
 		message=message+Utils.intHexpadding(length, 4);
 		byte[] payloadbyte =Utils.hexStringToByteArray(payload);
 		//4 premier octet seulement pour le chechsum
-		byte[] array = Utils.checksum(payloadbyte);
+		byte[] array = Crypto.doubleSha256(payloadbyte);
 		String checksum =Utils.bytesToHex(array);
 		checksum =checksum.substring(0, 8);
 		logger.debug("checksum : "+checksum);	
@@ -331,6 +332,12 @@ public class VersionTrameMessage  extends TrameHeader{
 		}
 		return (T) deserialise;
 
+	}
+	@Override
+	public String toString() {
+		return "VersionTrameMessage [userAgent=" + userAgent + ", version=" + version + ", service=" + service
+				+ ", nonce=" + nonce + ", portReceive=" + portReceive + ", portTrans=" + portTrans + ", startHeigth="
+				+ startHeigth + ", relay=" + relay + "]";
 	}
 
 }

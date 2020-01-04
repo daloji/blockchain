@@ -230,7 +230,7 @@ public class Utils {
 	}
 
 
-	public static byte[] checksum(byte[] input) {
+	public static byte[] checksums(byte[] input) {
 		return checksum(input, 0, input.length);
 	}
 

@@ -14,6 +14,7 @@ import java.util.Arrays;
 import org.omg.CORBA._PolicyStub;
 import org.slf4j.LoggerFactory;
 
+import com.daloji.blockchain.core.Crypto;
 import com.daloji.blockchain.core.Messages;
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.core.commons.Pair;
@@ -233,7 +234,7 @@ public abstract class TrameHeader implements Serializable {
 			byte[] payload = new byte[(int)length];
 			System.arraycopy(msg, 24, payload, 0,(int) length);
 			//checksum compute
-			byte[] checksumpayload =Utils.checksum(payload);
+			byte[] checksumpayload = Crypto.doubleSha256(payload);
 			//first 4 byte
 			byte[] checksumcompute = new byte[4];
 			System.arraycopy(checksumpayload, 0, checksumcompute, 0, 4);
