@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/daloji/blockchain.svg?branch=master)](https://travis-ci.org/bitcoinj/bitcoinj)
 
 
 # blockchain
