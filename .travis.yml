@@ -1,0 +1,4 @@
+# configuration for https://travis-ci.org/daloji/blockchain
+sudo: false
+dist: xenial
+language: java
