@@ -19,10 +19,11 @@ Le noeud crée se connecte en mode noeud complet (Full Node) .......
  
   ### protocole d'echange entre pair
   Comme une trame IP , les messages envoyés ont un format bien defini par le protocole (cf https://en.bitcoin.it). Tous les messages bitcoins doivent avoir un entête de ce type
-
+     #### Trame Header
  
-| Option | Description |
-| ------:| -----------:|
-| data   | path to data files to supply the data that will be passed into templates. |
-| engine | engine to be used for processing templates. Handlebars is the default. |
-| ext    | extension to be used for dest files. |
+     | Taille Octet | Nom | Type | Description |
+     | ------:| -----------:|
+     | 4   | MAGIC  |char[4]|
+     | 12 | COMMANDE  |char[12]|
+     | 4    | SIZE |uint32_t|
+     | 4    | CHECKSUM |uchar[] |
