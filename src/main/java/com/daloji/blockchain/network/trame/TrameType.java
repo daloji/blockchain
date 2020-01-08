@@ -1,7 +1,7 @@
 package com.daloji.blockchain.network.trame;
 
 public enum TrameType {
-	
+			 	
 	VERSION("76657273696F6E0000000000"),
 	        
 	VERACK("76657261636B000000000000"),
@@ -15,6 +15,8 @@ public enum TrameType {
 	INV("696E76000000000000000000"),
 
 	SENDCMPCT("73656E64636D706374000000"),
+	
+	PING("70696E670000000000000000"),
 	
 	ERROR("error");
 	

@@ -141,16 +141,16 @@ public class Utils {
 		long decimal=Long.parseLong(var,16); 
 		return little2big(decimal);
 	}
-	
-	 /**
-     * Returns a copy of the given byte array in reverse order.
-     */
-    public static byte[] revBytes(byte[] bytes) {
-          byte[] buf = new byte[bytes.length];
-        for (int i = 0; i < bytes.length; i++)
-            buf[i] = bytes[bytes.length - 1 - i];
-        return buf;
-    }
+
+	/**
+	 * Returns a copy of the given byte array in reverse order.
+	 */
+	public static byte[] revBytes(byte[] bytes) {
+		byte[] buf = new byte[bytes.length];
+		for (int i = 0; i < bytes.length; i++)
+			buf[i] = bytes[bytes.length - 1 - i];
+		return buf;
+	}
 	/**
 	 * Conversion d'un entier   format big-endian
 	 * @param i
@@ -255,6 +255,17 @@ public class Utils {
 			return null;
 		}
 
+	}
+
+
+	public static boolean allZero(final byte[] data) {
+		boolean response = true;
+		for(int i=0;i<data.length;i++) {
+			if(data[i] != 0) {
+				response = false; 
+			}
+		}
+		return response;
 	}
 
 

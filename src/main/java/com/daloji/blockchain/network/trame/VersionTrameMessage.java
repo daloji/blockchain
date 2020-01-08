@@ -3,6 +3,7 @@ package com.daloji.blockchain.network.trame;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.Arrays;
 
 import org.slf4j.LoggerFactory;
 
@@ -37,12 +38,14 @@ public class VersionTrameMessage  extends TrameHeader{
 	 */
 	private static final String sub_version ="/daloji:0.0.1/";
 
-	
+
 
 	private static final String commande="version";
 
 	private static final int protocol= 70015;
-	
+
+	private boolean partialTrame =false;
+
 	private String userAgent;
 
 	private long version;
@@ -66,31 +69,31 @@ public class VersionTrameMessage  extends TrameHeader{
 	public String getUserAgent() {
 		return userAgent;
 	}
-	
+
 	public void setUserAgent(String userAgent) {
 		this.userAgent = userAgent;
 	}
-	
+
 	public boolean isRelay() {
 		return relay;
 	}
-	
+
 	public void setRelay(boolean relay) {
 		this.relay = relay;
 	}
-	
+
 	public int getStartHeigth() {
 		return startHeigth;
 	}
-	
+
 	public void setStartHeigth(int startHeigth) {
 		this.startHeigth = startHeigth;
 	}
-	
+
 	public int getPortTrans() {
 		return portTrans;
 	}
-	
+
 	public void setPortTrans(int portTrans) {
 		this.portTrans = portTrans;
 	}
@@ -98,15 +101,20 @@ public class VersionTrameMessage  extends TrameHeader{
 	public int getPortReceive() {
 		return portReceive;
 	}
-	
+
 	public void setPortReceive(int portReceive) {
 		this.portReceive = portReceive;
 	}
-	
+
 	public VersionTrameMessage() {
-		super();
+
 	}
-	
+
+	public VersionTrameMessage(boolean findExternalIp) {
+		super();
+
+	}
+
 	public long getVersion() {
 		return version;
 	}
@@ -135,7 +143,7 @@ public class VersionTrameMessage  extends TrameHeader{
 	public static String getSubVersion() {
 		return sub_version;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.daloji.blockchain.network.trame.TrameHeader#generateMessage(com.daloji.blockchain.network.NetParameters, com.daloji.blockchain.network.peers.PeerNode)
@@ -180,11 +188,11 @@ public class VersionTrameMessage  extends TrameHeader{
 	}
 
 
-	
-/*
- * (non-Javadoc)
- * @see com.daloji.blockchain.network.trame.TrameHeader#deserialise(byte[])
- */
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.daloji.blockchain.network.trame.TrameHeader#deserialise(byte[])
+	 */
 
 	@Override
 	public <T> T deserialise(byte[] msg) {
@@ -249,7 +257,7 @@ public class VersionTrameMessage  extends TrameHeader{
 		String useragent = Utils.bytesToHex(buffer);
 		version.setUserAgent(Utils.hexToAscii(useragent));
 		buffer = new byte[4];
-		 offset =(int) (105+sizeUserAgent);
+		offset =(int) (105+sizeUserAgent);
 		System.arraycopy(msg,offset, buffer, 0, 4);
 		String startheigthStr = Utils.bytesToHex(buffer);
 		long startheigth = Long.parseLong(startheigthStr,16);
@@ -280,8 +288,37 @@ public class VersionTrameMessage  extends TrameHeader{
 		}
 		return (T) versionReceive;
 	}
-	
-	
+
+	/**
+	 * Dans certain cas un noeud peut renvoyer sa Trame version en 2 parties
+	 * @return true si on est dans ce cas
+	 */
+	private boolean checkifPartialData(final byte[] data) {
+		String checksumPartial = "2E694B3F";
+		boolean value =false;
+		if(data.length>16) {
+			byte[] lengthArray = new byte[4];
+			System.arraycopy(data, 16, lengthArray, 0, 4);
+			String strlength = Utils.bytesToHex(lengthArray);
+			long length = Utils.little2big(strlength);
+			byte[] checksum = new byte[4];
+			System.arraycopy(data, 20, checksum, 0, 4); 
+			//payload
+			byte[] payload = new byte[(int)length];
+			System.arraycopy(data, 24, payload, 0,(int) length);
+			//checksum compute
+			byte[] checksumpayload = Crypto.doubleSha256(payload);
+			//first 4 byte
+			byte[] checksumcompute = new byte[4];
+			System.arraycopy(checksumpayload, 0, checksumcompute, 0, 4);
+			if(Arrays.equals(checksumcompute, Utils.hexStringToByteArray(checksumPartial))) {
+				value = true;	
+			}
+		}
+		return value;
+
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.daloji.blockchain.network.trame.TrameHeader#receiveMessage(com.daloji.blockchain.network.NetParameters, byte[])
@@ -292,8 +329,17 @@ public class VersionTrameMessage  extends TrameHeader{
 		TrameHeader message = null;
 		VersionTrameReceive deserialise = null;
 		if(!isValidMessage(network, msg)) {
-			retour = Utils.createRetourNOK(Utils.ERREUR, Messages.getString("ErreurReceive"));
-			logger.error("erreur de la trame recue  <IN>"+ Utils.bytesToHex(msg));	
+			//verifier si la trame est envoyé en deux fois
+			if(checkifPartialData(msg)) {
+				VersionTrameMessage versionTrame = getVersionTrameHeader(msg);
+				versionTrame.setPartialTrame(true);
+				deserialise = new VersionTrameReceive();
+				deserialise.setVersion(versionTrame);
+			}else {
+				//Erreur
+				logger.error("erreur de la trame recue  <IN>"+ Utils.bytesToHex(msg));	
+
+			}
 		}else {
 			message = getTypeMessage(msg);
 			if(message instanceof VersionTrameMessage) {
@@ -303,6 +349,35 @@ public class VersionTrameMessage  extends TrameHeader{
 		return (T) deserialise;
 
 	}
+	
+	/**
+	 *  recuperation entete Trame version
+	 * @param data
+	 * @return
+	 */
+	public VersionTrameMessage getVersionTrameHeader(final byte[] data) {
+		VersionTrameMessage version = new VersionTrameMessage();
+		int offset =0;
+		byte[] buffer = new byte[4];
+		System.arraycopy(data, offset, buffer, 0, buffer.length);
+		version.setMagic(Utils.bytesToHex(buffer));
+		buffer = new byte[12];
+		offset = offset +4;
+		System.arraycopy(data, offset, buffer, 0, buffer.length);
+		version.setCommande(Utils.bytesToHex(buffer));
+		offset = offset +buffer.length;
+		buffer = new byte[4];
+		System.arraycopy(data, offset, buffer, 0, 4);
+		String hex = Utils.bytesToHex(buffer);
+		long length=Utils.little2big(hex);
+		version.setLength((int)length);
+		offset = offset +buffer.length;
+		System.arraycopy(data, offset, buffer, 0, 4);
+		version.setChecksum(Utils.bytesToHex(buffer));
+		return version;
+		
+	}
+
 	@Override
 	public String toString() {
 		return "VersionTrameMessage [userAgent=" + userAgent + ", version=" + version + ", service=" + service
@@ -356,13 +431,22 @@ public class VersionTrameMessage  extends TrameHeader{
 		//start_height
 		logger.debug("start height :"+Utils.intHexpadding(0,4));	
 		payload = payload +Utils.intHexpadding(0,4);
-		
+
 		//relay
 		logger.debug("relay :"+Utils.intHexpadding(0,1));	
-	   //payload = payload +Utils.intHexpadding(0,1);
+		//payload = payload +Utils.intHexpadding(0,1);
 		return payload;
 	}
 
+	public boolean isPartialTrame() {
+		return partialTrame;
+	}
+
+	public void setPartialTrame(boolean partialTrame) {
+		this.partialTrame = partialTrame;
+	}
+
+	
 }
 
 

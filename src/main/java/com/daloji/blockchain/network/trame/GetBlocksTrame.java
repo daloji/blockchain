@@ -29,9 +29,9 @@ public class GetBlocksTrame extends TrameHeader{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(VersionAckTrame.class);
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(GetBlocksTrame.class);
 
-	private static final String commande="inv";
+	private static final String commande="getblocks";
 
 	@Override
 	public <T> T deserialise(byte[] msg) {
@@ -103,7 +103,7 @@ public class GetBlocksTrame extends TrameHeader{
 		}
 
 		String stop ="00000000000000000000000000000000"+
-				"00000000000000000000000000000000";
+				     "00000000000000000000000000000000";
 		payload = payload + stop;
 
 		return payload;

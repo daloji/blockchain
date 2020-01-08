@@ -9,10 +9,10 @@ public class App
 	public static void main( String[] args ) throws Exception
 	{ 
 		NetworkOrchestrator networkOrch = new NetworkOrchestrator();
-		networkOrch.onStart();
+	    networkOrch.onStart();
 		Block bl = new Block();
 		String info = bl.getHashGenesisBloc();
-		//System.out.println(info);
+		//System.out.println(Utils.convertStringToHex("getblocks",12));
 		
 		
 	}

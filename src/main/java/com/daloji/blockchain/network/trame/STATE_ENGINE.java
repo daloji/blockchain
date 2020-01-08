@@ -2,11 +2,13 @@ package com.daloji.blockchain.network.trame;
 
 public enum STATE_ENGINE {
 	
-	START("Start"),
+	BOOT("boot"),
 	
 	VERSION_SEND("version send"),
 
 	VERSION_RECEIVE("version receive"),
+	
+	VERSION_PARTIAL_RECEIVE("version partial receive"),
 	
 	VER_ACK_RECEIVE("version ack receive"),
 
@@ -31,6 +33,10 @@ public enum STATE_ENGINE {
 	SENDCMPCT_SEND("sendcmpct send"),
 	
 	SENDCMPCT_RECEIVE("sendcmpct receive"),
+	
+	GETBLOCK_SEND("getblock send"),
+	
+	START("start"),
 	
 	ERROR_PROTOCOLE("ERROR"),
 	

@@ -29,7 +29,7 @@ public class GetHeadersTrame extends TrameHeader{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(VersionAckTrame.class);
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(GetHeadersTrame.class);
 
 	private static final String commande="getheaders";
 
