@@ -29,6 +29,16 @@ Le noeud crée se connecte en mode noeud complet (Full Node) .......
      | 4             | SIZE     |uint32_t   |taille en octet de la charge utile (payload)                |
      | 4             | CHECKSUM |uchar[4]   |les 4 premiers octet de la double sha256 sha256(sha256(payload))|
    
+  Notons qu'il a trois types de réseaux Bitcoins qui sont  MAINNET , TESTNET , REGTEST. le protocole est le même ,seulement la donnée (Magic) de l'entête change pour chaque reseau. le bloc genesis de la blockchaine de chaque réseau n'est pas le même. TESTNET et REGTEST sont utilisés pour le developpement , les bitcoins de ses reseaux ne valent rien du tout.
+   
+     #### type de Valeur  MAGIC possible
+     | reseau   |  Port utilisé  | valeur hexa |         
+     | ------ : | --------------:| --------: | 
+     | Mainnet  |  	8333         | f9beb4d9   |   
+     | Testnet  |   18333        | 0b110907   |
+     | regtest  |  18444         | fabfb5da   |
+
+  
   
   Pour etablir une connexion, le noeud doit envoyer un message Version qui annonce la version du protocole bitcoin qu'il supporte ainsi que la longueur de sa blockchain en local, Dans le cas d'un premier demarrage la longueur est 0  (analogie avec tcp SYN / SYNACK)
   Dans la suite on ne va plus reproduire l'entête
