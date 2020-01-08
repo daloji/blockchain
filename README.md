@@ -40,9 +40,9 @@ Le noeud crée se connecte en mode noeud complet (Full Node) .......
      | 4             | VERSION      |int32_t    |  version du protocole utilisée     |
      | 8             | SERVICE      |uint64_t   | numero du service                  |
      | 8             | TIMESTAMP    |int64_t    | epoch unix                         |
-     | 26            | ADDR_RECEIVE |net_addr	  |adresse de l'envoyeur               |
-     | 26            | ADDR_FROM    |net_addr	  |adresse de reception                |
-     | 8             | NONCE        |uint64_t   |nombre aleatoire                    |
-     | ?             | USER_AGENT   |variable   |user agent                          |
-     | 4             | START_HEIGTH |int32_t    |longueur de la blockchaine connue   |
-     | 1             | RELAY        |bool       |noeud en mode relais                |
+     | 26            | ADDR_RECEIVE |net_addr	  | adresse de l'envoyeur              |
+     | 26            | ADDR_FROM    |net_addr	  | adresse de reception               |
+     | 8             | NONCE        |uint64_t   | nombre aleatoire                   |
+     | ?             | USER_AGENT   |variable   | user agent                         |
+     | 4             | START_HEIGTH |int32_t    | longueur de la blockchaine connue  |
+     | 1             | RELAY        |bool       | noeud en mode relais               |
