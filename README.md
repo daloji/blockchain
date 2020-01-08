@@ -22,9 +22,9 @@ Le noeud crée se connecte en mode noeud complet (Full Node) .......
   
      #### Trame Header
  
-     | Taille Octet | Nom | Type | Description |
-     | ------   :| -----------:||
-     | 4         | MAGIC  |char[4]||
-     | 12        | COMMANDE  |char[12]||
-     | 4         | SIZE |uint32_t||
-     | 4       | CHECKSUM |uchar[] ||
+     | Taille(octet) |     Nom  |   Type    |                             Description                    |
+     | ------------ :| --------:| --------: | ---------------------------------------------------:       | 
+     | 4             |  MAGIC   |char[4]    |         Valeur Magic                                       |
+     | 12            | COMMANDE |char[12]   |chaine ASCII  représentant le type de paquet                |
+     | 4             | SIZE     |uint32_t   |taille en octet de la charge utile (payload)                |
+     | 4             | CHECKSUM |uchar[4]   |les 4 premiers octet de la double sha256 sha256(sha256(payload))|
