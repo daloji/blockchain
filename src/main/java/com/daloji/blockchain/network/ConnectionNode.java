@@ -114,15 +114,13 @@ public class ConnectionNode  implements Callable<Object>{
 							break;
 				case VERSION_SEND:state = sendVerAck(outPut,netParameters,peerNode);
 							break;
-				case VER_ACK_SEND: GetBlocksTrame getblock = new GetBlocksTrame();
-							String message = getblock.generateMessage(netParameters, peerNode);
-							sendGetBlock(outPut, netParameters, peerNode);
+				case VER_ACK_RECEIVE:state = sendGetBlock(outPut, netParameters, peerNode);
 							break;
 				}
 				count = input.read(data); 
 				if(count>0) {
 					logger.info("["+peerNode.getHost()+"] <IN> "+Utils.bytesToHex(data));
-					Stack<ObjectTrame> stack =processMessage(data);
+					Stack<ObjectTrame> stack = processMessage(data);
 					pileCommand.addAll(stack);
 				}
 
@@ -140,16 +138,17 @@ public class ConnectionNode  implements Callable<Object>{
 
 
 
-	private Stack<ObjectTrame> processMessage(final byte[] data){
+	private Stack<ObjectTrame> processMessage(final byte[] data) throws IOException{
 		Stack<ObjectTrame> stakcommand = new Stack<ObjectTrame>();
 		if(data!=null) {
 			byte[] copydata = new byte[data.length];
 			System.arraycopy(data,0, copydata, 0, data.length);
 			String message = Utils.bytesToHex(copydata);
+			TrameType trameType = TrameType.START;
 			while(!Utils.allZero(Utils.hexStringToByteArray(message))) {
 				if(message.startsWith(NetParameters.MainNet.getMagic())) { 
 					String cmd = message.substring(8, 32);
-					TrameType trameType = findCommande(cmd);
+					trameType = findCommande(cmd);
 					if(trameType == TrameType.VERSION) {
 						message = message.substring(32, message.length());
 						String length = message.substring(0, 8);
@@ -161,8 +160,15 @@ public class ConnectionNode  implements Callable<Object>{
 						ObjectTrame objetTrame = new ObjectTrame();
 						if(Utils.allZero(bpayload)) {
 							objetTrame.setPartialTrame(true);
+							byte[] datainput = new byte[Utils.BUFFER_SIZE];
+							int count = input.read(datainput);
+							if(count>0) {
+								objetTrame.setPayload(Utils.bytesToHex(datainput));
+							}
+						}else {
+							objetTrame.setPayload(payload);	
 						}
-						objetTrame.setPayload(payload);
+						
 						objetTrame.setType(trameType);
 						stakcommand.add(objetTrame);
 						message = message.substring((int)decimal,message.length());
@@ -179,6 +185,17 @@ public class ConnectionNode  implements Callable<Object>{
 					if(trameType == TrameType.SENDHEADERS) {
 						message = message.substring(32, message.length());
 						message = message.substring(16, message.length());
+						ObjectTrame objetTrame = new ObjectTrame();
+						objetTrame.setType(trameType);
+						stakcommand.add(objetTrame);
+					}
+					
+					if(trameType == TrameType.FEELFILTER) {
+						message = message.substring(32, message.length());
+						String length = message.substring(0, 8);
+						long decimal = Utils.little2big(length);
+						message = message.substring(16, message.length());
+						message = message.substring((int)decimal*2, message.length());
 						ObjectTrame objetTrame = new ObjectTrame();
 						objetTrame.setType(trameType);
 						stakcommand.add(objetTrame);
@@ -219,6 +236,43 @@ public class ConnectionNode  implements Callable<Object>{
 						objetTrame.setType(trameType);
 						stakcommand.add(objetTrame);
 						message = message.substring((int)decimal,message.length());
+					}
+					
+					if(trameType == TrameType.ADDR) {
+						message = message.substring(32, message.length());
+						String length = message.substring(0, 8);
+						long decimal = Utils.little2big(length);
+						decimal = decimal*2;
+						message = message.substring(16, message.length());
+						String payload = message.substring(0,(int) decimal);
+						byte [] bpayload = Utils.hexStringToByteArray(payload);
+						ObjectTrame objetTrame = new ObjectTrame();
+						if(Utils.allZero(bpayload)) {
+							objetTrame.setPartialTrame(true);
+						}
+						objetTrame.setPayload(payload);
+						objetTrame.setType(trameType);
+						stakcommand.add(objetTrame);
+						message = message.substring((int)decimal,message.length());
+					}
+					if(trameType == TrameType.GETHEADERS) {
+						message = message.substring(32, message.length());
+					    message = message.substring(24, message.length());
+					    String length = message.substring(0, 2);
+					    int size = Integer.parseInt(length,16);
+						message = message.substring(2, message.length());
+						int end =(size+1)*64;
+						String payload = message.substring(0,end);
+						ObjectTrame objetTrame = new ObjectTrame();
+						objetTrame.setPayload(payload);
+						objetTrame.setType(trameType);
+						stakcommand.add(objetTrame);
+						message = message.substring(end,message.length());
+					    
+					}
+					
+					if(trameType == TrameType.INV) {
+
 					}
 					if(trameType == TrameType.ERROR) {
 
@@ -263,25 +317,26 @@ public class ConnectionNode  implements Callable<Object>{
 	
 	
 	private STATE_ENGINE sendGetBlock(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
+		state = STATE_ENGINE.GETBLOCK_SEND;
 		//construction de la blockchain
 		GetBlocksTrame getblock = new GetBlocksTrame();
 		String trame = getblock.generateMessage(netParameters, peerNode);
 		byte[] data = Utils.hexStringToByteArray(trame);
 		outPut.write(data, 0, data.length);	
 		logger.info("<OUT>  :"+Utils.bytesToHex(data));
-		return state.GETBLOCK_SEND;
+		return state;
 	}
 
 
 
 	private STATE_ENGINE sendVersion(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
 
-		STATE_ENGINE state = STATE_ENGINE.BOOT;
+		STATE_ENGINE state = STATE_ENGINE.VERSION_SEND;
 		VersionTrameMessage version = new VersionTrameMessage();
 		String trame = version.generateMessage(netParameters, peerNode);
 		byte[] data = Utils.hexStringToByteArray(trame);
 		outPut.write(data, 0, data.length); 
-		return state.VERSION_SEND;
+		return state;
 	}
 
 	public  TrameType findCommande(String cmd) {
@@ -294,6 +349,10 @@ public class ConnectionNode  implements Callable<Object>{
 		}
 		if(TrameType.SENDHEADERS.getInfo().equals(cmd)) {
 			trametype = TrameType.SENDHEADERS;
+		}
+		
+		if(TrameType.GETHEADERS.getInfo().equals(cmd)) {
+			trametype = TrameType.GETHEADERS;
 		}
 		if(TrameType.SENDCMPCT.getInfo().equals(cmd)) {
 			trametype = TrameType.SENDCMPCT;
@@ -308,6 +367,17 @@ public class ConnectionNode  implements Callable<Object>{
 		if(TrameType.PING.getInfo().equals(cmd)) {
 			trametype = TrameType.PING;
 		}
+		
+		if(TrameType.INV.getInfo().equals(cmd)) {
+			trametype = TrameType.INV;
+		}
+		
+		
+		if(TrameType.FEELFILTER.getInfo().equals(cmd)) {
+			trametype = TrameType.FEELFILTER;
+		}
+		
+		
 
 		return trametype;
 	}		

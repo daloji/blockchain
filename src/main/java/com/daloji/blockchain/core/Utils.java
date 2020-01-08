@@ -26,7 +26,7 @@ public class Utils {
 
 	public static final String DNS_SEED = "seed.bitcoin.sipa.be";
 
-	public static final int BUFFER_SIZE = 1024;
+	public static final int BUFFER_SIZE =4028;
 
 	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
