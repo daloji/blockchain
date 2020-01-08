@@ -333,11 +333,12 @@ public class ConnectionNode2  implements Callable<Object>{
 			System.arraycopy(data,4, buffer, 0, buffer.length);
 			buffer = new byte[12];
 			System.arraycopy(data,0,buffer , 0, buffer.length);
-			String cmd = Utils.bytesToHex(commande);
+		//	String cmd = Utils.bytesToHex(commande);
 
 		}
 	}
-		/*
+
+/*
 		public static TrameType findTrameCommande(byte[] data) {
 			byte[] commande = new byte[12];
 			TrameType trametype = TrameType.ERROR;
@@ -361,11 +362,11 @@ public class ConnectionNode2  implements Callable<Object>{
 					trametype = TrameType.VERSION;
 				}
 			}
-*/
+
 			return trametype;
 		}		
 		
-	}
+	}*/
 
 
 	@Override
@@ -418,7 +419,7 @@ public class ConnectionNode2  implements Callable<Object>{
 					state = whoIsNextStep(trametype);
 				}else {
 					logger.error("erreur lors de l'echange de version vers "+peerNode.getHost());
-					networkListener.onNodeConnectHasError(this);
+					//networkListener.onNodeConnectHasError(this);
 				}
 			}
 
