@@ -15,7 +15,7 @@ public class ObjectTrame  implements Serializable{
 	private boolean isPartialTrame;
 	
 	private String payload;
-
+	
 	
 	public boolean isPartialTrame() {
 		return isPartialTrame;

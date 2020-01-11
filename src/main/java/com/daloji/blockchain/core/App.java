@@ -8,13 +8,12 @@ public class App
 {
 	public static void main( String[] args ) throws Exception
 	{ 
+
+
 		NetworkOrchestrator networkOrch = new NetworkOrchestrator();
-	    networkOrch.onStart();
-		Block bl = new Block();
-		String info = bl.getHashGenesisBloc();
-		//System.out.println(Utils.convertStringToHex("getblocks",12));
+		networkOrch.onStart();
 		
-		
+
 	}
 
 }

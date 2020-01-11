@@ -45,29 +45,22 @@ public class GetBlocksTrame extends TrameHeader{
 		//get Epoch Time
 		epoch  = Instant.now().getEpochSecond();
 		setAddressTrans(peer.getHost());
-		logger.debug("construction du Header getBlock");	
 		String message ="";
 		message = message +getMagic();
-		logger.debug("magic :"+getMagic());	
 		message = message + Utils.convertStringToHex(commande,12);
-		logger.debug("commande :"+Utils.convertStringToHex(commande,12));	
 		String payload =generatePayload(network);
 		//logger.debug("payload :"+payload);
-
 		//lenght
 		int length =payload.length()/2;
-		logger.debug("length :"+length);	
 		message=message+Utils.intHexpadding(length, 4);
 		byte[] payloadbyte =Utils.hexStringToByteArray(payload);
 		//4 premier octet seulement pour le chechsum
 		byte[] array = Crypto.doubleSha256(payloadbyte);
 		String checksum =Utils.bytesToHex(array);
 		checksum =checksum.substring(0, 8);
-		logger.debug("checksum : "+checksum);	
 		message = message +checksum;
 		//ajout de la payload 
 		message = message +payload;
-		logger.debug("Message envoyé : "+message);
 		return message;
 	}
 
@@ -90,10 +83,8 @@ public class GetBlocksTrame extends TrameHeader{
 		String payload = "";
 		//protocole
 		payload = payload +Utils.intHexpadding(protocol, 4);
-		logger.debug("version  :"+Utils.intHexpadding(protocol, 4));	
 		// nombre headers
 		payload = payload +Utils.intHexpadding(1, 1);
-		logger.debug("hash count  :"+Utils.intHexpadding(2, 1));
 		// hash
 		Block bl = new Block();
 		try {

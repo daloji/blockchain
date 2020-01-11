@@ -46,20 +46,14 @@ public class VersionAckTrame  extends TrameHeader{
 
 	@Override
 	public String generatePayload(NetParameters network) {
-		logger.debug("construction du Header Verack");	
 		String message ="";
 		message = message + getMagic();
-		logger.debug("magic :"+getMagic());	
 		message = message + Utils.convertStringToHex(commande,12);
-		logger.debug("commande :"+Utils.convertStringToHex(commande,12));	
 		byte[] payload = new byte[0]; 
-		logger.debug("payload :" +payload);	
 		byte[] array = Crypto.doubleSha256(payload);
 		String checksum =Utils.bytesToHex(array);
 		checksum =checksum.substring(0, 8);
-		logger.debug("checksum : "+checksum);	
 		message = message + "00000000" +checksum;
-		logger.debug("Trame Verack envoyé : "+message);	
 		return message;
 	}
 	/*

@@ -26,7 +26,7 @@ public class Utils {
 
 	public static final String DNS_SEED = "seed.bitcoin.sipa.be";
 
-	public static final int BUFFER_SIZE =4028;
+	public static final int BUFFER_SIZE = 40280;
 
 	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
@@ -74,6 +74,18 @@ public class Utils {
 		return data;
 	}
 
+	
+	public static String StrLittleEndian(final String endian) {
+		byte[] bs = Utils.hexStringToByteArray(endian);
+    	byte b;
+    	for(int i=0; i<bs.length/2; i++){
+    			b = bs[i];
+    			bs[i] = bs[bs.length-1-i];
+    			bs[bs.length-1-i] = b;
+    	}
+    	return Utils.bytesToHex(bs);
+	}
+	
 	/**
 	 * conversion d'un entier en chaine hexadecimal 
 	 * @param value
@@ -254,8 +266,18 @@ public class Utils {
 		} catch (NoSuchAlgorithmException e) {
 			return null;
 		}
-
 	}
+
+
+	public static String paddingHexa(String msg,int padding) {
+		while(msg.length()<padding) {
+			msg =msg+"0";
+		}
+
+		return msg;
+	}
+
+
 
 
 	public static boolean allZero(final byte[] data) {

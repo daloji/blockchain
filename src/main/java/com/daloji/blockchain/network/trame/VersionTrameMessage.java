@@ -161,29 +161,21 @@ public class VersionTrameMessage  extends TrameHeader{
 
 
 	private String versionMessageHeader(NetParameters network) {
-		logger.debug("construction du Header Version");	
 		String message ="";
 		message = message +getMagic();
-		logger.debug("magic :"+getMagic());	
 		message = message+Utils.convertStringToHex(commande,12);
-		logger.debug("commande :"+Utils.convertStringToHex(commande,12));	
 		String payload = generatePayload(network);
-		logger.debug("payload :"+payload);	
 		//lenght
 		int length =payload.length()/2;
-		logger.debug("length :"+length);	
 		message=message+Utils.intHexpadding(length, 4);
 		byte[] payloadbyte =Utils.hexStringToByteArray(payload);
 		//4 premier octet seulement pour le chechsum
 		byte[] array = Crypto.doubleSha256(payloadbyte);
 		String checksum =Utils.bytesToHex(array);
 		checksum =checksum.substring(0, 8);
-		logger.debug("checksum : "+checksum);	
 		message = message +checksum;
 		//ajout de la payload 
 		message = message +payload;
-		logger.debug("Message envoyé : "+message);	
-
 		return message;
 	}
 
@@ -271,7 +263,6 @@ public class VersionTrameMessage  extends TrameHeader{
 			}
 		}
 
-		logger.debug("Trame Version recu  : "+Utils.bytesToHex(msg));	
 		versionReceive.setVersion(version);
 		//fin du block version selon le protocole 
 		/**
@@ -335,10 +326,6 @@ public class VersionTrameMessage  extends TrameHeader{
 				versionTrame.setPartialTrame(true);
 				deserialise = new VersionTrameReceive();
 				deserialise.setVersion(versionTrame);
-			}else {
-				//Erreur
-				logger.error("erreur de la trame recue  <IN>"+ Utils.bytesToHex(msg));	
-
 			}
 		}else {
 			message = getTypeMessage(msg);
@@ -391,49 +378,31 @@ public class VersionTrameMessage  extends TrameHeader{
 	@Override
 	public String generatePayload(NetParameters network) {
 		String payload ="";
-		logger.debug("payload :");	
 		payload = payload +Utils.intHexpadding(protocol,4);
-		logger.debug("version protocol :"+Utils.intHexpadding(protocol,4));	
 		//service 1
 		payload = payload +Utils.intHexpadding(1, 8);
-		logger.debug("service  :"+Utils.intHexpadding(1, 8));	
 		// time
 		payload = payload +Utils.convertDateString(epoch, 8);
-		logger.debug("timestamp  :"+Utils.convertDateString(epoch, 8));	
 		//version
 		payload = payload +Utils.intHexpadding(1, 8);
 		//adresse IP destination
 		String ipdest = Utils.convertIPtoHex(getAddressTrans());
-		logger.debug("adresseIP destination  :"+Utils.convertIPtoHex(getAddressTrans()));	
 		payload = payload + IP_CONST +ipdest;
 		payload =payload + Integer.toHexString(port);
-		logger.debug("port  :"+Integer.toHexString(port));	
 		//version
 		payload = payload +Utils.intHexpadding(1, 8);
-		logger.debug("version  :"+Utils.intHexpadding(1, 8));
 		//adresse IP source
 		String ipsource = Utils.convertIPtoHex(getAddressReceive());
-		logger.debug("adresseIP source  :"+ipsource);	
-
 		payload = payload + IP_CONST +ipsource;
 		payload =payload + Integer.toHexString(port);
-		logger.debug("port  :"+Integer.toHexString(port));	
 		//nonce
 		String nonce =Utils.generateNonce(16);
 		payload =payload + nonce;
-		logger.debug("nonce  :"+nonce);	
-
 		//sub version protocole
 		String subversion = Utils.convertStringToHex(sub_version, 15);
-		logger.debug("sub version   :"+subversion);	
 		payload = payload + "0f"+subversion ;
-
 		//start_height
-		logger.debug("start height :"+Utils.intHexpadding(0,4));	
-		payload = payload +Utils.intHexpadding(0,4);
-
-		//relay
-		logger.debug("relay :"+Utils.intHexpadding(0,1));	
+		payload = payload +Utils.intHexpadding(0,4);	
 		//payload = payload +Utils.intHexpadding(0,1);
 		return payload;
 	}
