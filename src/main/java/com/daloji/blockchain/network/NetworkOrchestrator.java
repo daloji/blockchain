@@ -94,13 +94,13 @@ public class  NetworkOrchestrator  implements NetworkEventHandler,BlockChainEven
 	 * @see com.daloji.core.blockchain.net.NetworkHandler#onNodeConnected(com.daloji.core.blockchain.net.ConnectionNode)
 	 */
 	@Override
-	public void onNodeConnected(ConnectionNode connectionNode) {
+	public void onNodeConnected(AbstractCallable connectionNode) {
 		logger.info("onNodeConnected connecté au noeud :"+ connectionNode.getPeerNode().getHost() +"  port "+connectionNode.getPeerNode().getPort());
-		listPeerConnected.add(connectionNode);
+		listPeerConnected.add((ConnectionNode) connectionNode);
 	}
 
 	@Override
-	public void onNodeConnectHasError(ConnectionNode connectionNode) {
+	public void onNodeConnectHasError(AbstractCallable connectionNode) {
 		logger.info("Erreur lors de la lecture de la trame venant de :"+connectionNode.getPeerNode().getHost());
 		logger.info("fermeture de la connexion");
 		try {

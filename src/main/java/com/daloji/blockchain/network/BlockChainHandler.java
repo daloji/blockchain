@@ -13,25 +13,9 @@ import com.daloji.blockchain.network.peers.PeerNode;
 import com.daloji.blockchain.network.trame.ObjectTrame;
 import com.daloji.blockchain.network.trame.STATE_ENGINE;
 
-public class BlockChainHandler implements Callable<Object>{
+public class BlockChainHandler extends AbstractCallable{
 
-private NetworkEventHandler networkListener;
-	
-	private BlockChainEventHandler blockChainListener;
-	
-	private Socket socketClient;
-	
-	private PeerNode peerNode;
 
-	private DataOutputStream outPut;
-
-	private DataInputStream input;
-
-	private NetParameters netParameters;
-	
-	
-	private STATE_ENGINE state = STATE_ENGINE.START;
-	
 	private BlockChainHandler(NetworkEventHandler networkListener,BlockChainEventHandler blockchaiListener,NetParameters netparam,PeerNode peerNode) {
 			this.peerNode = peerNode;
 			this.networkListener = networkListener;
@@ -42,7 +26,7 @@ private NetworkEventHandler networkListener;
 	
 	@Override
 	public Object call() throws Exception {
-		/*byte[] data = new byte[Utils.BUFFER_SIZE];
+		byte[] data = new byte[Utils.BUFFER_SIZE];
 		try {
 			socketClient = new Socket(peerNode.getHost(),peerNode.getPort());
 			socketClient.setSoTimeout(Utils.timeoutPeer);
@@ -72,7 +56,7 @@ private NetworkEventHandler networkListener;
 			}
 		}catch (Exception e) {
 			// TODO: handle exception
-		}*/
+		}
 		return null;
 	}
 	

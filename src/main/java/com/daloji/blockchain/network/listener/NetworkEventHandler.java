@@ -1,6 +1,6 @@
 package com.daloji.blockchain.network.listener;
 
-import com.daloji.blockchain.network.ConnectionNode;
+import com.daloji.blockchain.network.AbstractCallable;
 
 public interface NetworkEventHandler {
 
@@ -10,7 +10,7 @@ public interface NetworkEventHandler {
 	 * @param connectionNode
 	 * Connection node
 	 */
-	public void onNodeConnected(ConnectionNode connectionNode);
+	public void onNodeConnected(AbstractCallable connectionNode);
 
 	/**
 	 * Callback lorsque le noeud distant a des comportements qui ne correspond
@@ -18,7 +18,7 @@ public interface NetworkEventHandler {
 	 * @param connectionNode
 	 * Connection node
 	 */
-	public void onNodeConnectHasError(ConnectionNode connectionNode);
+	public void onNodeConnectHasError(AbstractCallable connectionNode);
 	
 	
 
