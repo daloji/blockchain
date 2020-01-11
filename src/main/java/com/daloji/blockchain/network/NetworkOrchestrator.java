@@ -14,6 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.LoggerFactory;
 
+import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.commons.Retour;
@@ -21,13 +22,13 @@ import com.daloji.blockchain.network.peers.PeerNode;
 
 import ch.qos.logback.classic.Logger;
 
-public class  NetworkOrchestrator  implements NetworkHandler {
+public class  NetworkOrchestrator  implements NetworkEventHandler,BlockChainEventHandler {
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(NetworkOrchestrator.class);
 
 	private ExecutorService executorService;
 
-	private static final int sizePool = 1;
+	private static final int sizePool = 3;
 
 	private  CopyOnWriteArrayList<ConnectionNode> listPeerConnected = new CopyOnWriteArrayList<ConnectionNode>(); 
 
@@ -66,7 +67,7 @@ public class  NetworkOrchestrator  implements NetworkHandler {
 			listPeer = dnslookup._second;
 			for (int i = 0; i < sizePool; i++) {
 				PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
-				connectionNode = new ConnectionNode(this, NetParameters.MainNet, peer);
+				connectionNode = new ConnectionNode(this,this, NetParameters.MainNet, peer);
 				listThreadInPool.add(connectionNode);
 			}
 
@@ -116,6 +117,11 @@ public class  NetworkOrchestrator  implements NetworkHandler {
 
 		}
 
+	}
+
+	@Override
+	public void onBlockHeaderReceive(InvType inVtype, String hashHeader) {
+		logger.info("hash >" + hashHeader);		
 	}
 
 }

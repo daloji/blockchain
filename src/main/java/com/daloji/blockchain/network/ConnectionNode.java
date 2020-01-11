@@ -46,7 +46,9 @@ public class ConnectionNode  implements Callable<Object>{
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(ConnectionNode.class);
 
-	private NetworkHandler networkListener;
+	private NetworkEventHandler networkListener;
+	
+	private BlockChainEventHandler blockChainListener;
 
 	private PeerNode peerNode;
 
@@ -63,9 +65,10 @@ public class ConnectionNode  implements Callable<Object>{
 	private Stack<ObjectTrame> pileCommand = new Stack<ObjectTrame>();
 
 
-	public ConnectionNode(NetworkHandler networkListener,NetParameters netparam,PeerNode peerNode) {
+	public ConnectionNode(NetworkEventHandler networkListener,BlockChainEventHandler blockchaiListener,NetParameters netparam,PeerNode peerNode) {
 		this.peerNode = peerNode;
 		this.networkListener = networkListener;
+		this.blockChainListener = blockchaiListener;
 		this.netParameters = netparam;
 	}
 
@@ -372,16 +375,16 @@ public class ConnectionNode  implements Callable<Object>{
 			String len = msg.substring(0,2);
 			long size = Integer.parseInt(len,16);
 			//FD value
-			if(size<253) {
+			if(size<Utils.FD_HEXA) {
 				len = msg.substring(0,2);
 				msg = msg.substring(2, msg.length());
-			}else if(size==253) {
+			}else if(size>=Utils.FD_HEXA && size<=Utils.FFFF_HEXA) {
 				len = msg.substring(2,6);
 				msg = msg.substring(6, msg.length());
 				len=Utils.StrLittleEndian(len);
 				size =Integer.parseInt(len,16);
 
-			}else if(size==254) {
+			}else if(size>Utils.FFFF_HEXA) {
 				len = msg.substring(2,10);
 				len=Utils.StrLittleEndian(len);
 				size =Integer.parseInt(len,16);
@@ -407,18 +410,25 @@ public class ConnectionNode  implements Callable<Object>{
 				case 1: 
 					inventory.setType(InvType.MSG_TX);
 					inventory.setHash(hash);
+					blockChainListener.onBlockHeaderReceive(InvType.MSG_TX, hash);
 					break;
 				case 2: 
 					inventory.setType(InvType.MSG_BLOCK);
 					inventory.setHash(hash);
+					blockChainListener.onBlockHeaderReceive(InvType.MSG_BLOCK, hash);
+
 					break;
 				case 3: 
 					inventory.setType(InvType.MSG_FILTERED_BLOCK);
 					inventory.setHash(hash);
+					blockChainListener.onBlockHeaderReceive(InvType.MSG_FILTERED_BLOCK, hash);
+
 					break;
 				case 4: 
 					inventory.setType(InvType.MSG_CMPCT_BLOCK);
 					inventory.setHash(hash);
+					blockChainListener.onBlockHeaderReceive(InvType.MSG_CMPCT_BLOCK, hash);
+
 					break;
 
 				default:

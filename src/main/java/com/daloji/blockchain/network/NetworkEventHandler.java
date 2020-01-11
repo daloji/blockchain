@@ -1,6 +1,6 @@
 package com.daloji.blockchain.network;
 
-public interface NetworkHandler {
+public interface NetworkEventHandler {
 
 	/**
 	 * callback lors de la connection a un noeud 
@@ -17,6 +17,8 @@ public interface NetworkHandler {
 	 * Connection node
 	 */
 	public void onNodeConnectHasError(ConnectionNode connectionNode);
+	
+	
 
 	public void onNodeDisconnected();
 

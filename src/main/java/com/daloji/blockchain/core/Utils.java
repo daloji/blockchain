@@ -19,6 +19,11 @@ public class Utils {
 	public static String RETOUR_OK ="OK";
 
 	public static String RETOUR_NOK ="NOK";
+	
+	public static int FD_HEXA = 253;
+	
+	public static int FFFF_HEXA = 65535;
+	
 
 	public static String FATAL_ERROR ="FATAL_ERROR";
 
