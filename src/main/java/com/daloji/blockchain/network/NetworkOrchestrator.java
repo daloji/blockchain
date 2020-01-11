@@ -37,7 +37,6 @@ public class  NetworkOrchestrator  implements NetworkEventHandler,BlockChainEven
 	
 	private  CopyOnWriteArrayList<Inventory> listHeaderBlock = new CopyOnWriteArrayList<Inventory>(); 
 
-
 	/*
 	 * List des Threads clients
 	 */

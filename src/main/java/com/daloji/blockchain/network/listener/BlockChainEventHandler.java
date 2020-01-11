@@ -1,6 +1,5 @@
 package com.daloji.blockchain.network.listener;
 
-import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Inventory;
 
 public interface BlockChainEventHandler {

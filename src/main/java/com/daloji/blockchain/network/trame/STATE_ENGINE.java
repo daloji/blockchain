@@ -38,6 +38,8 @@ public enum STATE_ENGINE {
 	
 	START("start"),
 	
+	STOP("stop"),
+	
 	ERROR_PROTOCOLE("ERROR"),
 	
 	ERROR("ERROR");
