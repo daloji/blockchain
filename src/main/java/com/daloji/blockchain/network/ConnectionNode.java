@@ -5,31 +5,27 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.Callable;
 
 import org.slf4j.LoggerFactory;
 
-import com.daloji.blockchain.core.Crypto;
 import com.daloji.blockchain.core.Inv;
 import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.core.commons.Pair;
+import com.daloji.blockchain.network.listener.BlockChainEventHandler;
+import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
 import com.daloji.blockchain.network.trame.GetBlocksTrame;
-import com.daloji.blockchain.network.trame.GetHeadersTrame;
 import com.daloji.blockchain.network.trame.InvTrameObject;
 import com.daloji.blockchain.network.trame.ObjectTrame;
 import com.daloji.blockchain.network.trame.STATE_ENGINE;
-import com.daloji.blockchain.network.trame.SendHeadersTrame;
 import com.daloji.blockchain.network.trame.TrameType;
 import com.daloji.blockchain.network.trame.VersionAckTrame;
 import com.daloji.blockchain.network.trame.VersionTrameMessage;
-import com.daloji.blockchain.network.trame.VersionTrameReceive;
 
 import ch.qos.logback.classic.Logger;
 
@@ -123,7 +119,8 @@ public class ConnectionNode  implements Callable<Object>{
 									break;
 				case VERSION_SEND:state = sendVerAck(outPut,netParameters,peerNode);
 									break;
-				case VER_ACK_RECEIVE:state = sendGetBlock(outPut, netParameters, peerNode);
+				case VER_ACK_RECEIVE:networkListener.onNodeConnected(this);
+									state = sendGetBlock(outPut, netParameters, peerNode);
 									break;
 				case INV_RECEIVE: count = input.read(data); 
 								  if(count>0) {
@@ -410,31 +407,31 @@ public class ConnectionNode  implements Callable<Object>{
 				case 1: 
 					inventory.setType(InvType.MSG_TX);
 					inventory.setHash(hash);
-					blockChainListener.onBlockHeaderReceive(InvType.MSG_TX, hash);
+					blockChainListener.onBlockHeaderReceive(inventory);
 					break;
 				case 2: 
 					inventory.setType(InvType.MSG_BLOCK);
 					inventory.setHash(hash);
-					blockChainListener.onBlockHeaderReceive(InvType.MSG_BLOCK, hash);
+					blockChainListener.onBlockHeaderReceive(inventory);
 
 					break;
 				case 3: 
 					inventory.setType(InvType.MSG_FILTERED_BLOCK);
 					inventory.setHash(hash);
-					blockChainListener.onBlockHeaderReceive(InvType.MSG_FILTERED_BLOCK, hash);
+					blockChainListener.onBlockHeaderReceive(inventory);
 
 					break;
 				case 4: 
 					inventory.setType(InvType.MSG_CMPCT_BLOCK);
 					inventory.setHash(hash);
-					blockChainListener.onBlockHeaderReceive(InvType.MSG_CMPCT_BLOCK, hash);
+					blockChainListener.onBlockHeaderReceive(inventory);
 
 					break;
 
 				default:
 					break;
 				}
-
+				
 				if(msg.length()>64) {
 					msg = msg.substring(64, msg.length());
 				}else {

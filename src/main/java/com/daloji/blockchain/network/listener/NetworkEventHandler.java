@@ -1,4 +1,6 @@
-package com.daloji.blockchain.network;
+package com.daloji.blockchain.network.listener;
+
+import com.daloji.blockchain.network.ConnectionNode;
 
 public interface NetworkEventHandler {
 

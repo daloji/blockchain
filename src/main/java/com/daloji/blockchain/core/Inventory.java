@@ -1,6 +1,13 @@
 package com.daloji.blockchain.core;
 
-public class Inventory {
+import java.io.Serializable;
+
+public class Inventory  implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private InvType type;
 	
@@ -21,4 +28,35 @@ public class Inventory {
 	public void setHash(String hash) {
 		this.hash = hash;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((hash == null) ? 0 : hash.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Inventory other = (Inventory) obj;
+		if (hash == null) {
+			if (other.hash != null)
+				return false;
+		} else if (!hash.equals(other.hash))
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
+	}
+	
+	
+	
 }

@@ -15,9 +15,12 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.InvType;
+import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.commons.Retour;
+import com.daloji.blockchain.network.listener.BlockChainEventHandler;
+import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
 
 import ch.qos.logback.classic.Logger;
@@ -31,6 +34,9 @@ public class  NetworkOrchestrator  implements NetworkEventHandler,BlockChainEven
 	private static final int sizePool = 3;
 
 	private  CopyOnWriteArrayList<ConnectionNode> listPeerConnected = new CopyOnWriteArrayList<ConnectionNode>(); 
+	
+	private  CopyOnWriteArrayList<Inventory> listHeaderBlock = new CopyOnWriteArrayList<Inventory>(); 
+
 
 	/*
 	 * List des Threads clients
@@ -120,8 +126,13 @@ public class  NetworkOrchestrator  implements NetworkEventHandler,BlockChainEven
 	}
 
 	@Override
-	public void onBlockHeaderReceive(InvType inVtype, String hashHeader) {
-		logger.info("hash >" + hashHeader);		
+	public void onBlockHeaderReceive(Inventory inventory) {
+		if(InvType.MSG_BLOCK==inventory.getType()) {
+			if(!listHeaderBlock.contains(inventory)) {
+				listHeaderBlock.add(inventory);
+			}
+		}
+			
 	}
 
 }
