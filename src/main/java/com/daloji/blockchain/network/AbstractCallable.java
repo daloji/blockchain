@@ -29,6 +29,12 @@ import com.daloji.blockchain.network.trame.VersionTrameMessage;
 
 import ch.qos.logback.classic.Logger;
 
+
+/**
+ * Classe abstraite de gestion de la connexion pour les Threads
+ * @author daloji
+ *
+ */
 public abstract class AbstractCallable implements Callable<Object>{
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(AbstractCallable.class);
@@ -114,8 +120,12 @@ public abstract class AbstractCallable implements Callable<Object>{
 	public void setState(STATE_ENGINE state) {
 		this.state = state;
 	}
-	
 
+	/**
+	 *  Recuperation du type de commande 
+	 * @param cmd
+	 * @return
+	 */
 	public  TrameType findCommande(String cmd) {
 		TrameType trametype = TrameType.ERROR;
 		if(TrameType.VERACK.getInfo().equals(cmd)) {
@@ -158,7 +168,7 @@ public abstract class AbstractCallable implements Callable<Object>{
 
 		return trametype;
 	}		
-	
+
 	protected STATE_ENGINE sendVerAck(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
 		state = STATE_ENGINE.VER_ACK_RECEIVE;
 		VersionAckTrame verAck = new VersionAckTrame();
@@ -194,7 +204,7 @@ public abstract class AbstractCallable implements Callable<Object>{
 		logger.info("<OUT>  Version " +trame);
 		return state;
 	}
-	
+
 	protected Stack<ObjectTrame>  receiveInventory(final byte[] data) throws IOException {
 		Stack<ObjectTrame> stakcommand = new Stack<ObjectTrame>();
 		byte[] copydata = new byte[data.length];
@@ -205,14 +215,14 @@ public abstract class AbstractCallable implements Callable<Object>{
 			//ajout padding avant le message probleme de deserialisation
 			message = message + padding;
 			extractInvMessage(message);
-			
+
 		}else {
 			stakcommand = processMessage(data);
 		}
 		return stakcommand;
 
 	}
-	
+
 
 
 	private Pair<String,Inv> extractInvMessage(String msg){
@@ -287,7 +297,7 @@ public abstract class AbstractCallable implements Callable<Object>{
 				default:
 					break;
 				}
-				
+
 				if(msg.length()>64) {
 					msg = msg.substring(64, msg.length());
 				}else {
@@ -501,5 +511,5 @@ public abstract class AbstractCallable implements Callable<Object>{
 		return stakcommand;
 	}
 
-	
+
 }

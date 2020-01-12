@@ -2,9 +2,20 @@ package com.daloji.blockchain.core;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
+/**
+ * 
+ * @author daloji
+ *
+ */
 public class Crypto {
 
+	
+	/**
+	 * Double hash sha-256 
+	 * @param input
+	 *   donnée a hasher
+	 * @return 
+	 */
 	public static byte[] doubleSha256(byte[] input) {
 		MessageDigest digest;
 		try {

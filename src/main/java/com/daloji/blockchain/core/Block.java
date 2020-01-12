@@ -103,7 +103,7 @@ public class Block implements Serializable{
 
 
 	/**
-	 * Block genesis du le blockchain crée par Satoshi Nakamoto
+	 * Block genesis de la blockchain crée par Satoshi Nakamoto
 	 * @return
 	 */
 	public Block createGenesisBlock() {
