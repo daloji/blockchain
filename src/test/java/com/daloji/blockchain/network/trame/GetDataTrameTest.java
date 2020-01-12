@@ -1,6 +1,6 @@
 package com.daloji.blockchain.network.trame;
 
-import org.junit.Test;
+
 
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.network.IPVersion;
@@ -13,7 +13,7 @@ public class GetDataTrameTest {
   
 	private String hash = "6FE28C0AB6F1B372C1A6A246AE63F74F931E8365E15A089C68D6190000000000";
 
-	@Test
+	//@Test
 	public void getDataTHeaderTest_OK() {
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		GetDataTrame getData =new GetDataTrame(hash);
