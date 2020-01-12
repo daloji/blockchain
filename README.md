@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/daloji/blockchain.svg?branch=master)](https://travis-ci.org/daloji/blockchain) [![Coverage Status](https://coveralls.io/repos/bitcoinj/bitcoinj/badge.png?branch=master)]
+[![Build Status](https://travis-ci.org/daloji/blockchain.svg?branch=master)](https://travis-ci.org/daloji/blockchain) 
+[![Coverage Status](https://coveralls.io/repos/github/daloji/blockchain/badge.svg)](https://coveralls.io/github/daloji/blockchain)
 
 
 # Implémentation du protocole Bitcoin en Java
