@@ -1,11 +1,9 @@
 package com.daloji.blockchain.network.trame;
 
-import java.io.IOException;
 import java.time.Instant;
 
 import org.slf4j.LoggerFactory;
 
-import com.daloji.blockchain.core.Block;
 import com.daloji.blockchain.core.Crypto;
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.network.NetParameters;
@@ -19,10 +17,17 @@ public class GetDataTrame extends TrameHeader{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(GetBlocksTrame.class);
 
 	private static final String commande="getdata";
+
+	private String hash;
+
+
+	public GetDataTrame(String hash) {
+		this.hash = hash;
+	}
 
 	@Override
 	public String generatePayload(NetParameters network) {
@@ -32,17 +37,7 @@ public class GetDataTrame extends TrameHeader{
 		// nombre headers
 		payload = payload +Utils.intHexpadding(1, 1);
 		// hash
-		Block bl = new Block();
-		try {
-			payload = payload +bl.getHashGenesisBloc();
-		} catch (IOException e) {
-			payload = null;
-		}
-
-		String stop ="00000000000000000000000000000000"+
-				     "00000000000000000000000000000000";
-		payload = payload + stop;
-
+		payload = payload +hash;
 		return payload;
 	}
 
