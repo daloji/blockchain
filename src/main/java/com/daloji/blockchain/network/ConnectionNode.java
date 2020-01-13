@@ -5,6 +5,8 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.Stack;
 
+import javax.naming.NamingException;
+
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
@@ -15,7 +17,8 @@ import com.daloji.blockchain.network.trame.STATE_ENGINE;
 public class ConnectionNode  extends AbstractCallable{
 
 	
-	public ConnectionNode(NetworkEventHandler networkListener,BlockChainEventHandler blockchaiListener,NetParameters netparam,PeerNode peerNode) {
+	public ConnectionNode(NetworkEventHandler networkListener,BlockChainEventHandler blockchaiListener,NetParameters netparam,PeerNode peerNode) throws NamingException {
+		super();
 		this.peerNode = peerNode;
 		this.networkListener = networkListener;
 	    this.blockChainListener = blockchaiListener;

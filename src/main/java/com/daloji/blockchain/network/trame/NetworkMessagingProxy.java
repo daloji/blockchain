@@ -41,7 +41,7 @@ public class NetworkMessagingProxy implements TrameSend {
 		logger.info("Peer : "+peer.getHost());
 		logger.info("port : "+peer.getPort());
 
-		VersionTrameMessage version = new VersionTrameMessage();
+		VersionTrameMessage version = new VersionTrameMessage(true);
 		String message = version.generateMessage(netparameter.MainNet, peer);
 
 		try (Socket socket = new Socket(peer.getHost(), 8333)) {

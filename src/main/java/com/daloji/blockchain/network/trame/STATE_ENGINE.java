@@ -36,6 +36,9 @@ public enum STATE_ENGINE {
 	
 	GETBLOCK_SEND("getblock send"),
 	
+	GETDATA_SEND("getdata send"),
+	
+	
 	START("start"),
 	
 	STOP("stop"),

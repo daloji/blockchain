@@ -63,6 +63,8 @@ public abstract class TrameHeader implements Serializable {
 
 	private String addressTrans;
 	
+	private boolean partialTrame =false;
+	
 	public String getAddressTrans() {
 		return addressTrans;
 	}
@@ -81,6 +83,14 @@ public abstract class TrameHeader implements Serializable {
 
 
 
+	public boolean isPartialTrame() {
+		return partialTrame;
+	}
+
+	public void setPartialTrame(boolean partialTrame) {
+		this.partialTrame = partialTrame;
+	}
+
 	public long getEpoch() {
 		return epoch;
 	}
@@ -90,7 +100,7 @@ public abstract class TrameHeader implements Serializable {
 	}
 
 	public  TrameHeader() {
-		getExternalIp();
+		
 	}
 
 	public String getMagic() {
@@ -212,7 +222,7 @@ public abstract class TrameHeader implements Serializable {
 		String hex= Utils.bytesToHex(commandbyte);
 		String command = Utils.hexToAscii(hex);
 		if(COMMANDE_VERSION.equals(command)) {
-			typeMessage =new VersionTrameMessage();
+			typeMessage =new VersionTrameMessage(false);
 		}
 		if(COMMANDE_VERACK.equals(command)) {
 			typeMessage = new VersionAckTrame();

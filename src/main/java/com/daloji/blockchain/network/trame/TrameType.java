@@ -24,6 +24,8 @@ public enum TrameType {
 	
 	FEELFILTER("66656566696C746572000000"),
 	
+	BLOCK("626c6f636b00000000000000"),
+	
 	ERROR("error");
 	
 		

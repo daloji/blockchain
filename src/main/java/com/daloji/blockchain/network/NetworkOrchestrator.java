@@ -10,7 +10,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.LoggerFactory;
 
@@ -25,16 +27,18 @@ import com.daloji.blockchain.network.peers.PeerNode;
 
 import ch.qos.logback.classic.Logger;
 
-public class  NetworkOrchestrator  implements NetworkEventHandler,BlockChainEventHandler {
+public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEventHandler {
+
+
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(NetworkOrchestrator.class);
 
 	private ExecutorService executorService;
 
-	private static final int sizePool = 3;
+	private static final int sizePool = 1;
 
 	private  CopyOnWriteArrayList<ConnectionNode> listPeerConnected = new CopyOnWriteArrayList<ConnectionNode>(); 
-	
+
 	private  CopyOnWriteArrayList<Inventory> listHeaderBlock = new CopyOnWriteArrayList<Inventory>(); 
 
 	/*
@@ -43,6 +47,9 @@ public class  NetworkOrchestrator  implements NetworkEventHandler,BlockChainEven
 	private List<ConnectionNode> listThreadNodeRunning;
 
 	private List<ConnectionNode> listThreadInPool;
+
+	private List<BlockChainHandler> listThreadBlochChain;
+
 
 	private List<PeerNode> listPeer;
 
@@ -62,8 +69,11 @@ public class  NetworkOrchestrator  implements NetworkEventHandler,BlockChainEven
 	@Override
 	public void onStart() throws Exception {
 		logger.info("onStart NetworkOrchestrator");
+
+
+		//**********************************************
 		ConnectionNode connectionNode = null;
-		executorService = Executors.newFixedThreadPool(sizePool);
+		executorService = Executors.newFixedThreadPool(2);
 		listThreadNodeRunning = new ArrayList<ConnectionNode>();
 		listThreadInPool = new ArrayList<ConnectionNode>();
 		Pair<Retour, List<PeerNode>> dnslookup = DnsLookUp.getInstance().getAllNodePeer();
@@ -75,10 +85,20 @@ public class  NetworkOrchestrator  implements NetworkEventHandler,BlockChainEven
 				connectionNode = new ConnectionNode(this,this, NetParameters.MainNet, peer);
 				listThreadInPool.add(connectionNode);
 			}
-
 			executorService.invokeAll(listThreadInPool);
-			executorService.shutdown();
+/*
+			for (int i = 0; i < sizePool; i++) {
+				PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
+				BlockChainHandler blockchain = new BlockChainHandler(this,this, NetParameters.MainNet, peer);
+				listThreadBlochChain.add(blockchain);
+			}
+*/
+			//executorService.invokeAll(listThreadBlochChain);
+			//executorService.shutdown();
 
+			 final ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 3, 10, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+					 //new ThreadPoolExecutor(2, 3, 100, TimeUnit.MILLISECONDS,
+		               // new LinkedBlockingQueue<Runnable>(), new ThreadPoolExecutor.CallerRunsPolicy());
 			List<Future<ConnectionNode>> resultList = null;
 		}
 	}
@@ -125,13 +145,22 @@ public class  NetworkOrchestrator  implements NetworkEventHandler,BlockChainEven
 	}
 
 	@Override
-	public void onBlockHeaderReceive(Inventory inventory) {
-		if(InvType.MSG_BLOCK==inventory.getType()) {
-			if(!listHeaderBlock.contains(inventory)) {
-				listHeaderBlock.add(inventory);
-			}
-		}
-			
+	public void onBlockHeaderReceive(DataOutputStream dataOut, DataInputStream dataInput, Inventory inventory) {
+		// TODO Auto-generated method stub
+		
 	}
+
+	@Override
+	public void onBlockHeaderReceive(Inventory inventory) {
+
+		if(InvType.MSG_BLOCK==inventory.getType()) {
+			PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
+			BlockChainHandler blockChain = new BlockChainHandler(this,this, NetParameters.MainNet, peer,inventory);
+			executorService.submit(blockChain);
+
+		}
+	}
+
+	
 
 }

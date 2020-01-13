@@ -20,6 +20,7 @@ import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
 import com.daloji.blockchain.network.trame.GetBlocksTrame;
+import com.daloji.blockchain.network.trame.GetDataTrame;
 import com.daloji.blockchain.network.trame.InvTrameObject;
 import com.daloji.blockchain.network.trame.ObjectTrame;
 import com.daloji.blockchain.network.trame.STATE_ENGINE;
@@ -35,8 +36,9 @@ import ch.qos.logback.classic.Logger;
  * @author daloji
  *
  */
-public abstract class AbstractCallable implements Callable<Object>{
+public abstract class AbstractCallable  implements Callable<Object>{
 
+	
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(AbstractCallable.class);
 
 	protected NetworkEventHandler networkListener;
@@ -56,6 +58,8 @@ public abstract class AbstractCallable implements Callable<Object>{
 	protected STATE_ENGINE state = STATE_ENGINE.BOOT;
 
 	protected Stack<ObjectTrame> pileCommand = new Stack<ObjectTrame>();
+
+	
 
 	public NetworkEventHandler getNetworkListener() {
 		return networkListener;
@@ -120,6 +124,20 @@ public abstract class AbstractCallable implements Callable<Object>{
 	public void setState(STATE_ENGINE state) {
 		this.state = state;
 	}
+	
+	
+	public STATE_ENGINE  getData(Stack<ObjectTrame> stack) {
+		STATE_ENGINE state = STATE_ENGINE.GETDATA_SEND;
+		if(stack!=null) {
+			 if(!stack.isEmpty()) {
+				 for(int i=0;i<stack.size();i++) {
+					 
+					 
+				 }
+			 }
+		}
+		return state;
+	}
 
 	/**
 	 *  Recuperation du type de commande 
@@ -158,6 +176,10 @@ public abstract class AbstractCallable implements Callable<Object>{
 		if(TrameType.INV.getInfo().equals(cmd)) {
 			trametype = TrameType.INV;
 		}
+		
+		if(TrameType.BLOCK.getInfo().equals(cmd)) {
+			trametype = TrameType.BLOCK;
+		}
 
 
 		if(TrameType.FEELFILTER.getInfo().equals(cmd)) {
@@ -191,13 +213,25 @@ public abstract class AbstractCallable implements Callable<Object>{
 		logger.info("<OUT>  GetBlocks :"+Utils.bytesToHex(data));
 		return state;
 	}
+	
+	
+	protected STATE_ENGINE sendGetData(DataOutputStream outPut,NetParameters netparam,PeerNode peernode,Inventory inv) throws IOException {
+		state = STATE_ENGINE.GETDATA_SEND;
+		//construction de la blockchain
+		GetDataTrame getData = new GetDataTrame(inv.getHash());
+		String trame = getData.generateMessage(netParameters, peerNode);
+		byte[] data = Utils.hexStringToByteArray(trame);
+		outPut.write(data, 0, data.length);	
+		logger.info("<OUT>  GetData :"+Utils.bytesToHex(data));
+		return state;
+	}
 
 
 
 	protected STATE_ENGINE sendVersion(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
 
 		STATE_ENGINE state = STATE_ENGINE.VERSION_SEND;
-		VersionTrameMessage version = new VersionTrameMessage();
+		VersionTrameMessage version = new VersionTrameMessage(false);
 		String trame = version.generateMessage(netParameters, peerNode);
 		byte[] data = Utils.hexStringToByteArray(trame);
 		outPut.write(data, 0, data.length);
@@ -214,7 +248,7 @@ public abstract class AbstractCallable implements Callable<Object>{
 			String padding = Utils.generateNonce(16);
 			//ajout padding avant le message probleme de deserialisation
 			message = message + padding;
-			extractInvMessage(message);
+			Pair<String,Inv> inv = extractInvMessage(message);
 
 		}else {
 			stakcommand = processMessage(data);
@@ -273,25 +307,33 @@ public abstract class AbstractCallable implements Callable<Object>{
 				case 1: 
 					inventory.setType(InvType.MSG_TX);
 					inventory.setHash(hash);
-					blockChainListener.onBlockHeaderReceive(inventory);
+					
 					break;
 				case 2: 
 					inventory.setType(InvType.MSG_BLOCK);
 					inventory.setHash(hash);
-					blockChainListener.onBlockHeaderReceive(inventory);
+					sendGetData(outPut, netParameters, peerNode, inventory);
+					
+					// *************************** TEST *************************************
+					byte[] datas = new byte[Utils.BUFFER_SIZE];
+					int count = input.read(datas); 
+					if(count>0) {
+						Stack<ObjectTrame> stack = processMessage(datas);
+					}
+					
+						// *************************** TEST *************************************
 
+
+					
+					//blockChainListener.onBlockHeaderReceive(inventory);
 					break;
 				case 3: 
 					inventory.setType(InvType.MSG_FILTERED_BLOCK);
 					inventory.setHash(hash);
-					blockChainListener.onBlockHeaderReceive(inventory);
-
 					break;
 				case 4: 
 					inventory.setType(InvType.MSG_CMPCT_BLOCK);
 					inventory.setHash(hash);
-					blockChainListener.onBlockHeaderReceive(inventory);
-
 					break;
 
 				default:
@@ -498,11 +540,15 @@ public abstract class AbstractCallable implements Callable<Object>{
 						state = STATE_ENGINE.INV_RECEIVE;
 
 					}
+					if(trameType == TrameType.BLOCK) {
+						logger.info("dddddddddddddddd");
+					}
 					if(trameType == TrameType.ERROR) {
 
 					}
 
 				}else {
+					logger.error(message);
 					trameType = TrameType.ERROR	;
 				}
 			}
