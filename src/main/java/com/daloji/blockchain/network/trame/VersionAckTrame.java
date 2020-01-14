@@ -71,7 +71,6 @@ public class VersionAckTrame  extends TrameHeader{
 		buffer = new byte[12];
 		offset = offset + 4;
 		System.arraycopy(msg, offset, buffer, 0, buffer.length);
-		version.setCommande(Utils.bytesToHex(buffer));
 		if(COMMANDE_VERACK.equals(Utils.hexToAscii(version.getCommande()))){
 			byte[] checksum = new byte[4];
 			byte[] checksumCompute = new byte[4];
