@@ -2,3 +2,4 @@
 sudo: false
 dist: xenial
 language: java
+after_success: "sbt coveralls"
