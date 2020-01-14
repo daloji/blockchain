@@ -13,18 +13,29 @@ public class SendHeadersTrame extends TrameHeader{
 
 	@Override
 	public <T> T deserialise(byte[] msg) {
-		SendHeadersTrame sendtrame = new SendHeadersTrame();
 		byte[] buffer = new byte[4];
 		int offset = 0;
 		System.arraycopy(msg, offset, buffer, 0, buffer.length);
-		String strMagic = Utils.bytesToHex(buffer);
-		sendtrame.setMagic(strMagic);
+		this.setMagic(Utils.bytesToHex(buffer));
 		offset = offset + buffer.length;
 		buffer = new byte[12];
 		System.arraycopy(msg, offset, buffer, 0, buffer.length);
-		sendtrame.setCommande(Utils.bytesToHex(buffer));
-		
-		  return (T)sendtrame;
+		this.setCommande(Utils.bytesToHex(buffer));
+		offset = offset + buffer.length;
+		buffer = new byte[4];
+		System.arraycopy(msg, offset, buffer, 0, buffer.length);
+		offset = offset + buffer.length;
+		buffer = new byte[4];
+		System.arraycopy(msg, offset, buffer, 0, buffer.length);
+		this.setChecksum(Utils.bytesToHex(buffer));
+		offset = offset + buffer.length;
+		if(offset<msg.length) {
+			buffer = new byte[msg.length-offset];
+			System.arraycopy(msg, offset, buffer, 0, buffer.length);
+		}else {
+			buffer = new byte[0];
+		}
+		  return (T)buffer;
 	}
 
 	@Override

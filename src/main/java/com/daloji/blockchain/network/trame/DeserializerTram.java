@@ -18,7 +18,32 @@ public class DeserializerTram implements Serializable{
 	 * @param cmd
 	 * @return
 	 */
-	public static  TrameHeader findCommande(String message) {
+	public static  TrameHeader findCommande(byte[] data) {
+		TrameHeader trameHeader = null;
+		if(data != null) {
+			byte[] buffer = new byte[12];
+			int offset = 4;
+			System.arraycopy(data, offset, buffer, 0, buffer.length);
+			String cmd =Utils.bytesToHex(buffer);
+			if(TrameType.VERACK.getInfo().equals(cmd)) {
+				trameHeader = new VersionAckTrame();
+				data = trameHeader.deserialise(data);
+			}
+			if(TrameType.VERSION.getInfo().equals(cmd)) {
+				trameHeader = new VersionTrameMessage(false);
+				data = trameHeader.deserialise(data);
+			}
+			if(TrameType.INV.getInfo().equals(cmd)) {
+				
+			}
+			if(TrameType.VERACK.getInfo().equals(cmd)) {
+				
+			}
+			if(TrameType.VERACK.getInfo().equals(cmd)) {
+			  
+		}
+	 
+		
 		/*
 		String cmd = message.substring(8, 32);
 		TrameType trametype = TrameType.ERROR;
@@ -110,20 +135,6 @@ public class DeserializerTram implements Serializable{
 		}
 		return null;
 		
-		
-		
-		
-		/*if(data!=null) {
-			byte[] copydata = new byte[data.length];
-			System.arraycopy(data,0, copydata, 0, data.length);
-			String message = Utils.bytesToHex(copydata);
-			TrameType trameType = TrameType.START;
-			while(!Utils.allZero(Utils.hexStringToByteArray(message)) && (trameType != TrameType.ERROR)) {
-				if(message.startsWith(NetParameters.MainNet.getMagic())) { 
-					String cmd = message.substring(8, 32);
-					trameType = findCommande(cmd);
-				}}}}
-		*/
 	}
 
 }
