@@ -3,7 +3,6 @@ package com.daloji.blockchain.network.trame;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.daloji.blockchain.core.Inv;
 import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.Utils;
