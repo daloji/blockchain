@@ -82,7 +82,6 @@ public abstract class TrameHeader implements Serializable {
 	}
 
 
-
 	public boolean isPartialTrame() {
 		return partialTrame;
 	}
