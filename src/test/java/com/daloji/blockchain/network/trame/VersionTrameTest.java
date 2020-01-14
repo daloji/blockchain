@@ -4,6 +4,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.daloji.blockchain.core.Utils;
+import com.daloji.blockchain.network.IPVersion;
+import com.daloji.blockchain.network.NetParameters;
+import com.daloji.blockchain.network.peers.PeerNode;
 
 
 
@@ -36,8 +39,19 @@ public class VersionTrameTest {
 
 	}
 	
-	
+	@Test
 	public void checkSerialisation() {
 		VersionTrameMessage version = new VersionTrameMessage(false);
+		PeerNode peer =new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		peer.setHost("8333");
+		String trame=version.generateMessage(NetParameters.MainNet, peer);
+		Assert.assertEquals(version.getService(),"0D04000000000000");
+		Assert.assertEquals(version.getAddressTrans(), "00000000000000000000000000000000");
+		Assert.assertEquals(version.getAddressReceive(), "00000000000000000000FFFF55AA7073");
+		Assert.assertEquals(version.getUserAgent(), Utils.hexToAscii("2F5361746F7368693A302E31382E302F"));
+		Assert.assertEquals(version.getNonce(), "012A799748954F40");
+		
+		
 	}
 }
