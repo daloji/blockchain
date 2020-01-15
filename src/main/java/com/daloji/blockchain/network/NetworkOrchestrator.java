@@ -94,7 +94,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 			}
 */
 			//executorService.invokeAll(listThreadBlochChain);
-			//executorService.shutdown();
+			executorService.shutdown();
 
 			 final ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 3, 10, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
 					 //new ThreadPoolExecutor(2, 3, 100, TimeUnit.MILLISECONDS,

@@ -159,9 +159,6 @@ public abstract class AbstractCallable  implements Callable<Object>{
 			if(trame instanceof VersionTrameMessage) {
 				state = STATE_ENGINE.VERSION_RECEIVE;
 			}
-			if(trame instanceof VersionTrameMessage) {
-				state = STATE_ENGINE.VERSION_RECEIVE;
-			}
 		}
 		
 		return state;
@@ -211,7 +208,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		String trame = version.generateMessage(netParameters, peerNode);
 		byte[] data = Utils.hexStringToByteArray(trame);
 		outPut.write(data, 0, data.length);
-		logger.info("<OUT>  Version " +trame);
+		logger.info("["+peernode.getHost()+"]" +" <OUT>  Version " +trame);
 		return state;
 	}
 

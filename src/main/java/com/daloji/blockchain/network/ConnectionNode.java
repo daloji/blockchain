@@ -73,7 +73,7 @@ public class ConnectionNode  extends AbstractCallable{
 			switch(state) {
 				case BOOT : state = sendVersion(outPut,netParameters,peerNode);
 				break;
-				case VER_ACK_RECEIVE://networkListener.onNodeConnected(this);
+				case VER_ACK_RECEIVE:state = sendVerAck(outPut,netParameters,peerNode);
 							state = sendGetBlock(outPut, netParameters, peerNode);
 				break;
 				case VERSION_SEND: state = sendVerAck(outPut,netParameters,peerNode);
