@@ -1,5 +1,6 @@
 package com.daloji.blockchain.network.trame;
 
+import java.awt.color.CMMException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,7 +30,7 @@ import ch.qos.logback.classic.Logger;
 public abstract class TrameHeader implements Serializable {
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(TrameHeader.class);
-	
+
 
 	/**
 	 * 
@@ -38,20 +39,17 @@ public abstract class TrameHeader implements Serializable {
 
 	protected static final String IP_CONST ="00000000000000000000ffff";
 
-	protected static final String COMMANDE_VERSION = "version";
 
-	protected static final String COMMANDE_VERACK = "verack";
-	
 	protected static final int port = 8333;
-	
-	
+
+
 	protected static final int protocol= 70015;
 
 	//Serveur qui permet de trouver l IP externe
 	private static final String WHOIS_MY_IP="http://checkip.amazonaws.com";
 
 	private PeerNode fromPeer;
-	
+
 	private String magic;
 
 	protected long epoch;
@@ -65,9 +63,9 @@ public abstract class TrameHeader implements Serializable {
 	private String addressReceive;
 
 	private String addressTrans;
-	
+
 	private boolean partialTrame =false;
-	
+
 	public String getAddressTrans() {
 		return addressTrans;
 	}
@@ -102,7 +100,7 @@ public abstract class TrameHeader implements Serializable {
 	}
 
 	public  TrameHeader() {
-		
+
 	}
 
 	public String getMagic() {
@@ -137,7 +135,7 @@ public abstract class TrameHeader implements Serializable {
 		this.checksum = checksum;
 	}
 
-	
+
 	public PeerNode getFromPeer() {
 		return fromPeer;
 	}
@@ -145,6 +143,17 @@ public abstract class TrameHeader implements Serializable {
 	public void setFromPeer(PeerNode fromPeer) {
 		this.fromPeer = fromPeer;
 	}
+
+
+
+	public byte[] generateHeader() {
+		String header =Utils.convertStringToHex(getMagic(), 4);
+		header = header + Utils.convertStringToHex(getCommande(), 12);
+		header = header + Utils.intHexpadding(getLength(), 4);
+		header = header +  Utils.convertStringToHex(getChecksum(), 4);
+		return Utils.hexStringToByteArray(header);
+	}
+
 
 	public void getExternalIp() {
 
@@ -195,8 +204,8 @@ public abstract class TrameHeader implements Serializable {
 
 		return  isvalid;
 	}
-	
-	
+
+
 	/**
 	 * Verification de la validité du timestamp de l'envoyeur
 	 * le timestamp   doit être dans les deux heures dans le futur sinon la trame est rejetée
@@ -210,38 +219,22 @@ public abstract class TrameHeader implements Serializable {
 		byte[] buffer = new byte[4];
 		System.arraycopy(msg,36, buffer, 0, 4);
 		String time = Utils.bytesToHex(buffer);
-	    long epoch = Utils.little2big(time);
-	    Instant instant = Instant.ofEpochSecond(epoch);
-	    LocalDateTime datetimestamp = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
-	    LocalDateTime datenow = LocalDateTime.now();
-	    //verification validité de la date
-	    datetimestamp.plusHours(2);
-	    if(datenow.isAfter(datetimestamp)) {
-	    	valid = true;	
-	    }
-	
+		long epoch = Utils.little2big(time);
+		Instant instant = Instant.ofEpochSecond(epoch);
+		LocalDateTime datetimestamp = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+		LocalDateTime datenow = LocalDateTime.now();
+		//verification validité de la date
+		datetimestamp.plusHours(2);
+		if(datenow.isAfter(datetimestamp)) {
+			valid = true;	
+		}
+
 		return valid;
-		
-	
+
+
 	}
 
 
-	public TrameHeader getTypeMessage(final byte[] msg) {
-		TrameHeader typeMessage = null;
-		byte[] commandbyte = new byte[12];
-		System.arraycopy(msg, 4, commandbyte, 0, 12);
-		String hex= Utils.bytesToHex(commandbyte);
-		String command = Utils.hexToAscii(hex);
-		if(COMMANDE_VERSION.equals(command)) {
-			typeMessage =new VersionTrameMessage(false);
-		}
-		if(COMMANDE_VERACK.equals(command)) {
-			typeMessage = new VersionAckTrame();
-		}
-
-		return typeMessage;
-
-	}
 	public boolean isValidCheckSum(final byte[] msg) {
 		boolean value =false;
 		if(msg.length>16) {
@@ -263,7 +256,7 @@ public abstract class TrameHeader implements Serializable {
 			if(Arrays.equals(checksumcompute, checksum)) {
 				value =true;	
 			}else {
-				
+
 				logger.error("checksum invalid" );
 				logger.error("cheksum read :  "+Utils.bytesToHex(checksum));
 				logger.error("cheksum compute :  "+Utils.bytesToHex(checksumcompute));
@@ -303,7 +296,7 @@ public abstract class TrameHeader implements Serializable {
 	 * @return payload
 	 */
 	public abstract String generatePayload(NetParameters network);
-	
+
 	/**
 	 *  deserialisation de la message recu
 	 * @param msg
@@ -311,7 +304,7 @@ public abstract class TrameHeader implements Serializable {
 	 * @return
 	 */
 	public abstract <T> T deserialise(final byte[] msg);
-	
+
 	public abstract String generateMessage(NetParameters network,PeerNode peer);
 
 	public abstract <T> T receiveMessage(NetParameters network,byte[] msg);

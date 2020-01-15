@@ -20,6 +20,9 @@ public class VersionTrameTest {
 	public  void checkVersionDeserialisation() {
 
 		VersionTrameMessage version = new VersionTrameMessage(false);
+		PeerNode peer = new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		version.setFromPeer(peer);
 		byte[] data = version.deserialise(Utils.hexStringToByteArray(trame));
 		long epoch = Utils.little2big("34D51C5E");
 		Assert.assertEquals(version.getService(),"0D04000000000000");

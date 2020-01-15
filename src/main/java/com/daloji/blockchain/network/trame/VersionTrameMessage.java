@@ -331,7 +331,7 @@ public class VersionTrameMessage  extends TrameHeader{
 				deserialise.setVersion(versionTrame);
 			}
 		}else {
-			message = getTypeMessage(msg);
+			//message = getTypeMessage(msg);
 			if(message instanceof VersionTrameMessage) {
 				deserialise = deserialise(msg);
 			}

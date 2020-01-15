@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.daloji.blockchain.core.Utils;
+import com.daloji.blockchain.network.IPVersion;
+import com.daloji.blockchain.network.peers.PeerNode;
 
 public class VerAckTrameTest {
 
@@ -14,6 +16,9 @@ public class VerAckTrameTest {
 			
 		
 		VersionAckTrame verack = new VersionAckTrame();
+		PeerNode peer = new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		verack.setFromPeer(peer);
 		byte[] deserialised = verack.deserialise(Utils.hexStringToByteArray(trame));
 		Assert.assertEquals(verack.getMagic(),"F9BEB4D9");
 		Assert.assertEquals(verack.getChecksum(),"5DF6E0E2");
