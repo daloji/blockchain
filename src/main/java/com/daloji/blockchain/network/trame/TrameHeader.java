@@ -29,6 +29,7 @@ import ch.qos.logback.classic.Logger;
 public abstract class TrameHeader implements Serializable {
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(TrameHeader.class);
+	
 
 	/**
 	 * 
@@ -49,6 +50,8 @@ public abstract class TrameHeader implements Serializable {
 	//Serveur qui permet de trouver l IP externe
 	private static final String WHOIS_MY_IP="http://checkip.amazonaws.com";
 
+	private PeerNode fromPeer;
+	
 	private String magic;
 
 	protected long epoch;
@@ -132,6 +135,15 @@ public abstract class TrameHeader implements Serializable {
 
 	public void setChecksum(String checksum) {
 		this.checksum = checksum;
+	}
+
+	
+	public PeerNode getFromPeer() {
+		return fromPeer;
+	}
+
+	public void setFromPeer(PeerNode fromPeer) {
+		this.fromPeer = fromPeer;
 	}
 
 	public void getExternalIp() {

@@ -27,7 +27,7 @@ public class VersionTrameMessage  extends TrameHeader{
 	private static final long serialVersionUID = 1L;
 
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(NetworkMessagingProxy.class);
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(VersionTrameMessage.class);
 
 
 	/**
@@ -497,20 +497,12 @@ public class VersionTrameMessage  extends TrameHeader{
 					this.relay = true;
 				}
 				offset = offset + 1;
-			}
-/*
-			//fin du block version selon le protocole 
-			/**
-			 * le contenu de l'objet version est definie dans 
-			 * See <a href="https://bitcoin.org/en/developer-reference#version"</a>.
-			 *
-			if(msg.length-offset>0) {
-				VersionAckTrame verak = new VersionAckTrame();
-				buffer = new byte[msg.length-offset];
-				System.arraycopy(msg,offset, buffer, 0, buffer.length);
-				VersionAckTrame deserialiseVerak = verak.deserialise(buffer);
 
-			}*/
+			}
+			byte[] info =new byte[offset];
+			System.arraycopy(msg,0, info, 0, info.length);
+			logger.info("["+getFromPeer().getHost()+"]"+"<IN> Version  "+Utils.bytesToHex(info));
+
 			buffer = new byte[msg.length-offset];
 			System.arraycopy(msg,offset, buffer, 0, buffer.length);
 			

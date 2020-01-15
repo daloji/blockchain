@@ -79,6 +79,11 @@ public class VersionAckTrame  extends TrameHeader{
 		System.arraycopy(msg, offset, buffer, 0, buffer.length);
 		this.setChecksum(Utils.bytesToHex(buffer));
 		offset = offset + buffer.length;
+		System.out.println(offset);
+		System.out.println(Utils.bytesToHex(msg));
+		byte[] info =new byte[offset];
+		System.arraycopy(msg,0, info, 0, info.length);
+		logger.info("["+getFromPeer().getHost()+"]"+"<IN> Verack"+Utils.bytesToHex(info));
 		if(offset<msg.length) {
 			buffer = new byte[msg.length-offset];
 			System.arraycopy(msg, offset, buffer, 0, buffer.length);

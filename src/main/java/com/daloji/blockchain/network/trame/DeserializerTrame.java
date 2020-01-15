@@ -1,0 +1,82 @@
+package com.daloji.blockchain.network.trame;
+
+import java.io.Serializable;
+import java.util.ArrayDeque;
+import java.util.Stack;
+
+import org.hamcrest.core.IsInstanceOf;
+import org.slf4j.LoggerFactory;
+
+import com.daloji.blockchain.core.Utils;
+import com.daloji.blockchain.core.commons.Pair;
+import com.daloji.blockchain.network.AbstractCallable;
+import com.daloji.blockchain.network.peers.PeerNode;
+
+import ch.qos.logback.classic.Logger;
+
+public class DeserializerTrame implements Serializable{
+
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(DeserializerTrame.class);
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 *  Recuperation du type de commande 
+	 * @param cmd
+	 * @return
+	 */
+	public static ArrayDeque<TrameHeader> deserialise(byte[] data,PeerNode peer) {
+		ArrayDeque<TrameHeader> stack = new ArrayDeque<TrameHeader>();
+		TrameHeader trameHeader = null;
+		if(data != null) {
+			while(!Utils.allZero(data) && !(trameHeader instanceof ErrorTrame)) {
+				byte[] buffer = new byte[12];
+				int offset = 4;
+				System.arraycopy(data, offset, buffer, 0, buffer.length);
+				String cmd = Utils.bytesToHex(buffer);
+				if(TrameType.VERACK.getInfo().equals(cmd)) {
+					trameHeader = new VersionAckTrame();
+					data = trameHeader.deserialise(data);
+				}else if(TrameType.VERSION.getInfo().equals(cmd)) {
+					trameHeader = new VersionTrameMessage(false);
+					trameHeader.setFromPeer(peer);
+					data = trameHeader.deserialise(data);
+				}else if(TrameType.INV.getInfo().equals(cmd)) {
+					trameHeader  = new InvTrame();
+					data = trameHeader.deserialise(data);
+
+				}else if(TrameType.SENDHEADERS.getInfo().equals(cmd)) {
+					trameHeader = new VersionAckTrame();
+					data = trameHeader.deserialise(data);
+				}else if (TrameType.PING.getInfo().equals(cmd)) {
+
+				}else if(TrameType.VERACK.getInfo().equals(cmd)) {
+					
+				}else if(TrameType.ADDR.getInfo().equals(cmd)) {
+					
+				}else if(TrameType.SENDHEADERS.getInfo().equals(cmd)) {
+					
+				}else if(TrameType.GETHEADERS.getInfo().equals(cmd)) {
+					
+				}else if(TrameType.SENDCMPCT.getInfo().equals(cmd)) {
+					
+				}else if(TrameType.TX.getInfo().equals(cmd)) {
+					
+				}else if(TrameType.BLOCK.getInfo().equals(cmd)) {
+
+				}else if(TrameType.FEELFILTER.getInfo().equals(cmd)) {
+
+				}else {
+					trameHeader = new ErrorTrame();
+				}
+				stack.add(trameHeader);
+
+			}
+		}
+
+		return stack;
+	}
+}

@@ -4,7 +4,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.Callable;
@@ -24,6 +26,7 @@ import com.daloji.blockchain.network.trame.GetDataTrame;
 import com.daloji.blockchain.network.trame.InvTrameObject;
 import com.daloji.blockchain.network.trame.ObjectTrame;
 import com.daloji.blockchain.network.trame.STATE_ENGINE;
+import com.daloji.blockchain.network.trame.TrameHeader;
 import com.daloji.blockchain.network.trame.TrameType;
 import com.daloji.blockchain.network.trame.VersionAckTrame;
 import com.daloji.blockchain.network.trame.VersionTrameMessage;
@@ -144,51 +147,24 @@ public abstract class AbstractCallable  implements Callable<Object>{
 	 * @param cmd
 	 * @return
 	 */
-	public  TrameType findCommande(String cmd) {
-		TrameType trametype = TrameType.ERROR;
-		if(TrameType.VERACK.getInfo().equals(cmd)) {
-			trametype = TrameType.VERACK;
-		}
-		if(TrameType.ADDR.getInfo().equals(cmd)) {
-			trametype = TrameType.ADDR;
-		}
-		if(TrameType.SENDHEADERS.getInfo().equals(cmd)) {
-			trametype = TrameType.SENDHEADERS;
-		}
+	public  STATE_ENGINE findNExtStep(ArrayDeque<TrameHeader> stacktramHeader) {
 
-		if(TrameType.GETHEADERS.getInfo().equals(cmd)) {
-			trametype = TrameType.GETHEADERS;
-		}
-		if(TrameType.SENDCMPCT.getInfo().equals(cmd)) {
-			trametype = TrameType.SENDCMPCT;
-		}
-		if(TrameType.TX.getInfo().equals(cmd)) {
-			trametype = TrameType.TX;
-		}
-		if(TrameType.VERSION.getInfo().equals(cmd)) {
-			trametype = TrameType.VERSION;
-		}
-
-		if(TrameType.PING.getInfo().equals(cmd)) {
-			trametype = TrameType.PING;
-		}
-
-		if(TrameType.INV.getInfo().equals(cmd)) {
-			trametype = TrameType.INV;
+		STATE_ENGINE state = STATE_ENGINE.ERROR;
+		Iterator<TrameHeader> iterator= stacktramHeader.iterator();
+		while(iterator.hasNext()){
+			TrameHeader trame = iterator.next();
+			if(trame instanceof VersionAckTrame) {
+				state = STATE_ENGINE.VER_ACK_RECEIVE;
+			}
+			if(trame instanceof VersionTrameMessage) {
+				state = STATE_ENGINE.VERSION_RECEIVE;
+			}
+			if(trame instanceof VersionTrameMessage) {
+				state = STATE_ENGINE.VERSION_RECEIVE;
+			}
 		}
 		
-		if(TrameType.BLOCK.getInfo().equals(cmd)) {
-			trametype = TrameType.BLOCK;
-		}
-
-
-		if(TrameType.FEELFILTER.getInfo().equals(cmd)) {
-			trametype = TrameType.FEELFILTER;
-		}
-
-
-
-		return trametype;
+		return state;
 	}		
 
 	protected STATE_ENGINE sendVerAck(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
@@ -231,7 +207,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 	protected STATE_ENGINE sendVersion(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
 
 		STATE_ENGINE state = STATE_ENGINE.VERSION_SEND;
-		VersionTrameMessage version = new VersionTrameMessage(false);
+		VersionTrameMessage version = new VersionTrameMessage(true);
 		String trame = version.generateMessage(netParameters, peerNode);
 		byte[] data = Utils.hexStringToByteArray(trame);
 		outPut.write(data, 0, data.length);
@@ -239,6 +215,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		return state;
 	}
 
+	/*
 	protected Stack<ObjectTrame>  receiveInventory(final byte[] data) throws IOException {
 		Stack<ObjectTrame> stakcommand = new Stack<ObjectTrame>();
 		byte[] copydata = new byte[data.length];
@@ -256,7 +233,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		return stakcommand;
 
 	}
-
+*
 
 
 	private Pair<String,Inv> extractInvMessage(String msg){
@@ -360,7 +337,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 
 		return retourInv;
 	}
-
+/*
 	protected Stack<ObjectTrame> processMessage(final byte[] data) throws IOException{
 		Stack<ObjectTrame> stakcommand = new Stack<ObjectTrame>();
 		if(data!=null) {
@@ -557,5 +534,5 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		return stakcommand;
 	}
 
-
+*/
 }

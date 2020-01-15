@@ -68,8 +68,8 @@ public class BlockChainHandler  extends AbstractCallable{
 
 				count = input.read(data); 
 				if(count>0) {
-					Stack<ObjectTrame> stack = processMessage(data);
-					pileCommand.addAll(stack);
+//					Stack<ObjectTrame> stack = processMessage(data);
+	//				pileCommand.addAll(stack);
 				}
 			}
 			
