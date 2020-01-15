@@ -23,7 +23,7 @@ public class DeserializerTrameTest {
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
 		peer.setPort(8333);
-		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.deserialise(Utils.hexStringToByteArray(trame), peer);
+		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(Utils.hexStringToByteArray(trame), peer);
 		Assert.assertNotNull(stackCommand); 
 		Assert.assertEquals(stackCommand.size(), 2);
 		TrameHeader trameheader = stackCommand.pop();
@@ -38,7 +38,7 @@ public class DeserializerTrameTest {
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
 		peer.setPort(8333);
-		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.deserialise(Utils.hexStringToByteArray(partial_trame), peer);
+		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(Utils.hexStringToByteArray(partial_trame), peer);
 		Assert.assertNotNull(stackCommand); 
 		Assert.assertEquals(stackCommand.size(), 1);
 		TrameHeader trameheader = stackCommand.pop();

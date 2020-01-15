@@ -81,7 +81,7 @@ public class ConnectionNode  extends AbstractCallable{
 			}
 			count = input.read(data);
 			if(count > 0) {
-				ArrayDeque<TrameHeader> deserialize = DeserializerTrame.deserialise(data,peerNode);
+				ArrayDeque<TrameHeader> deserialize = DeserializerTrame.getInstance().deserialise(data,peerNode);
 				state = findNExtStep(deserialize);
 			}
 

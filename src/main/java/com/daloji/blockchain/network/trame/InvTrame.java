@@ -131,8 +131,6 @@ public class InvTrame extends TrameHeader{
 				}
 			}
 
-			System.out.println(Utils.bytesToHex(buffer));
-
 		}
 		if(offset<buffer.length) {
 			buffer = new byte[buffer.length -offset];

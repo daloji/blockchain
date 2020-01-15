@@ -19,12 +19,22 @@ public class DeserializerTrame implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private static final DeserializerTrame instance = new DeserializerTrame();
+
+	private static TrameHeader lastTrame;
+	
+	public static DeserializerTrame getInstance()
+	{
+		return instance;
+	}
+
+	
 	/**
 	 *  Recuperation du type de commande 
 	 * @param cmd
 	 * @return
 	 */
-	public static ArrayDeque<TrameHeader> deserialise(byte[] data,PeerNode peer) {
+	public  ArrayDeque<TrameHeader> deserialise(byte[] data,PeerNode peer) {
 		ArrayDeque<TrameHeader> stack = new ArrayDeque<TrameHeader>();
 		TrameHeader trameHeader = null;
 		if(data != null) {
@@ -69,7 +79,7 @@ public class DeserializerTrame implements Serializable{
 				}else if(TrameType.FEELFILTER.getInfo().equals(cmd)) {
 
 				}else {
-					if(trameHeader.isPartialTrame()) {
+					if(lastTrame.isPartialTrame()) {
 					byte[] header =	trameHeader.generateHeader();
 				    String info = Utils.bytesToHex(header) +  Utils.bytesToHex(data);
 				    data = trameHeader.deserialise(Utils.hexStringToByteArray(info));
@@ -78,6 +88,7 @@ public class DeserializerTrame implements Serializable{
 
 					}
 				}
+				lastTrame = trameHeader;
 				stack.add(trameHeader);
 
 			}
