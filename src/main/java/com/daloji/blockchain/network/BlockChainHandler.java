@@ -3,9 +3,6 @@ package com.daloji.blockchain.network;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
-import java.util.Stack;
-
-import javax.naming.NamingException;
 
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +11,6 @@ import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
-import com.daloji.blockchain.network.trame.ObjectTrame;
 import com.daloji.blockchain.network.trame.STATE_ENGINE;
 
 import ch.qos.logback.classic.Logger;

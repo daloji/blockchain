@@ -5,29 +5,22 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.Callable;
 
 import org.slf4j.LoggerFactory;
 
-import com.daloji.blockchain.core.Inv;
-import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.Utils;
-import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
 import com.daloji.blockchain.network.trame.GetBlocksTrame;
 import com.daloji.blockchain.network.trame.GetDataTrame;
-import com.daloji.blockchain.network.trame.InvTrameObject;
 import com.daloji.blockchain.network.trame.ObjectTrame;
 import com.daloji.blockchain.network.trame.STATE_ENGINE;
 import com.daloji.blockchain.network.trame.TrameHeader;
-import com.daloji.blockchain.network.trame.TrameType;
 import com.daloji.blockchain.network.trame.VersionAckTrame;
 import com.daloji.blockchain.network.trame.VersionTrameMessage;
 

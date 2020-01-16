@@ -8,14 +8,17 @@ import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Addr;
 import com.daloji.blockchain.core.Crypto;
-import com.daloji.blockchain.core.InvType;
-import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
 
 import ch.qos.logback.classic.Logger;
-
+/**
+ *  Trame reseau qui list l'ensemble des noeuds connus par le noeud
+ * 
+ * @author daloji
+ *
+ */
 public class AddrTrame  extends TrameHeader{
 
 
