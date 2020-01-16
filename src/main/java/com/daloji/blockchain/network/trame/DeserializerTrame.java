@@ -22,13 +22,13 @@ public class DeserializerTrame implements Serializable{
 	private static final DeserializerTrame instance = new DeserializerTrame();
 
 	private static TrameHeader lastTrame;
-	
+
 	public static DeserializerTrame getInstance()
 	{
 		return instance;
 	}
 
-	
+
 	/**
 	 *  Recuperation du type de commande 
 	 * @param cmd
@@ -41,6 +41,9 @@ public class DeserializerTrame implements Serializable{
 			while(!Utils.allZero(data) && !(trameHeader instanceof ErrorTrame)) {
 				byte[] buffer = new byte[12];
 				int offset = 4;
+				if(buffer.length+offset>data.length) {
+					break;	
+				}
 				System.arraycopy(data, offset, buffer, 0, buffer.length);
 				String cmd = Utils.bytesToHex(buffer);
 				if(TrameType.VERACK.getInfo().equals(cmd)) {
@@ -76,7 +79,6 @@ public class DeserializerTrame implements Serializable{
 					trameHeader = new GetHeadersTrame();
 					trameHeader.setFromPeer(peer);
 					data = trameHeader.deserialise(data);
-					System.out.println(Utils.bytesToHex(data));
 				}else if(TrameType.SENDCMPCT.getInfo().equals(cmd)) {
 
 				}else if(TrameType.TX.getInfo().equals(cmd)) {
@@ -87,9 +89,9 @@ public class DeserializerTrame implements Serializable{
 
 				}else {
 					if(lastTrame.isPartialTrame()) {
-					byte[] header =	trameHeader.generateHeader();
-				    String info = Utils.bytesToHex(header) +  Utils.bytesToHex(data);
-				    data = trameHeader.deserialise(Utils.hexStringToByteArray(info));
+						byte[] header =	trameHeader.generateHeader();
+						String info = Utils.bytesToHex(header) +  Utils.bytesToHex(data);
+						data = trameHeader.deserialise(Utils.hexStringToByteArray(info));
 					}else {
 						trameHeader = new ErrorTrame();
 
