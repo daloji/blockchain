@@ -427,6 +427,9 @@ public class VersionTrameMessage  extends TrameHeader{
 		long length = Utils.little2big(hex);
 		this.setLength((int)length);
 		offset = offset +buffer.length;
+		buffer = new byte[4];
+		System.arraycopy(msg, offset, buffer, 0, buffer.length);
+		this.setChecksum(Utils.bytesToHex(buffer));
 		buffer = new byte[(int)length];
 		System.arraycopy(msg, offset+4, buffer, 0, buffer.length);
 		String payload = Utils.bytesToHex(buffer);
@@ -502,7 +505,7 @@ public class VersionTrameMessage  extends TrameHeader{
 			byte[] info =new byte[offset];
 			System.arraycopy(msg,0, info, 0, info.length);
 			logger.info("["+getFromPeer().getHost()+"]"+"<IN> Version  "+Utils.bytesToHex(info));
-
+			this.setPartialTrame(false);
 			buffer = new byte[msg.length-offset];
 			System.arraycopy(msg,offset, buffer, 0, buffer.length);
 			

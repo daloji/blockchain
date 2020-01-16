@@ -46,6 +46,8 @@ public class DeserializerTrame implements Serializable{
 				}
 				System.arraycopy(data, offset, buffer, 0, buffer.length);
 				String cmd = Utils.bytesToHex(buffer);
+				//System.out.println(Utils.bytesToHex(data));
+				logger.info(Utils.bytesToHex(data));
 				if(TrameType.VERACK.getInfo().equals(cmd)) {
 					trameHeader = new VersionAckTrame();
 					trameHeader.setFromPeer(peer);
@@ -80,7 +82,9 @@ public class DeserializerTrame implements Serializable{
 					trameHeader.setFromPeer(peer);
 					data = trameHeader.deserialise(data);
 				}else if(TrameType.SENDCMPCT.getInfo().equals(cmd)) {
-
+					trameHeader = new SendCmpctTrame();
+					trameHeader.setFromPeer(peer);
+					data = trameHeader.deserialise(data);
 				}else if(TrameType.TX.getInfo().equals(cmd)) {
 
 				}else if(TrameType.BLOCK.getInfo().equals(cmd)) {
@@ -89,12 +93,12 @@ public class DeserializerTrame implements Serializable{
 
 				}else {
 					if(lastTrame.isPartialTrame()) {
-						byte[] header =	trameHeader.generateHeader();
+						byte[] header =	lastTrame.generateHeader();
 						String info = Utils.bytesToHex(header) +  Utils.bytesToHex(data);
-						data = trameHeader.deserialise(Utils.hexStringToByteArray(info));
+						data = lastTrame.deserialise(Utils.hexStringToByteArray(info));
+						trameHeader =lastTrame;
 					}else {
 						trameHeader = new ErrorTrame();
-
 					}
 				}
 				lastTrame = trameHeader;

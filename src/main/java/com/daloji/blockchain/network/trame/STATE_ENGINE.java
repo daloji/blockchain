@@ -38,6 +38,7 @@ public enum STATE_ENGINE {
 	
 	GETDATA_SEND("getdata send"),
 	
+	PARTIAL_TRAME("partial trame"),
 	
 	START("start"),
 	

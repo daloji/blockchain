@@ -78,6 +78,8 @@ public class ConnectionNode  extends AbstractCallable{
 				break;
 				case VERSION_SEND: state = sendVerAck(outPut,netParameters,peerNode);
 				break;
+				case GETBLOCK_SEND :
+					break;
 			}
 			count = input.read(data);
 			if(count > 0) {

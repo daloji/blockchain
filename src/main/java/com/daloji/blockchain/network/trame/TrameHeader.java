@@ -147,10 +147,10 @@ public abstract class TrameHeader implements Serializable {
 
 
 	public byte[] generateHeader() {
-		String header =Utils.convertStringToHex(getMagic(), 4);
-		header = header + Utils.convertStringToHex(getCommande(), 12);
+		String header =getMagic();
+		header = header + getCommande();
 		header = header + Utils.intHexpadding(getLength(), 4);
-		header = header +  Utils.convertStringToHex(getChecksum(), 4);
+		header = header + getChecksum();
 		return Utils.hexStringToByteArray(header);
 	}
 

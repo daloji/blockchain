@@ -150,7 +150,13 @@ public abstract class AbstractCallable  implements Callable<Object>{
 				state = STATE_ENGINE.VER_ACK_RECEIVE;
 			}
 			if(trame instanceof VersionTrameMessage) {
-				state = STATE_ENGINE.VERSION_RECEIVE;
+				if(trame.isPartialTrame()) {
+					state = STATE_ENGINE.PARTIAL_TRAME;
+				}else {
+					state = STATE_ENGINE.VERSION_RECEIVE;
+
+				}
+				
 			}
 		}
 		
