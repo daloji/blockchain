@@ -1,10 +1,33 @@
 package com.daloji.blockchain.network.trame;
 
+import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
 
+
+/**
+ * BIP 0152
+ * 
+ * https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki
+ * 
+ * @author daloji
+ *
+ */
 public class SendCmpctTrame extends TrameHeader {
 
+	/**
+	 * 
+	 */
+	private static final String commande = "SendCmpct";
+	/**
+	 *  announce
+	 */
+	private int index;
+	
+	/**
+	 *  version
+	 */
+	private String cmptVersion;
 	/**
 	 * 
 	 */
@@ -18,10 +41,51 @@ public class SendCmpctTrame extends TrameHeader {
 
 	@Override
 	public <T> T deserialise(byte[] msg) {
-		// TODO Auto-generated method stub
-		return null;
+		int offset =0;
+		byte[] buffer = new byte[4];
+		System.arraycopy(msg, offset, buffer, 0, buffer.length);
+		this.setMagic(Utils.bytesToHex(buffer));
+		offset = offset +  buffer.length;
+		buffer = new byte[12];
+		System.arraycopy(msg, offset, buffer, 0, buffer.length);
+		this.setCommande(Utils.bytesToHex(buffer));
+		offset = offset +buffer.length;
+		buffer = new byte[4];
+		System.arraycopy(msg, offset, buffer, 0, buffer.length);
+		String hex = Utils.bytesToHex(buffer);
+		long length = Utils.little2big(hex);
+		this.setLength((int)length);
+		offset = offset +buffer.length;
+		buffer = new byte[(int)length];
+		System.arraycopy(msg, offset+4, buffer, 0, buffer.length);
+		String payload = Utils.bytesToHex(buffer);
+		if(!Utils.allZero(Utils.hexStringToByteArray(payload))){
+			buffer = new byte[4];
+			System.arraycopy(msg, offset, buffer, 0, buffer.length);
+			this.setChecksum(Utils.bytesToHex(buffer));
+			offset = offset +buffer.length;
+			buffer = new byte[1];
+			System.arraycopy(msg, offset, buffer, 0, buffer.length);
+			hex = Utils.bytesToHex(buffer);
+			long index = Utils.little2big(hex);
+			this.setIndex((int)index);
+			offset = offset +buffer.length;
+			buffer = new byte[8];
+			System.arraycopy(msg, offset, buffer, 0, buffer.length);
+			this.setCmptVersion(Utils.bytesToHex(buffer));
+			offset = offset +buffer.length;
+			buffer = new byte[msg.length-offset];
+			System.arraycopy(msg,offset, buffer, 0, buffer.length);
+			
+		}else {
+			this.setPartialTrame(true);
+			buffer = new byte[0];
+		}
+		return (T) buffer;
 	}
 
+	
+	
 	@Override
 	public String generateMessage(NetParameters network, PeerNode peer) {
 		// TODO Auto-generated method stub
@@ -32,6 +96,22 @@ public class SendCmpctTrame extends TrameHeader {
 	public <T> T receiveMessage(NetParameters network, byte[] msg) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
+	public String getCmptVersion() {
+		return cmptVersion;
+	}
+
+	public void setCmptVersion(String cmptVersion) {
+		this.cmptVersion = cmptVersion;
 	}
 
 }

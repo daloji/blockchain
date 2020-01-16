@@ -61,15 +61,21 @@ public class DeserializerTrame implements Serializable{
 					trameHeader.setFromPeer(peer);
 					data = trameHeader.deserialise(data);
 				}else if (TrameType.PING.getInfo().equals(cmd)) {
-
+					trameHeader = new PingTrame();
+					trameHeader.setFromPeer(peer);
+					data = trameHeader.deserialise(data);
 				}else if(TrameType.VERACK.getInfo().equals(cmd)) {
 
 				}else if(TrameType.ADDR.getInfo().equals(cmd)) {
-
+					trameHeader = new AddrTrame();
+					trameHeader.setFromPeer(peer);
+					data = trameHeader.deserialise(data);
 				}else if(TrameType.SENDHEADERS.getInfo().equals(cmd)) {
 
 				}else if(TrameType.GETHEADERS.getInfo().equals(cmd)) {
-
+					trameHeader = new GetHeadersTrame();
+					trameHeader.setFromPeer(peer);
+					data = trameHeader.deserialise(data);
 				}else if(TrameType.SENDCMPCT.getInfo().equals(cmd)) {
 
 				}else if(TrameType.TX.getInfo().equals(cmd)) {

@@ -2,6 +2,7 @@ package com.daloji.blockchain.network.trame;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.List;
 
 import org.slf4j.LoggerFactory;
 
@@ -32,10 +33,42 @@ public class GetHeadersTrame extends TrameHeader{
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(GetHeadersTrame.class);
 
 	private static final String commande="getheaders";
+	
+	private String version;
+	
+	private long hashCount;
+	
+	private List<String> listHash;
+	
+	private String hashStop;
 
 	@Override
 	public <T> T deserialise(byte[] msg) {
-		// TODO Auto-generated method stub
+		int offset =0;
+		byte[] buffer = new byte[4];
+		System.arraycopy(msg, offset, buffer, 0, buffer.length);
+		this.setMagic(Utils.bytesToHex(buffer));
+		offset = offset +  buffer.length;
+		buffer = new byte[12];
+		System.arraycopy(msg, offset, buffer, 0, buffer.length);
+		this.setCommande(Utils.bytesToHex(buffer));
+		offset = offset +buffer.length;
+		buffer = new byte[4];
+		System.arraycopy(msg, offset, buffer, 0, buffer.length);
+		String hex = Utils.bytesToHex(buffer);
+		long length = Utils.little2big(hex);
+		this.setLength((int)length);
+		offset = offset +buffer.length;
+		buffer = new byte[4];
+		System.arraycopy(msg, offset, buffer, 0, buffer.length);
+		this.setChecksum(Utils.bytesToHex(buffer));
+		offset = offset +buffer.length;
+		buffer = new byte[(int)length];
+		System.arraycopy(msg, offset, buffer, 0, buffer.length);
+		String payload = Utils.bytesToHex(buffer);
+		if(!Utils.allZero(Utils.hexStringToByteArray(payload))){
+			
+		}
 		return null;
 	}
 
@@ -107,6 +140,38 @@ public class GetHeadersTrame extends TrameHeader{
 		payload = payload + stop;
 
 		return payload;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public long getHashCount() {
+		return hashCount;
+	}
+
+	public void setHashCount(long hashCount) {
+		this.hashCount = hashCount;
+	}
+
+	public List<String> getListHash() {
+		return listHash;
+	}
+
+	public void setListHash(List<String> listHash) {
+		this.listHash = listHash;
+	}
+
+	public String getHashStop() {
+		return hashStop;
+	}
+
+	public void setHashStop(String hashStop) {
+		this.hashStop = hashStop;
 	}
 
 }
