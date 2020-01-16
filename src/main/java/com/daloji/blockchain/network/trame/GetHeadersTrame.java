@@ -2,6 +2,7 @@ package com.daloji.blockchain.network.trame;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
@@ -33,13 +34,13 @@ public class GetHeadersTrame extends TrameHeader{
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(GetHeadersTrame.class);
 
 	private static final String commande="getheaders";
-	
+
 	private String version;
-	
+
 	private long hashCount;
-	
+
 	private List<String> listHash;
-	
+
 	private String hashStop;
 
 	@Override
@@ -63,13 +64,68 @@ public class GetHeadersTrame extends TrameHeader{
 		System.arraycopy(msg, offset, buffer, 0, buffer.length);
 		this.setChecksum(Utils.bytesToHex(buffer));
 		offset = offset +buffer.length;
-		buffer = new byte[(int)length];
+		buffer = new byte[msg.length - offset];
 		System.arraycopy(msg, offset, buffer, 0, buffer.length);
 		String payload = Utils.bytesToHex(buffer);
 		if(!Utils.allZero(Utils.hexStringToByteArray(payload))){
-			
+			buffer = new byte[4];
+			System.arraycopy(msg, offset, buffer, 0, buffer.length);
+			this.version = Utils.bytesToHex(buffer);
+			offset = offset +buffer.length;
+			buffer = new byte[1];
+			System.arraycopy(msg, offset, buffer, 0, buffer.length);
+			String len = Utils.bytesToHex(buffer);
+			long size = Integer.parseInt(len,16);
+			if(size<Utils.FD_HEXA) {
+				buffer = new byte[1];
+				offset = offset + buffer.length;				
+			}else if(size>=Utils.FD_HEXA && size<=Utils.FFFF_HEXA) {
+				buffer = new byte[2];
+				offset = offset + 1;
+				System.arraycopy(msg, offset, buffer, 0,buffer.length);
+				len = Utils.bytesToHex(buffer);
+				size = Integer.parseInt(len,16);
+				offset = offset + buffer.length;	
+			}else if(size>Utils.FFFF_HEXA) {
+				buffer = new byte[4];
+				offset = offset + 1;
+				System.arraycopy(msg, offset, buffer, 0,buffer.length);
+				len = Utils.bytesToHex(buffer);
+				size = Integer.parseInt(len,16);
+				offset = offset + buffer.length;
+			}
+			listHash = new ArrayList<String>();
+			for(int i=0;i<size;i++) {
+				buffer = new byte[32];
+				if(offset +buffer.length <= msg.length) {
+					System.arraycopy(msg, offset, buffer, 0, buffer.length);
+					listHash.add(Utils.bytesToHex(buffer));
+					offset = offset + buffer.length;
+				}else {
+					this.setPartialTrame(true);
+					break;
+				}
+			}
+
+			if(offset +buffer.length <= msg.length) {
+				System.arraycopy(msg, offset, buffer, 0, buffer.length);
+				hashStop =Utils.bytesToHex(buffer);
+				offset = offset + buffer.length;
+			}
+			byte[] info =new byte[offset];
+			System.arraycopy(msg,0, info, 0, info.length);
+			logger.info("["+getFromPeer().getHost()+"]"+"<IN> GetHeaders : "+Utils.bytesToHex(info));
+			if(offset<msg.length) {
+				buffer = new byte[msg.length-offset];
+				System.arraycopy(msg, offset, buffer, 0, buffer.length);
+
+			}else {
+				buffer = new byte[0];
+			}
+
+
 		}
-		return null;
+		return (T) buffer;
 	}
 
 	@Override

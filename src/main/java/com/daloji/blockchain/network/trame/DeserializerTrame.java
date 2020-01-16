@@ -76,6 +76,7 @@ public class DeserializerTrame implements Serializable{
 					trameHeader = new GetHeadersTrame();
 					trameHeader.setFromPeer(peer);
 					data = trameHeader.deserialise(data);
+					System.out.println(Utils.bytesToHex(data));
 				}else if(TrameType.SENDCMPCT.getInfo().equals(cmd)) {
 
 				}else if(TrameType.TX.getInfo().equals(cmd)) {
