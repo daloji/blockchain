@@ -46,10 +46,17 @@ public class PingTrame extends TrameHeader{
 		System.arraycopy(msg, offset, buffer, 0, buffer.length);
 		this.setChecksum(Utils.bytesToHex(buffer));
 		offset = offset + buffer.length;
+		buffer = new byte[(int)length];
+		System.arraycopy(msg, offset, buffer, 0, buffer.length);
+		String payload = Utils.bytesToHex(buffer);
 		byte[] info =new byte[offset+(int)length];
 		System.arraycopy(msg,0, info, 0, info.length);
 		offset = offset + (int)length;
 		logger.info("["+getFromPeer().getHost()+"]"+"<IN> Ping : "+Utils.bytesToHex(info));
+		if(Utils.allZero(Utils.hexStringToByteArray(payload))){
+			this.setPartialTrame(true);
+			buffer = new byte[0];
+		}
 		if(offset<msg.length) {
 			buffer = new byte[msg.length-offset];
 			System.arraycopy(msg, offset, buffer, 0, buffer.length);
@@ -57,6 +64,7 @@ public class PingTrame extends TrameHeader{
 		}else {
 			buffer = new byte[0];
 		}
+
 
 		return (T) buffer;
 	}
