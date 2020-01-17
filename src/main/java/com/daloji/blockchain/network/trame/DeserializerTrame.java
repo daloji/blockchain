@@ -47,7 +47,6 @@ public class DeserializerTrame implements Serializable{
 				System.arraycopy(data, offset, buffer, 0, buffer.length);
 				String cmd = Utils.bytesToHex(buffer);
 				//System.out.println(Utils.bytesToHex(data));
-				logger.info(Utils.bytesToHex(data));
 				if(TrameType.VERACK.getInfo().equals(cmd)) {
 					trameHeader = new VersionAckTrame();
 					trameHeader.setFromPeer(peer);
@@ -90,7 +89,9 @@ public class DeserializerTrame implements Serializable{
 				}else if(TrameType.BLOCK.getInfo().equals(cmd)) {
 
 				}else if(TrameType.FEELFILTER.getInfo().equals(cmd)) {
-
+					trameHeader = new FeelFilterTrame();
+					trameHeader.setFromPeer(peer);
+					data = trameHeader.deserialise(data);
 				}else {
 					if(lastTrame.isPartialTrame()) {
 						byte[] header =	lastTrame.generateHeader();

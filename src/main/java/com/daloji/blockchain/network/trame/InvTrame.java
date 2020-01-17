@@ -3,13 +3,19 @@ package com.daloji.blockchain.network.trame;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+
 import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
 
+import ch.qos.logback.classic.Logger;
+
 public class InvTrame extends TrameHeader{
+
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(InvTrame.class);
 
 	/**
 	 * 
@@ -132,7 +138,12 @@ public class InvTrame extends TrameHeader{
 			}
 
 		}
+		byte[] info =new byte[offset];
+		System.arraycopy(msg,0, info, 0, info.length);
+		logger.info("["+getFromPeer().getHost()+"]"+"<IN> Inv   "+Utils.bytesToHex(info));
+		
 		if(offset<buffer.length) {
+			
 			buffer = new byte[buffer.length -offset];
 			System.arraycopy(msg, offset, buffer, 0,buffer.length);
 		}else {

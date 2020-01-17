@@ -69,17 +69,22 @@ public class ConnectionNode  extends AbstractCallable{
 		outPut = new DataOutputStream(socketClient.getOutputStream());
 		input = new DataInputStream(socketClient.getInputStream()); 
 		int count = 1;
+		listState.add(STATE_ENGINE.BOOT);
 		while(state !=STATE_ENGINE.START) {
 			switch(state) {
-				case BOOT : state = sendVersion(outPut,netParameters,peerNode);
+			case BOOT : state = sendVersion(outPut,netParameters,peerNode);
+			listState.add(state);
+			break;
+			case VER_ACK_RECEIVE:state = sendVerAck(outPut,netParameters,peerNode);
+			listState.add(state);
+
+			break;
+			case VERSION_SEND: //state = sendVerAck(outPut,netParameters,peerNode);
+			break;
+			case READY : state = sendGetBlock(outPut, netParameters, peerNode);
+			break;
+			case GETBLOCK_SEND :
 				break;
-				case VER_ACK_RECEIVE:state = sendVerAck(outPut,netParameters,peerNode);
-							state = sendGetBlock(outPut, netParameters, peerNode);
-				break;
-				case VERSION_SEND: state = sendVerAck(outPut,netParameters,peerNode);
-				break;
-				case GETBLOCK_SEND :
-					break;
 			}
 			count = input.read(data);
 			if(count > 0) {
@@ -91,9 +96,9 @@ public class ConnectionNode  extends AbstractCallable{
 		return null;
 
 	}
-	
-	
-	
-	
+
+
+
+
 
 }

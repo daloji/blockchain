@@ -40,6 +40,8 @@ public enum STATE_ENGINE {
 	
 	PARTIAL_TRAME("partial trame"),
 	
+	READY("ready"),
+	
 	START("start"),
 	
 	STOP("stop"),

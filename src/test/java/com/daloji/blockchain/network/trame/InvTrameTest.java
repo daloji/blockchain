@@ -5,6 +5,8 @@ import org.junit.Test;
 
 import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Utils;
+import com.daloji.blockchain.network.IPVersion;
+import com.daloji.blockchain.network.peers.PeerNode;
 
 
 public class InvTrameTest {
@@ -14,6 +16,9 @@ public class InvTrameTest {
 	@Test
 	public void checkInVDeserialize() {
 		InvTrame inv = new InvTrame();
+		PeerNode peer = new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		inv.setFromPeer(peer);
 		byte[] data = inv.deserialise(Utils.hexStringToByteArray(trame));
 		Assert.assertEquals(inv.getMagic(),"F9BEB4D9");
 		Assert.assertEquals(inv.getChecksum(),"7AD3FF67");
