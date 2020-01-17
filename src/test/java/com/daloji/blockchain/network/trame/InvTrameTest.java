@@ -7,6 +7,7 @@ import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.network.IPVersion;
 import com.daloji.blockchain.network.peers.PeerNode;
+import com.daloji.blockchain.network.trame.InvTrame;
 
 
 public class InvTrameTest {

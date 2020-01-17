@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.daloji.blockchain.core.Utils;
+import com.daloji.blockchain.network.trame.SendCmpctTrame;
 
 
 

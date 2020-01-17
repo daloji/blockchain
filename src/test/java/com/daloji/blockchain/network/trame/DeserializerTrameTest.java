@@ -9,6 +9,10 @@ import org.junit.Test;
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.network.IPVersion;
 import com.daloji.blockchain.network.peers.PeerNode;
+import com.daloji.blockchain.network.trame.DeserializerTrame;
+import com.daloji.blockchain.network.trame.TrameHeader;
+import com.daloji.blockchain.network.trame.VersionAckTrame;
+import com.daloji.blockchain.network.trame.VersionTrameMessage;
 
 
 public class DeserializerTrameTest {
