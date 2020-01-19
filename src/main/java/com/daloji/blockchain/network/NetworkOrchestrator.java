@@ -82,19 +82,21 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 			listPeer = dnslookup._second;
 			for (int i = 0; i < sizePool; i++) {
 				PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
+				//peer.setHost("195.201.202.238");
 				connectionNode = new ConnectionNode(this,this, NetParameters.MainNet, peer);
 				listThreadInPool.add(connectionNode);
 			}
 			executorService.invokeAll(listThreadInPool);
-/*
+
+			/*
 			for (int i = 0; i < sizePool; i++) {
 				PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
 				BlockChainHandler blockchain = new BlockChainHandler(this,this, NetParameters.MainNet, peer);
 				listThreadBlochChain.add(blockchain);
-			}
-*/
+			}*/
+
 			//executorService.invokeAll(listThreadBlochChain);
-			executorService.shutdown();
+			//executorService.shutdown();
 
 			 final ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 3, 10, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
 					 //new ThreadPoolExecutor(2, 3, 100, TimeUnit.MILLISECONDS,
@@ -154,6 +156,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 	public void onBlockHeaderReceive(Inventory inventory) {
 
 		if(InvType.MSG_BLOCK==inventory.getType()) {
+			logger.info("onBlockHeaderReceive");
 			PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
 			BlockChainHandler blockChain = new BlockChainHandler(this,this, NetParameters.MainNet, peer,inventory);
 			executorService.submit(blockChain);

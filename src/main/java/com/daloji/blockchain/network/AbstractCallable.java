@@ -161,7 +161,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		while(iterator.hasNext()){
 			TrameHeader trame = iterator.next();
 			if(listState.containsAll(stateReady)) {
-				state = STATE_ENGINE.READY;	
+				localstate = STATE_ENGINE.READY;	
 			}else {
 
 				if(trame instanceof VersionAckTrame) {

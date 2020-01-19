@@ -124,7 +124,15 @@ public class GetHeadersTrame extends TrameHeader{
 			}
 
 
+		}else {
+			byte[] info =new byte[offset];
+			System.arraycopy(msg,0, info, 0, info.length);
+			offset = offset + (int)length;
+			logger.info("["+getFromPeer().getHost()+"]"+"<IN> feelfilter : "+Utils.bytesToHex(info));
+			this.setPartialTrame(true);
+			buffer = new byte[0];
 		}
+
 		return (T) buffer;
 	}
 

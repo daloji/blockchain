@@ -4,19 +4,32 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.ArrayDeque;
+import java.util.List;
 
 import javax.naming.NamingException;
 
+import org.slf4j.LoggerFactory;
+
+import com.daloji.blockchain.core.Inv;
+import com.daloji.blockchain.core.InvType;
+import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
 import com.daloji.blockchain.network.trame.DeserializerTrame;
+import com.daloji.blockchain.network.trame.InvTrame;
 import com.daloji.blockchain.network.trame.STATE_ENGINE;
 import com.daloji.blockchain.network.trame.TrameHeader;
 
+import ch.qos.logback.classic.Logger;
+
 public class ConnectionNode  extends AbstractCallable{
 
+	
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(ConnectionNode.class);
+
+	private static TrameHeader lastTrame;
 
 	public ConnectionNode(NetworkEventHandler networkListener,BlockChainEventHandler blockchaiListener,NetParameters netparam,PeerNode peerNode) throws NamingException {
 		super();
@@ -25,40 +38,7 @@ public class ConnectionNode  extends AbstractCallable{
 		this.blockChainListener = blockchaiListener;
 		this.netParameters = netparam;
 	}
-	/*
-	@Override
-	public Object call() throws Exception {
-		byte[] data = new byte[Utils.BUFFER_SIZE];
-		socketClient = new Socket(peerNode.getHost(),peerNode.getPort());
-		socketClient.setSoTimeout(Utils.timeoutPeer);
-		outPut = new DataOutputStream(socketClient.getOutputStream());
-		input = new DataInputStream(socketClient.getInputStream()); 
-		int count = 1;
-		while(state !=STATE_ENGINE.START) {
-			switch(state) {
-			case BOOT : state = sendVersion(outPut,netParameters,peerNode);
-								break;
-			case VERSION_SEND:state = sendVerAck(outPut,netParameters,peerNode);
-								break;
-			case VER_ACK_RECEIVE:networkListener.onNodeConnected(this);
-								state = sendGetBlock(outPut, netParameters, peerNode);
-								break;
-			case INV_RECEIVE: count = input.read(data); 
-							  if(count>0) {
-								Stack<ObjectTrame> stack = receiveInventory(data);
-								pileCommand.addAll(stack);
-								}
-							  break;
-
-			}
-			count = input.read(data); 
-			if(count>0) {
-				Stack<ObjectTrame> stack = processMessage(data);
-				pileCommand.addAll(stack);
-			}
-		}
-		return null;
-	}*/
+	
 
 	@Override
 	public Object call() throws Exception {
@@ -88,7 +68,15 @@ public class ConnectionNode  extends AbstractCallable{
 			}
 			count = input.read(data);
 			if(count > 0) {
-				ArrayDeque<TrameHeader> deserialize = DeserializerTrame.getInstance().deserialise(data,peerNode);
+				logger.info(Utils.bytesToHex(data));
+				ArrayDeque<TrameHeader> deserialize = DeserializerTrame.getInstance().deserialise(lastTrame,data,peerNode);
+				TrameHeader trame = deserialize.getLast();
+				if(trame.isPartialTrame()) {
+					lastTrame = trame;
+				}else {
+					lastTrame = null;
+				}
+				callGetBlock(deserialize);
 				state = findNExtStep(deserialize);
 			}
 
@@ -98,7 +86,22 @@ public class ConnectionNode  extends AbstractCallable{
 	}
 
 
-
+  private void callGetBlock(ArrayDeque<TrameHeader> trameArray) {
+	  
+	  if(trameArray !=null) {
+		  
+		  for(TrameHeader trame:trameArray) {
+			  if(trame instanceof InvTrame) {
+				  List<Inventory> listinventory =((InvTrame) trame).getListinv();
+				  for(Inventory inventory :listinventory) {
+					  if(inventory.getType() ==InvType.MSG_BLOCK) {
+						  blockChainListener.onBlockHeaderReceive(inventory);  
+					  }
+				  }
+			  }
+		  }
+	  }
+  }
 
 
 }

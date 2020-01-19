@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.daloji.blockchain.core.Utils;
+import com.daloji.blockchain.network.IPVersion;
+import com.daloji.blockchain.network.peers.PeerNode;
 import com.daloji.blockchain.network.trame.SendCmpctTrame;
 
 
@@ -16,6 +18,9 @@ public class SendCmpctTrameTest {
 	@Test
 	public void chechDeserialize() {
 		SendCmpctTrame sendcmpt = new SendCmpctTrame();
+		PeerNode peer = new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		sendcmpt.setFromPeer(peer);
 		byte[] data = sendcmpt.deserialise(Utils.hexStringToByteArray(trame));
 		Assert.assertEquals(Utils.bytesToHex(data), trame_expect);
 		Assert.assertEquals(sendcmpt.getIndex(), 0);

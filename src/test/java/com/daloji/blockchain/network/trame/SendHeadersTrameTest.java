@@ -23,4 +23,17 @@ public class SendHeadersTrameTest {
 
 	}
 	
+	
+	@Test
+	public void checkDeserialaize_001() {
+		String trame = "F9BEB4D973656E646865616465727300000000005DF6E0E2";
+		SendHeadersTrame sendHeader = new SendHeadersTrame();
+		byte[] data = sendHeader.deserialise(Utils.hexStringToByteArray(trame));
+		Assert.assertEquals(sendHeader.getMagic(),"F9BEB4D9");
+		Assert.assertEquals(sendHeader.getChecksum(),"5DF6E0E2");
+		Assert.assertEquals(sendHeader.getCommande(),"73656E646865616465727300");
+		Assert.assertEquals(Utils.allZero(data),true);
+
+	}
+	
 }

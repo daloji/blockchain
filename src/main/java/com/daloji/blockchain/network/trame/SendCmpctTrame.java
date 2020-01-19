@@ -1,8 +1,12 @@
 package com.daloji.blockchain.network.trame;
 
+import org.slf4j.LoggerFactory;
+
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
+
+import ch.qos.logback.classic.Logger;
 
 
 /**
@@ -14,6 +18,9 @@ import com.daloji.blockchain.network.peers.PeerNode;
  *
  */
 public class SendCmpctTrame extends TrameHeader {
+	
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(SendCmpctTrame.class);
+
 
 	/**
 	 * 
@@ -76,6 +83,10 @@ public class SendCmpctTrame extends TrameHeader {
 			offset = offset +buffer.length;
 			buffer = new byte[msg.length-offset];
 			System.arraycopy(msg,offset, buffer, 0, buffer.length);
+			byte[] info =new byte[offset+(int)length];
+			System.arraycopy(msg,0, info, 0, info.length);
+			offset = offset + (int)length;
+			logger.info("["+getFromPeer().getHost()+"]"+"<IN> SendCmpct : "+Utils.bytesToHex(info));
 			
 		}else {
 			this.setPartialTrame(true);
