@@ -41,10 +41,10 @@ public class GetBlocksTrame extends TrameHeader{
 
 	@Override
 	public String generateMessage(NetParameters network, PeerNode peer) {
-		setMagic(network.getMagic());
+		this.setMagic(network.getMagic());
 		//get Epoch Time
-		epoch  = Instant.now().getEpochSecond();
-		setAddressTrans(peer.getHost());
+		this.epoch  = Instant.now().getEpochSecond();
+		this.setAddressTrans(peer.getHost());
 		String message ="";
 		message = message +getMagic();
 		message = message + Utils.convertStringToHex(commande,12);
@@ -58,6 +58,7 @@ public class GetBlocksTrame extends TrameHeader{
 		byte[] array = Crypto.doubleSha256(payloadbyte);
 		String checksum =Utils.bytesToHex(array);
 		checksum =checksum.substring(0, 8);
+		this.setChecksum(checksum);
 		message = message +checksum;
 		//ajout de la payload 
 		message = message +payload;
