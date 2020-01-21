@@ -98,9 +98,17 @@ public class DeserializerTrame implements Serializable{
 						data = trame.deserialise(Utils.hexStringToByteArray(info));
 						trameHeader =trame;
 					}else {
-						logger.error(cmd);
-						data = findCommand(data);
-						trameHeader = new ErrorTrame();
+						if(trame instanceof InvTrame) {
+							byte[] header =	trame.generateHeader();
+							String info = Utils.bytesToHex(header) +  Utils.bytesToHex(data);
+							data = trame.deserialise(Utils.hexStringToByteArray(info));
+							trameHeader = trame;
+						}else {
+							logger.error(cmd);
+							data = findCommand(data);
+							trameHeader = new ErrorTrame();	
+						}
+						
 					}
 				}
 				trame = trameHeader;

@@ -29,7 +29,7 @@ public class ConnectionNode  extends AbstractCallable{
 	
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(ConnectionNode.class);
 
-	private static TrameHeader lastTrame;
+	private  TrameHeader lastTrame;
 
 	public ConnectionNode(NetworkEventHandler networkListener,BlockChainEventHandler blockchaiListener,NetParameters netparam,PeerNode peerNode) throws NamingException {
 		super();
@@ -50,7 +50,7 @@ public class ConnectionNode  extends AbstractCallable{
 		input = new DataInputStream(socketClient.getInputStream()); 
 		int count = 1;
 		listState.add(STATE_ENGINE.BOOT);
-		while(state !=STATE_ENGINE.START) {
+		while(state !=STATE_ENGINE.START && count!=-1) {
 			switch(state) {
 			case BOOT : state = sendVersion(outPut,netParameters,peerNode);
 			listState.add(state);
@@ -71,11 +71,7 @@ public class ConnectionNode  extends AbstractCallable{
 				logger.info(Utils.bytesToHex(data));
 				ArrayDeque<TrameHeader> deserialize = DeserializerTrame.getInstance().deserialise(lastTrame,data,peerNode);
 				TrameHeader trame = deserialize.getLast();
-				if(trame.isPartialTrame()) {
-					lastTrame = trame;
-				}else {
-					lastTrame = null;
-				}
+				lastTrame = trame;
 				callGetBlock(deserialize);
 				state = findNExtStep(deserialize);
 			}
