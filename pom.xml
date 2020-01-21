@@ -78,13 +78,20 @@
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <version>0.8.3</version>
                         <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>report-aggregate</goal>
-                                </goals>
-                            </execution>
-                        </executions>
+								<execution>
+									<goals>
+										<goal>prepare-agent</goal>
+									</goals>
+								</execution>
+								<!-- attached to Maven test phase -->
+								<execution>
+									<id>report</id>
+									<phase>test</phase>
+									<goals>
+										<goal>report</goal>
+									</goals>
+								</execution>
+						</executions>
                     </plugin>
                 </plugins>
             </build>
