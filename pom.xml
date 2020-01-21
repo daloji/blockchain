@@ -64,6 +64,32 @@
 
 
 	</dependencies>
+	
+	<profiles>
+        <profile>
+            <id>jacoco</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.3</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>report-aggregate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 	<build>
 		<plugins>
 
@@ -73,7 +99,7 @@
 				<version>4.3.0</version>
 				<configuration>
 					 <jacocoReports>
-							<jacocoReport>${project.basedir}/blockchain/target/site/jacoco-aggregate/jacoco.xml</jacocoReport>
+							<jacocoReport>${project.basedir}/target/site/jacoco-aggregate/jacoco.xml</jacocoReport>
 					</jacocoReports>
 				</configuration>
 			</plugin>
