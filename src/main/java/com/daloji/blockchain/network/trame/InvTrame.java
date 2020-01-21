@@ -15,6 +15,18 @@ import ch.qos.logback.classic.Logger;
 
 public class InvTrame extends TrameHeader{
 
+
+	private static final String MSG_TX ="01000000";
+
+	private static final String MSG_BLOCK ="02000000";
+
+	private static final String MSG_FILTERED_BLOCK ="03000000";
+
+	private static final String MSG_CMPCT_BLOCK ="04000000";
+
+	private static final String ERROR ="00000000";
+
+
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(InvTrame.class);
 
 	/**
@@ -158,6 +170,34 @@ public class InvTrame extends TrameHeader{
 		}
 
 		return (T) buffer;
+	}
+
+
+	private String findNextCommand(byte[] data) {
+		int indexBlock,indexMsgTx,indexCmpt,indexFiltered = 1000000;
+		String value = "";
+		if(data != null) {
+			value = Utils.bytesToHex(data);
+			if(value.contains(MSG_BLOCK)) {
+				indexBlock = value.indexOf(MSG_BLOCK);
+			}
+			if(value.contains(MSG_TX)) {
+				indexMsgTx = value.indexOf(MSG_TX);
+
+			}
+			if(value.contains(MSG_CMPCT_BLOCK)) {
+				indexCmpt = value.indexOf(MSG_CMPCT_BLOCK);
+
+			}
+			if(value.contains(MSG_FILTERED_BLOCK)) {
+				indexFiltered = value.indexOf(MSG_CMPCT_BLOCK);
+
+			}
+			
+			
+			
+		}
+		return value;
 	}
 
 	@Override
