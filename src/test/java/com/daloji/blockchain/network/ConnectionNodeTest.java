@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.Socket;
 
 import org.easymock.EasyMock;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +23,7 @@ import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
 import com.daloji.blockchain.network.trame.InvTrame;
+import com.daloji.blockchain.network.trame.TrameHeader;
 
 
 @RunWith(PowerMockRunner.class)
@@ -51,7 +53,8 @@ public class ConnectionNodeTest  {
 	}
 
 	/**
-	 *  Reception Version partielle  et Verack
+	 *  Reception Inv Trame sans entête 
+	 *  comportement bizarre mais doit être gerer
 	 * 
 	 * 
 	 */
@@ -80,7 +83,11 @@ public class ConnectionNodeTest  {
 		ConnectionNode connection = new ConnectionNode(null, null, NetParameters.MainNet, peer);
 		Whitebox.setInternalState(connection, "lastTrame", inv);
 		connection.call();
+		TrameHeader trame =Whitebox.getInternalState(connection, "lastTrame");
 		PowerMock.verify();
+		Assert.assertEquals(trame instanceof InvTrame, true);
+		Assert.assertNotNull(((InvTrame) trame).getListinv());
+		Assert.assertEquals(((InvTrame) trame).getListinv().size(),70);
 
 	}
 

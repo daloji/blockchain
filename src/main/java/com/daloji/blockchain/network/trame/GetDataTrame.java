@@ -18,7 +18,7 @@ public class GetDataTrame extends TrameHeader{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(GetBlocksTrame.class);
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(GetDataTrame.class);
 
 	private static final String commande="getdata";
 

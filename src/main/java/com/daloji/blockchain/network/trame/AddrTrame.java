@@ -22,7 +22,7 @@ import ch.qos.logback.classic.Logger;
 public class AddrTrame  extends TrameHeader{
 
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(VersionAckTrame.class);
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(AddrTrame.class);
 
 	private static final String commande="addr";
 	
