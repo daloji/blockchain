@@ -86,6 +86,8 @@ public class DeserializerTrame implements Serializable{
 				}else if(TrameType.TX.getInfo().equals(cmd)) {
 
 				}else if(TrameType.BLOCK.getInfo().equals(cmd)) {
+					logger.error("*********************************************************");
+
 
 				}else if(TrameType.FEELFILTER.getInfo().equals(cmd)) {
 					trameHeader = new FeelFilterTrame();

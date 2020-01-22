@@ -14,6 +14,7 @@ import com.daloji.blockchain.network.peers.PeerNode;
 import ch.qos.logback.classic.Logger;
 
 /**
+ * Gestion des messages Inventory
  * @author daloji
  *
  */
@@ -138,7 +139,6 @@ public class InvTrame extends TrameHeader{
 									listinv.add(inventory);
 									break;
 								case 2: 
-									logger.info("ICIICICCCCCCCCCCCIICIICICI");
 									inventory.setType( InvType.MSG_BLOCK);
 									inventory.setHash(hash);
 									listinv.add(inventory);
@@ -164,6 +164,8 @@ public class InvTrame extends TrameHeader{
 						}
 					}	
 				}
+			}else {
+				offset = offset + buffer.length;	
 			}
 
 
@@ -196,34 +198,7 @@ public class InvTrame extends TrameHeader{
 
 	}
 
-	/*
-	private String findNextCommand(byte[] data) {
-		int indexBlock,indexMsgTx,indexCmpt,indexFiltered = 1000000;
-		String value = "";
-		if(data != null) {
-			value = Utils.bytesToHex(data);
-			if(value.contains(MSG_BLOCK)) {
-				indexBlock = value.indexOf(MSG_BLOCK);
-			}
-			if(value.contains(MSG_TX)) {
-				indexMsgTx = value.indexOf(MSG_TX);
 
-			}
-			if(value.contains(MSG_CMPCT_BLOCK)) {
-				indexCmpt = value.indexOf(MSG_CMPCT_BLOCK);
-
-			}
-			if(value.contains(MSG_FILTERED_BLOCK)) {
-				indexFiltered = value.indexOf(MSG_CMPCT_BLOCK);
-
-			}
-
-
-
-		}
-		return value;
-	}
-	 */
 	@Override
 	public String generateMessage(NetParameters network, PeerNode peer) {
 		// TODO Auto-generated method stub

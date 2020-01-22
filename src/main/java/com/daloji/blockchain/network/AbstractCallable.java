@@ -139,6 +139,61 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		}
 		return state;
 	}
+	
+	/**
+	 *  Recuperation du type de commande 
+	 * @param cmd
+	 * @return
+	 */
+	public  STATE_ENGINE findNExtStepBlock(ArrayDeque<TrameHeader> stacktramHeader) {
+
+		List<STATE_ENGINE> stateReady = new ArrayList<>();
+		stateReady.add(STATE_ENGINE.BOOT);
+		stateReady.add(STATE_ENGINE.VER_ACK_RECEIVE);
+		stateReady.add(STATE_ENGINE.VER_ACK_SEND);
+		stateReady.add(STATE_ENGINE.VERSION_SEND);
+		stateReady.add(STATE_ENGINE.VERSION_RECEIVE);
+
+
+		STATE_ENGINE localstate = STATE_ENGINE.ERROR;
+		Iterator<TrameHeader> iterator= stacktramHeader.iterator();
+		while(iterator.hasNext()){
+			TrameHeader trame = iterator.next();
+			if(listState.containsAll(stateReady)) {
+				if(listState.contains(STATE_ENGINE.READY)) {
+					if(listState.contains(STATE_ENGINE.GETDATA_SEND)) {
+						state = STATE_ENGINE.READY;		
+					}else {
+						state = STATE_ENGINE.GETDATA_SEND;	
+					}
+				}else {
+					state = STATE_ENGINE.READY;	
+					listState.add(state);	
+				}
+
+			}else {
+
+				if(trame instanceof VersionAckTrame) {
+					state = STATE_ENGINE.VER_ACK_RECEIVE;
+					listState.add(state);
+				}
+				if(trame instanceof VersionTrameMessage) {
+					if(trame.isPartialTrame()) {
+						state = STATE_ENGINE.PARTIAL_TRAME;
+					}else {
+						state = STATE_ENGINE.VERSION_RECEIVE;
+						listState.add(state);
+
+					}
+
+				}
+			}
+
+		}
+
+
+		return state;
+	}
 
 
 	/**
@@ -162,13 +217,17 @@ public abstract class AbstractCallable  implements Callable<Object>{
 			TrameHeader trame = iterator.next();
 			if(listState.containsAll(stateReady)) {
 				if(listState.contains(STATE_ENGINE.READY)) {
-					state = STATE_ENGINE.GETBLOCK_SEND;	
-					listState.add(state);
+					if(listState.contains(STATE_ENGINE.GETBLOCK_SEND)) {
+						state = STATE_ENGINE.READY;		
+					}else {
+						state = STATE_ENGINE.GETBLOCK_SEND;	
+					}
+					
 				}else {
 					state = STATE_ENGINE.READY;	
 					listState.add(state);	
 				}
-				
+
 			}else {
 
 				if(trame instanceof VersionAckTrame) {
@@ -186,63 +245,62 @@ public abstract class AbstractCallable  implements Callable<Object>{
 
 				}
 			}
-			
-		}
-		
-		
 
-			return state;
-		}		
-
-		protected STATE_ENGINE sendVerAck(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
-			state = STATE_ENGINE.VER_ACK_SEND;
-			VersionAckTrame verAck = new VersionAckTrame();
-			String trame = verAck.generateMessage(netparam, peernode);
-			byte[] dataoutput = Utils.hexStringToByteArray(trame);
-			outPut.write(dataoutput, 0, dataoutput.length);
-			logger.info("<OUT>  Verack " +trame);
-			return state;
 		}
 
 
+		return state;
+	}		
 
-		protected STATE_ENGINE sendGetBlock(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
-			state = STATE_ENGINE.GETBLOCK_SEND;
-			//construction de la blockchain
-			GetBlocksTrame getblock = new GetBlocksTrame();
-			String trame = getblock.generateMessage(netParameters, peerNode);
-			byte[] data = Utils.hexStringToByteArray(trame);
-			outPut.write(data, 0, data.length);	
-			logger.info("<OUT>  GetBlocks :"+Utils.bytesToHex(data));
-			return state;
-		}
-
-
-		protected STATE_ENGINE sendGetData(DataOutputStream outPut,NetParameters netparam,PeerNode peernode,Inventory inv) throws IOException {
-			state = STATE_ENGINE.GETDATA_SEND;
-			//construction de la blockchain
-			GetDataTrame getData = new GetDataTrame(inv.getHash());
-			String trame = getData.generateMessage(netParameters, peerNode);
-			byte[] data = Utils.hexStringToByteArray(trame);
-			outPut.write(data, 0, data.length);	
-			logger.info("<OUT>  GetData :"+Utils.bytesToHex(data));
-			return state;
-		}
+	protected STATE_ENGINE sendVerAck(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
+		state = STATE_ENGINE.VER_ACK_SEND;
+		VersionAckTrame verAck = new VersionAckTrame();
+		String trame = verAck.generateMessage(netparam, peernode);
+		byte[] dataoutput = Utils.hexStringToByteArray(trame);
+		outPut.write(dataoutput, 0, dataoutput.length);
+		logger.info("<OUT>  Verack " +trame);
+		return state;
+	}
 
 
 
-		protected STATE_ENGINE sendVersion(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
+	protected STATE_ENGINE sendGetBlock(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
+		state = STATE_ENGINE.GETBLOCK_SEND;
+		//construction de la blockchain
+		GetBlocksTrame getblock = new GetBlocksTrame();
+		String trame = getblock.generateMessage(netParameters, peerNode);
+		byte[] data = Utils.hexStringToByteArray(trame);
+		outPut.write(data, 0, data.length);	
+		logger.info("<OUT>  GetBlocks :"+Utils.bytesToHex(data));
+		return state;
+	}
 
-			STATE_ENGINE state = STATE_ENGINE.VERSION_SEND;
-			VersionTrameMessage version = new VersionTrameMessage(true);
-			String trame = version.generateMessage(netParameters, peerNode);
-			byte[] data = Utils.hexStringToByteArray(trame);
-			outPut.write(data, 0, data.length);
-			logger.info("["+peernode.getHost()+"]" +" <OUT>  Version " +trame);
-			return state;
-		}
 
-		/*
+	protected STATE_ENGINE sendGetData(DataOutputStream outPut,NetParameters netparam,PeerNode peernode,Inventory inv) throws IOException {
+		state = STATE_ENGINE.GETDATA_SEND;
+		//construction de la blockchain
+		GetDataTrame getData = new GetDataTrame(inv.getHash());
+		String trame = getData.generateMessage(netParameters, peerNode);
+		byte[] data = Utils.hexStringToByteArray(trame);
+		outPut.write(data, 0, data.length);	
+		logger.info("<OUT>  GetData :"+Utils.bytesToHex(data));
+		return state;
+	}
+
+
+
+	protected STATE_ENGINE sendVersion(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
+
+		STATE_ENGINE state = STATE_ENGINE.VERSION_SEND;
+		VersionTrameMessage version = new VersionTrameMessage(true);
+		String trame = version.generateMessage(netParameters, peerNode);
+		byte[] data = Utils.hexStringToByteArray(trame);
+		outPut.write(data, 0, data.length);
+		logger.info("["+peernode.getHost()+"]" +" <OUT>  Version " +trame);
+		return state;
+	}
+
+	/*
 	protected Stack<ObjectTrame>  receiveInventory(final byte[] data) throws IOException {
 		Stack<ObjectTrame> stakcommand = new Stack<ObjectTrame>();
 		byte[] copydata = new byte[data.length];
@@ -260,7 +318,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		return stakcommand;
 
 	}
-		 *
+	 *
 
 
 	private Pair<String,Inv> extractInvMessage(String msg){
@@ -561,5 +619,5 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		return stakcommand;
 	}
 
-		 */
-	}
+	 */
+}
