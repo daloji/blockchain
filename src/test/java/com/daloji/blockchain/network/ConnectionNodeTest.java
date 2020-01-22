@@ -113,7 +113,7 @@ public class ConnectionNodeTest  {
 		PowerMock.verify();
 		Assert.assertEquals(trame instanceof InvTrame, true);
 		Assert.assertNotNull(((InvTrame) trame).getListinv());
-		Assert.assertEquals(((InvTrame) trame).getListinv().size(),70);
+		Assert.assertEquals(((InvTrame) trame).getListinv().size(),1);
 
 	}
 
