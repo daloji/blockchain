@@ -13,6 +13,10 @@ import com.daloji.blockchain.network.peers.PeerNode;
 
 import ch.qos.logback.classic.Logger;
 
+/**
+ * @author daloji
+ *
+ */
 public class InvTrame extends TrameHeader{
 
 
@@ -113,44 +117,48 @@ public class InvTrame extends TrameHeader{
 				for(int i=0;i<size;i++) {
 					buffer = new byte[4];
 					System.arraycopy(msg, offset, buffer, 0,buffer.length);
-					String type = Utils.bytesToHex(buffer);
-					offset = offset + buffer.length;
-					int decimalType = Integer.parseInt(Utils.StrLittleEndian(type),16);
-					buffer = new byte[32];
-					System.arraycopy(msg, offset, buffer, 0,buffer.length);
-					offset = offset + buffer.length;
-					String hash = Utils.bytesToHex(buffer);
-					Inventory inventory = new Inventory();
-					switch (decimalType) {
-					case 0:
-						inventory.setType(InvType.ERROR);
-						inventory.setHash(hash);
-						listinv.add(inventory);
-						break;
-					case 1: 
-						inventory.setType(InvType.MSG_TX);
-						inventory.setHash(hash);
-						listinv.add(inventory);
-						break;
-					case 2: 
-						logger.info("ICIICICCCCCCCCCCCIICIICICI");
-						inventory.setType( InvType.MSG_BLOCK);
-						inventory.setHash(hash);
-						listinv.add(inventory);
-						break;
-					case 3: 
-						inventory.setType(InvType.MSG_FILTERED_BLOCK);
-						inventory.setHash(hash);
-						listinv.add(inventory);
-						break;
-					case 4: 
-						inventory.setType(InvType.MSG_CMPCT_BLOCK);
-						inventory.setHash(hash);
-						listinv.add(inventory);
-						break;
+					if(isValidType(buffer)) {
+						String type = Utils.bytesToHex(buffer);
+						offset = offset + buffer.length;
+						int decimalType = Integer.parseInt(Utils.StrLittleEndian(type),16);
+						buffer = new byte[32];
+						System.arraycopy(msg, offset, buffer, 0,buffer.length);
+						offset = offset + buffer.length;
+						String hash = Utils.bytesToHex(buffer);
+						Inventory inventory = new Inventory();
+						switch (decimalType) {
+						case 0:
+							inventory.setType(InvType.ERROR);
+							inventory.setHash(hash);
+							listinv.add(inventory);
+							break;
+						case 1: 
+							inventory.setType(InvType.MSG_TX);
+							inventory.setHash(hash);
+							listinv.add(inventory);
+							break;
+						case 2: 
+							logger.info("ICIICICCCCCCCCCCCIICIICICI");
+							inventory.setType( InvType.MSG_BLOCK);
+							inventory.setHash(hash);
+							listinv.add(inventory);
+							break;
+						case 3: 
+							inventory.setType(InvType.MSG_FILTERED_BLOCK);
+							inventory.setHash(hash);
+							listinv.add(inventory);
+							break;
+						case 4: 
+							inventory.setType(InvType.MSG_CMPCT_BLOCK);
+							inventory.setHash(hash);
+							listinv.add(inventory);
+							break;
 
-					default:
-						break;
+						default:
+							break;
+						}
+					}else {
+						offset = offset + buffer.length;
 					}
 				}	
 			}
@@ -161,9 +169,9 @@ public class InvTrame extends TrameHeader{
 		System.arraycopy(msg,0, info, 0, info.length);
 		logger.info("["+getFromPeer().getHost()+"]"+"<IN> Inv   "+Utils.bytesToHex(info));
 
-		if(offset<buffer.length) {
+		if(offset<msg.length) {
 
-			buffer = new byte[buffer.length -offset];
+			buffer = new byte[msg.length -offset];
 			System.arraycopy(msg, offset, buffer, 0,buffer.length);
 		}else {
 			buffer = new byte[0];
@@ -173,6 +181,19 @@ public class InvTrame extends TrameHeader{
 	}
 
 
+	private boolean isValidType(byte[] data) {
+		boolean value = false;
+		if(data !=null) {
+			if(MSG_BLOCK.equals(Utils.bytesToHex(data)) || MSG_CMPCT_BLOCK.equals(Utils.bytesToHex(data))||MSG_FILTERED_BLOCK.equals(Utils.bytesToHex(data))||MSG_TX.equals(Utils.bytesToHex(data))) {
+				value = true; 
+			}
+
+		}
+		return value;
+
+	}
+
+	/*
 	private String findNextCommand(byte[] data) {
 		int indexBlock,indexMsgTx,indexCmpt,indexFiltered = 1000000;
 		String value = "";
@@ -193,13 +214,13 @@ public class InvTrame extends TrameHeader{
 				indexFiltered = value.indexOf(MSG_CMPCT_BLOCK);
 
 			}
-			
-			
-			
+
+
+
 		}
 		return value;
 	}
-
+	 */
 	@Override
 	public String generateMessage(NetParameters network, PeerNode peer) {
 		// TODO Auto-generated method stub
