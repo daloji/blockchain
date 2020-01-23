@@ -86,8 +86,13 @@ public class DeserializerTrame implements Serializable{
 				}else if(TrameType.TX.getInfo().equals(cmd)) {
 
 				}else if(TrameType.BLOCK.getInfo().equals(cmd)) {
-					logger.error("*********************************************************");
+					trameHeader = new BlockTrame();
+					trameHeader.setFromPeer(peer);
+					data = trameHeader.deserialise(data);
 
+				}
+				else if(TrameType.REJECT.getInfo().equals(cmd)) {
+					logger.error("***************** REJECT ****************************************");
 
 				}else if(TrameType.FEELFILTER.getInfo().equals(cmd)) {
 					trameHeader = new FeelFilterTrame();

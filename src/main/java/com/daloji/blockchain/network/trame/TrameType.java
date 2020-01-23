@@ -26,6 +26,8 @@ public enum TrameType {
 	
 	BLOCK("626C6F636B00000000000000"),
 	
+	REJECT("72656A656374000000000000"),
+	
 	ERROR("error");
 	
 		

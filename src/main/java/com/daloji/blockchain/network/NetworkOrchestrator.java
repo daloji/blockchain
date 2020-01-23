@@ -153,7 +153,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 	public void onBlockHeaderReceive(Inventory inventory) {
 
 		if(InvType.MSG_BLOCK==inventory.getType()) {
-			logger.info("onBlockHeaderReceive");
+			//logger.info("onBlockHeaderReceive");
 			PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
 			BlockChainHandler blockChain = new BlockChainHandler(this,this, NetParameters.MainNet, peer,inventory);
 			executorService.submit(blockChain);
