@@ -70,8 +70,6 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 	public void onStart() throws Exception {
 		logger.info("onStart NetworkOrchestrator");
 
-
-		//**********************************************
 		ConnectionNode connectionNode = null;
 		executorService = Executors.newFixedThreadPool(2);
 		listThreadNodeRunning = new ArrayList<ConnectionNode>();
@@ -82,7 +80,6 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 			listPeer = dnslookup._second;
 			for (int i = 0; i < sizePool; i++) {
 				PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
-				//peer.setHost("195.201.202.238");
 				connectionNode = new ConnectionNode(this,this, NetParameters.MainNet, peer);
 				listThreadInPool.add(connectionNode);
 			}
