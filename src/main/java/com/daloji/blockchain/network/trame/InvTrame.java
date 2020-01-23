@@ -101,7 +101,8 @@ public class InvTrame extends TrameHeader{
 					offset = offset + 1;
 					System.arraycopy(msg, offset, buffer, 0,buffer.length);
 					len = Utils.bytesToHex(buffer);
-					size = Integer.parseInt(len,16);
+					len = Utils.StrLittleEndian(len);
+					size =Integer.parseInt(len,16);
 					offset = offset + buffer.length;	
 				}else if(size>Utils.FFFF_HEXA) {
 					buffer = new byte[4];

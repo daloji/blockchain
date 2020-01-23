@@ -32,6 +32,7 @@ public class InvTrameTest {
 	
 	private static String trame_002;
 	
+	private static String trame_004;
 	
 	private static String trame_001;
 	
@@ -52,10 +53,10 @@ public class InvTrameTest {
         trame_002 = (prop.getProperty("trame_002"));
         trame_001 = (prop.getProperty("trame_001"));
         trame_receive = (prop.getProperty("trame_receive"));
-
+        trame_004  = (prop.getProperty("trame_004"));
         
-	
 	}
+	
 	@Test
 	public void checkInVDeserialize() {
 	
@@ -127,7 +128,28 @@ public class InvTrameTest {
 		Assert.assertEquals(inv.getLength(),18003);
 		Assert.assertEquals(inv.getListinv().size(),499);
 		Assert.assertEquals(Utils.allZero(data),false);
-		Assert.assertEquals(Utils.bytesToHex(data),"BF64F64F");
+		Assert.assertEquals(Utils.bytesToHex(data),"DB773C8F3B90EFA51D8E40291406897062C164DFF617D2A7BF64F64F");
+
+	}
+	
+	/**
+	 * cas reception de plus de 50 messages Inventory
+	 */
+	@Test
+	public void checkInvDeserialize_004() {
+		
+		InvTrame inv = new InvTrame();
+		PeerNode peer = new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		inv.setFromPeer(peer);
+		byte[] data = inv.deserialise(Utils.hexStringToByteArray(trame_004));
+		Assert.assertEquals(inv.getMagic(),"F9BEB4D9");
+		Assert.assertEquals(inv.getChecksum(),"25173C57");
+		Assert.assertEquals(inv.getCommande(),"696E76000000000000000000");
+		Assert.assertEquals(inv.getLength(),18003);
+		Assert.assertEquals(inv.getListinv().size(),41);
+		Assert.assertEquals(Utils.allZero(data),true);
+
 
 	}
 
