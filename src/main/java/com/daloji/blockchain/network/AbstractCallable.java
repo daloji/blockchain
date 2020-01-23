@@ -279,7 +279,9 @@ public abstract class AbstractCallable  implements Callable<Object>{
 	protected STATE_ENGINE sendGetData(DataOutputStream outPut,NetParameters netparam,PeerNode peernode,Inventory inv) throws IOException {
 		state = STATE_ENGINE.GETDATA_SEND;
 		//construction de la blockchain
-		GetDataTrame getData = new GetDataTrame(inv.getHash());
+		List<Inventory> listinv =new ArrayList<Inventory>();
+		listinv.add(inv);
+		GetDataTrame getData = new GetDataTrame(listinv);
 		String trame = getData.generateMessage(netParameters, peerNode);
 		byte[] data = Utils.hexStringToByteArray(trame);
 		outPut.write(data, 0, data.length);	

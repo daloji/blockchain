@@ -20,7 +20,7 @@ import ch.qos.logback.classic.Logger;
 
 public class BlockChainHandler  extends AbstractCallable{
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(AbstractCallable.class);
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(BlockChainHandler.class);
 
 	private STATE_ENGINE state = STATE_ENGINE.BOOT;
 

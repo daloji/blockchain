@@ -36,6 +36,16 @@ public abstract class TrameHeader implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	protected static final String MSG_TX ="01000000";
+
+	protected static final String MSG_BLOCK ="02000000";
+
+	protected static final String MSG_FILTERED_BLOCK ="03000000";
+
+	protected static final String MSG_CMPCT_BLOCK ="04000000";
+
+	protected static final String ERROR ="00000000";
 
 	protected static final String IP_CONST ="00000000000000000000ffff";
 
@@ -285,6 +295,18 @@ public abstract class TrameHeader implements Serializable {
 		}
 		return value;
 
+
+	}
+	
+	protected boolean isValidType(byte[] data) {
+		boolean value = false;
+		if(data !=null) {
+			if(MSG_BLOCK.equals(Utils.bytesToHex(data)) || MSG_CMPCT_BLOCK.equals(Utils.bytesToHex(data))||MSG_FILTERED_BLOCK.equals(Utils.bytesToHex(data))||MSG_TX.equals(Utils.bytesToHex(data))) {
+				value = true; 
+			}
+
+		}
+		return value;
 
 	}
 

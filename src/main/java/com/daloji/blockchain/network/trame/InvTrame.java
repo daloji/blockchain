@@ -21,16 +21,6 @@ import ch.qos.logback.classic.Logger;
 public class InvTrame extends TrameHeader{
 
 
-	private static final String MSG_TX ="01000000";
-
-	private static final String MSG_BLOCK ="02000000";
-
-	private static final String MSG_FILTERED_BLOCK ="03000000";
-
-	private static final String MSG_CMPCT_BLOCK ="04000000";
-
-	private static final String ERROR ="00000000";
-
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(InvTrame.class);
 
@@ -123,7 +113,7 @@ public class InvTrame extends TrameHeader{
 							offset = offset + buffer.length;
 							int decimalType = Integer.parseInt(Utils.StrLittleEndian(type),16);
 							buffer = new byte[32];
-							if((offset+buffer.length)<msg.length) {
+							if((offset+buffer.length-1)<msg.length) {
 								System.arraycopy(msg, offset, buffer, 0,buffer.length);
 								offset = offset + buffer.length;
 								String hash = Utils.bytesToHex(buffer);
@@ -187,17 +177,7 @@ public class InvTrame extends TrameHeader{
 	}
 
 
-	private boolean isValidType(byte[] data) {
-		boolean value = false;
-		if(data !=null) {
-			if(MSG_BLOCK.equals(Utils.bytesToHex(data)) || MSG_CMPCT_BLOCK.equals(Utils.bytesToHex(data))||MSG_FILTERED_BLOCK.equals(Utils.bytesToHex(data))||MSG_TX.equals(Utils.bytesToHex(data))) {
-				value = true; 
-			}
 
-		}
-		return value;
-
-	}
 
 
 	@Override
