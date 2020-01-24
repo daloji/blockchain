@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,6 +17,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.LoggerFactory;
 
+import com.daloji.blockchain.core.Block;
+import com.daloji.blockchain.core.BlockChain;
 import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.Utils;
@@ -41,6 +44,8 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 
 	private  CopyOnWriteArrayList<Inventory> listHeaderBlock = new CopyOnWriteArrayList<Inventory>(); 
 
+	private BlockChain blokchain = new BlockChain();
+	
 	/*
 	 * List des Threads clients
 	 */
@@ -149,6 +154,11 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 			executorService.submit(blockChain);
 
 		}
+	}
+
+	@Override
+	public void onBlockReiceve(Block block) {
+		blokchain.setBlock(block.getPrevBlockHash(), block);		
 	}
 
 	

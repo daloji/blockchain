@@ -214,7 +214,7 @@ public class Transaction implements Serializable {
 				offset = buffer.length;
 				len = Utils.bytesToHex(buffer);
 				len = Utils.StrLittleEndian(len);
-				size =Integer.parseInt(len,16);
+				size =Long.parseLong(len,16);
 				transaction.setLockTime(size);
 			}
 			

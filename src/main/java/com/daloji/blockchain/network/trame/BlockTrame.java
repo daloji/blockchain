@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.slf4j.LoggerFactory;
 
+import com.daloji.blockchain.core.Block;
 import com.daloji.blockchain.core.Transaction;
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.core.commons.Pair;
@@ -229,6 +230,22 @@ public class BlockTrame  extends TrameHeader{
 		return "BlockTrame [version=" + version + ", previousHash=" + previousHash + ", merkelRoot=" + merkelRoot
 				+ ", time=" + time + ", nBits=" + nBits + ", nonce=" + nonce + ", listTransacation=" + listTransacation
 				+ "]";
+	}
+	
+	
+	public Block generateBlock() {
+		Block block = new Block();
+		block.setDifficultyTarget(this.getnBits());
+		block.setMerkleRoot(this.getMerkelRoot());
+		block.setListTransaction(this.getListTransacation());
+		block.setNonce(this.getNonce());
+		block.setPrevBlockHash(this.getPreviousHash());
+		block.setTime(this.getTime());
+		if(this.getListTransacation() !=null) {
+			block.setTxCount(this.getListTransacation().size());	
+		}
+		
+		return block;
 	}
 
 }

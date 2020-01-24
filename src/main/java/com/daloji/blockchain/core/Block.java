@@ -51,7 +51,7 @@ public class Block implements Serializable{
 	/**
 	 * nombre de transaction en entree
 	 */
-	private int  txn_count = 0;
+	private int  txCount = 0;
 
 
 	private List<Transaction> listTransaction;
@@ -100,13 +100,15 @@ public class Block implements Serializable{
 	public void setNonce(long nonce) {
 		this.nonce = nonce;
 	}
-	public int getTxn_count() {
-		return txn_count;
-	}
-	public void setTxn_count(int txn_count) {
-		this.txn_count = txn_count;
+	
+
+	public int getTxCount() {
+		return txCount;
 	}
 
+	public void setTxCount(int txCount) {
+		this.txCount = txCount;
+	}
 
 	/**
 	 * Block genesis de la blockchain crée par Satoshi Nakamoto

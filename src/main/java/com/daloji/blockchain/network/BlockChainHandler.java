@@ -53,7 +53,7 @@ public class BlockChainHandler  extends AbstractCallable{
 			input = new DataInputStream(socketClient.getInputStream()); 
 			int count = 1;
 			listState.add(STATE_ENGINE.BOOT);
-			while(state !=STATE_ENGINE.STOP) {
+			while(state !=STATE_ENGINE.STOP && count!=-1) {
 				switch(state) {
 				case BOOT : state = sendVersion(outPut,netParameters,peerNode);
 				listState.add(state);
@@ -75,6 +75,7 @@ public class BlockChainHandler  extends AbstractCallable{
 					TrameHeader trame = deserialize.getLast();
 					lastTrame = trame;
 					state = findNExtStepBlock(deserialize);
+					state = isBlocDownloaded(deserialize);
 				}
 			}
 

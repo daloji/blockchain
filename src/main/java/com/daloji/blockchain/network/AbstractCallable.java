@@ -15,9 +15,11 @@ import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.Utils;
+import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
+import com.daloji.blockchain.network.trame.BlockTrame;
 import com.daloji.blockchain.network.trame.GetBlocksTrame;
 import com.daloji.blockchain.network.trame.GetDataTrame;
 import com.daloji.blockchain.network.trame.ObjectTrame;
@@ -139,7 +141,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		}
 		return state;
 	}
-	
+
 	/**
 	 *  Recuperation du type de commande 
 	 * @param cmd
@@ -195,6 +197,25 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		return state;
 	}
 
+	/**
+	 * Verifie si un bloc a ete telecharge
+	 * @param stacktramHeader
+	 * @return
+	 */
+
+	public STATE_ENGINE isBlocDownloaded(ArrayDeque<TrameHeader> stacktramHeader) {
+		TrameHeader trame = null;
+		if(state== STATE_ENGINE.GETDATA_SEND ||state == STATE_ENGINE.READY ) {
+			for(int i=0;i<stacktramHeader.size();i++) {
+				trame = stacktramHeader.poll();
+				if(trame instanceof BlockTrame) {
+					state = STATE_ENGINE.STOP;
+					blockChainListener.onBlockReiceve(((BlockTrame) trame).generateBlock());
+				}
+			}
+		}
+		return state;
+	}
 
 	/**
 	 *  Recuperation du type de commande 
@@ -222,7 +243,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 					}else {
 						state = STATE_ENGINE.GETBLOCK_SEND;	
 					}
-					
+
 				}else {
 					state = STATE_ENGINE.READY;	
 					listState.add(state);	
