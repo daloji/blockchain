@@ -10,7 +10,6 @@ import javax.naming.NamingException;
 
 import org.slf4j.LoggerFactory;
 
-import com.daloji.blockchain.core.Inv;
 import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.Utils;
@@ -26,7 +25,7 @@ import ch.qos.logback.classic.Logger;
 
 public class ConnectionNode  extends AbstractCallable{
 
-	
+
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(ConnectionNode.class);
 
 	private  TrameHeader lastTrame;
@@ -38,7 +37,7 @@ public class ConnectionNode  extends AbstractCallable{
 		this.blockChainListener = blockchaiListener;
 		this.netParameters = netparam;
 	}
-	
+
 
 	@Override
 	public Object call() throws Exception {
@@ -60,9 +59,9 @@ public class ConnectionNode  extends AbstractCallable{
 
 			break;
 			case VERSION_SEND: //state = sendVerAck(outPut,netParameters,peerNode);
-			break;
+				break;
 			case READY : //state = sendGetBlock(outPut, netParameters, peerNode);
-			break;
+				break;
 			case GETBLOCK_SEND :state = sendGetBlock(outPut, netParameters, peerNode);
 			listState.add(state);	
 			break;
@@ -83,22 +82,22 @@ public class ConnectionNode  extends AbstractCallable{
 	}
 
 
-  private void callGetBlock(ArrayDeque<TrameHeader> trameArray) {
-	  
-	  if(trameArray !=null) {
-		  
-		  for(TrameHeader trame:trameArray) {
-			  if(trame instanceof InvTrame) {
-				  List<Inventory> listinventory =((InvTrame) trame).getListinv();
-				  for(Inventory inventory :listinventory) {
-					  if(inventory.getType() ==InvType.MSG_BLOCK) {
-						  blockChainListener.onBlockHeaderReceive(inventory);  
-					  }
-				  }
-			  }
-		  }
-	  }
-  }
+	private void callGetBlock(ArrayDeque<TrameHeader> trameArray) {
+
+		if(trameArray !=null) {
+
+			for(TrameHeader trame:trameArray) {
+				if(trame instanceof InvTrame) {
+					List<Inventory> listinventory =((InvTrame) trame).getListinv();
+					for(Inventory inventory :listinventory) {
+						if(inventory.getType() ==InvType.MSG_BLOCK) {
+							blockChainListener.onBlockHeaderReceive(inventory);  
+						}
+					}
+				}
+			}
+		}
+	}
 
 
 }

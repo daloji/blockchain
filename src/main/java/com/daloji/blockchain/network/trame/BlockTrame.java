@@ -18,8 +18,6 @@ public class BlockTrame  extends TrameHeader{
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(BlockTrame.class);
 
-	/* taille de block 82 octet **/
-	private static final int SIZE_BLOCK = 82;
 	/**
 	 * 
 	 */

@@ -81,36 +81,7 @@ public class BlockChainHandler  extends AbstractCallable{
 		}catch (Exception e) {
 			// TODO: handle exception
 		}
-		//sendGetData(outPut, netparam, peernode, inv)
-		/*
-		try {
-			int count = 1;
-			while(state !=STATE_ENGINE.STOP) {
-				switch(state) {
-				case START: state = sendVersion(outPut,netParameters,peerNode);
-									break;
-				case VERSION_SEND:state = sendVerAck(outPut,netParameters,peerNode);
-									break;
-				case VER_ACK_RECEIVE://networkListener.onNodeConnected(this);
-									state = sendGetData(outPut, netParameters, peerNode,inventory);
-									break;
-				case INV_RECEIVE: count = input.read(data); 
-
-								  break;
-
-				}
-
-				count = input.read(data); 
-				if(count>0) {
-					Stack<ObjectTrame> stack = processMessage(data);
-					pileCommand.addAll(stack);
-				}
-			}
-		}catch (Exception e) {
-			// TODO: handle exception
-		}
-
-		 */
+	
 		return null;
 	}
 

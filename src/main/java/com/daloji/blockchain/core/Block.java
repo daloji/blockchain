@@ -56,6 +56,8 @@ public class Block implements Serializable{
 
 	private List<Transaction> listTransaction;
 
+	
+	
 	public long getVersion() {
 		return version;
 	}

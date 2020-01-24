@@ -6,8 +6,6 @@ import java.util.List;
 
 import com.daloji.blockchain.core.commons.Pair;
 
-import ch.qos.logback.classic.spi.STEUtil;
-
 /**
  *  Objet Transaction
  * @author daloji

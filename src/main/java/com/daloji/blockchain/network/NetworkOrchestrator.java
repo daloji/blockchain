@@ -85,17 +85,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 			}
 			executorService.invokeAll(listThreadInPool);
 
-			/*
-			for (int i = 0; i < sizePool; i++) {
-				PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
-				BlockChainHandler blockchain = new BlockChainHandler(this,this, NetParameters.MainNet, peer);
-				listThreadBlochChain.add(blockchain);
-			}*/
-
-			//executorService.invokeAll(listThreadBlochChain);
-			//executorService.shutdown();
-
-			 final ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 3, 10, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+				 final ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 3, 10, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
 					 //new ThreadPoolExecutor(2, 3, 100, TimeUnit.MILLISECONDS,
 		               // new LinkedBlockingQueue<Runnable>(), new ThreadPoolExecutor.CallerRunsPolicy());
 			List<Future<ConnectionNode>> resultList = null;

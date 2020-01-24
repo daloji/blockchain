@@ -12,7 +12,7 @@ public class FeelFilterTrame  extends TrameHeader{
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(FeelFilterTrame.class);
 
-	private String cmd = "feefilter";
+	private static final String cmd = "feefilter";
 	/**
 	 * 
 	 */
