@@ -212,10 +212,8 @@ public class DeserializerTrameTest {
 		peer.setPort(8333);
 		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(trame_block), peer);
 		Assert.assertNotNull(stackCommand); 
-		Assert.assertEquals(stackCommand.size(), 6);
-		TrameHeader trame = stackCommand.removeLast();
-		Assert.assertEquals(trame instanceof ErrorTrame ,true);
-		BlockTrame block =(BlockTrame) stackCommand.getLast();
+		Assert.assertEquals(stackCommand.size(), 5);
+		BlockTrame block = (BlockTrame) stackCommand.removeLast();
 		Assert.assertEquals(block.getChecksum(), "934D270A");
 		Assert.assertEquals(block.getMerkelRoot(), "982051FD1E4BA744BBBE680E1FEE14677BA1A3C3540BF7B1CDB606E857233E0E");
 		Assert.assertEquals(block.getTime(), 1231469665);
