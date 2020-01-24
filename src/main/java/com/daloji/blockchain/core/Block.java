@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
+import com.daloji.blockchain.network.trame.BlockTrame;
+
 /**
  * Element primitif de la blockchain 
  * 
@@ -12,6 +14,8 @@ import java.util.List;
  */
 public class Block implements Serializable{
 
+
+	private static String GENESIS_MERKEL_ROOT ="3BA3EDFD7A7B12B27AC72C3E67768F617FC81BC3888A51323A9FB8AA4B1E5E4A";
 
 	/**
 	 * 
@@ -112,7 +116,7 @@ public class Block implements Serializable{
 		block.setTime(1231006505);
 		block.setPrevBlockHash("0000000000000000000000000000000000000000000000000000000000000000");
 		block.setVersion(1);
-		block.setMerkleRoot("3BA3EDFD7A7B12B27AC72C3E67768F617FC81BC3888A51323A9FB8AA4B1E5E4A");
+		block.setMerkleRoot(GENESIS_MERKEL_ROOT);
 		block.setDifficultyTarget(0x1d00ffff);
 		block.setNonce(2083236893);
 		return block;
@@ -159,5 +163,19 @@ public class Block implements Serializable{
 		this.listTransaction = listTransaction;
 	}
 
+
+	public static Block buildFromBlockTrame(BlockTrame bloctrame) {
+		Block bloc=null;
+		if(bloctrame != null) {
+			bloc = new Block();
+			bloc.setMerkleRoot(bloctrame.getMerkelRoot());
+			bloc.setNonce(bloctrame.getNonce());
+			bloc.setPrevBlockHash(bloctrame.getPreviousHash());
+			bloc.setTime(bloctrame.getTime());
+			bloc.setVersion(Utils.little2big(bloctrame.getVersion()));
+			bloc.setDifficultyTarget(bloctrame.getnBits());
+		}
+		return bloc;
+	}
 
 }
