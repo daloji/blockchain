@@ -81,7 +81,7 @@ public class ConnectionNodeTest  {
 		dataouput.write(EasyMock.anyObject(byte[].class), EasyMock.anyInt(), EasyMock.anyInt());
 		PowerMock.replayAll();
 		ConnectionNode connection = new ConnectionNode(null, null, NetParameters.MainNet, peer);
-		Whitebox.setInternalState(connection, "state", inv);
+		Whitebox.setInternalState(connection, "lastTrame", inv);
 		connection.call();
 		TrameHeader trame =Whitebox.getInternalState(connection, "lastTrame");
 		PowerMock.verify();
