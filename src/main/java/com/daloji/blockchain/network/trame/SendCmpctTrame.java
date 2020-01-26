@@ -18,7 +18,7 @@ import ch.qos.logback.classic.Logger;
  *
  */
 public class SendCmpctTrame extends TrameHeader {
-	
+
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(SendCmpctTrame.class);
 
 
@@ -30,7 +30,7 @@ public class SendCmpctTrame extends TrameHeader {
 	 *  announce
 	 */
 	private int index;
-	
+
 	/**
 	 *  version
 	 */
@@ -86,8 +86,9 @@ public class SendCmpctTrame extends TrameHeader {
 			byte[] info =new byte[offset+(int)length];
 			System.arraycopy(msg,0, info, 0, info.length);
 			offset = offset + (int)length;
-			logger.info("["+getFromPeer().getHost()+"]"+"<IN> SendCmpct : "+Utils.bytesToHex(info));
-			
+			if(logger.isDebugEnabled()) {
+				logger.debug("["+getFromPeer().getHost()+"]"+"<IN> SendCmpct : "+Utils.bytesToHex(info));
+			}
 		}else {
 			this.setPartialTrame(true);
 			buffer = new byte[0];
@@ -95,8 +96,8 @@ public class SendCmpctTrame extends TrameHeader {
 		return (T) buffer;
 	}
 
-	
-	
+
+
 	@Override
 	public String generateMessage(NetParameters network, PeerNode peer) {
 		// TODO Auto-generated method stub

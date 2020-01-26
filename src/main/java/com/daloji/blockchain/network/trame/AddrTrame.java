@@ -25,7 +25,7 @@ public class AddrTrame  extends TrameHeader{
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(AddrTrame.class);
 
 	private static final String commande="addr";
-	
+
 	private List<Addr> listAddr;
 
 
@@ -35,9 +35,9 @@ public class AddrTrame  extends TrameHeader{
 	 */
 	private static final long serialVersionUID = 8871174569589589645L;
 
-	
 
-	
+
+
 	public List<Addr> getListAddr() {
 		return listAddr;
 	}
@@ -94,7 +94,7 @@ public class AddrTrame  extends TrameHeader{
 				offset = offset + buffer.length;
 			}
 			listAddr = new ArrayList<Addr>();
-			
+
 			for(int i=0 ; i<(int)size;i++) {
 				Addr addr = new Addr();
 				buffer = new byte[4];
@@ -119,7 +119,9 @@ public class AddrTrame  extends TrameHeader{
 			}
 			byte[] info =new byte[offset];
 			System.arraycopy(msg,0, info, 0, info.length);
-			logger.info("["+getFromPeer().getHost()+"]"+"<IN> Addr : "+Utils.bytesToHex(info));
+			if(logger.isDebugEnabled()) {
+				logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Addr : "+Utils.bytesToHex(info));
+			}
 			if(offset<msg.length) {
 				buffer = new byte[msg.length-offset];
 				System.arraycopy(msg, offset, buffer, 0, buffer.length);
@@ -128,7 +130,7 @@ public class AddrTrame  extends TrameHeader{
 				buffer = new byte[0];
 			}
 
-			
+
 		}else {
 			this.setPartialTrame(true);
 			buffer = new byte[0];
@@ -147,7 +149,7 @@ public class AddrTrame  extends TrameHeader{
 	}
 
 
-	
+
 
 	public String createPayload() {
 		String payload ="";

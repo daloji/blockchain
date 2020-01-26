@@ -20,6 +20,8 @@
 		<podam.version>7.0.5.RELEASE</podam.version>
 		<logback.version>1.2.3</logback.version>
 		<commons-lang3>3.9</commons-lang3>
+		<packageName>com.daloji.blockchain.core</packageName>
+         <mainClass>App</mainClass>
 	</properties>
 
 	<dependencies>
@@ -36,9 +38,9 @@
 			<version>${logback.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-lang3</artifactId>
-		    <version>${commons-lang3}</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang3}</version>
 		</dependency>
 
 		<dependency>
@@ -69,39 +71,77 @@
 
 
 	</dependencies>
-	
+
 	<profiles>
-        <profile>
-            <id>jacoco</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.8.3</version>
-                        <executions>
-								<execution>
-									<goals>
-										<goal>prepare-agent</goal>
-									</goals>
-								</execution>
-								<!-- attached to Maven test phase -->
-								<execution>
-									<id>report</id>
-									<phase>test</phase>
-									<goals>
-										<goal>report</goal>
-									</goals>
-								</execution>
+		<profile>
+			<id>jacoco</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>0.8.3</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+							<!-- attached to Maven test phase -->
+							<execution>
+								<id>report</id>
+								<phase>test</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+							</execution>
 						</executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+					</plugin>
+
+					<plugin>
+                 <groupId>org.Apache.maven.plugins</groupId>
+                 <artifactId>maven-dependency-plugin</artifactId>
+                 <version>2.6</version>
+                 <executions>
+                     <execution>
+                         <id>unpack-dependencies</id>
+                         <phase>package</phase>
+                         <goals>
+                             <goal>unpack-dependencies</goal>
+                         </goals>
+                         <configuration>
+                             <excludeScope>system</excludeScope>
+                             <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                         </configuration>
+                     </execution>
+                 </executions>
+             </plugin>
+
+             <plugin>
+                 <groupId>org.Apache.maven.plugins</groupId>
+                 <artifactId>maven-jar-plugin</artifactId>
+                 <version>2.5</version>
+                 <configuration>
+                     <useDefaultManifestFile>true</useDefaultManifestFile>
+                     <archive>
+                         <manifest>
+                             <mainClass>${mainClass}</mainClass>
+                             <packageName>${packageName}</packageName>
+                             <addClasspath>true</addClasspath>
+                             <classpathPrefix>classes/</classpathPrefix>
+                         </manifest>
+
+                     </archive>
+                 </configuration>
+             </plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 	<build>
 		<plugins>
 
@@ -110,8 +150,8 @@
 				<artifactId>coveralls-maven-plugin</artifactId>
 				<version>4.3.0</version>
 				<configuration>
-					 <jacocoReports>
-							<jacocoReport>${project.basedir}/target/site/jacoco-aggregate/jacoco.xml</jacocoReport>
+					<jacocoReports>
+						<jacocoReport>${project.basedir}/target/site/jacoco-aggregate/jacoco.xml</jacocoReport>
 					</jacocoReports>
 				</configuration>
 			</plugin>

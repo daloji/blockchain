@@ -1,5 +1,5 @@
 <configuration>
-  <property name="HOME_LOG" value="app.log"/>
+  <property name="HOME_LOG" value="blockchain.log"/>
   
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
@@ -9,29 +9,24 @@
   
   <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${HOME_LOG}</file>
-
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>app.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
-            <!-- each archived file, size max 10MB -->
             <maxFileSize>10MB</maxFileSize>
-            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
-            <totalSizeCap>20GB</totalSizeCap>
-            <!-- 60 days to keep -->
-            <maxHistory>60</maxHistory>
+            <totalSizeCap>20MB</totalSizeCap>
+            <maxHistory>3</maxHistory>
         </rollingPolicy>
-
         <encoder>
             <pattern>%d %p %c{1.} [%t] %m%n</pattern>
         </encoder>
     </appender>
  
-  <logger name="com.daloji.blockchain" level="debug" additivity="false">
+  <logger name="com.daloji.blockchain" level="info" additivity="false">
         <appender-ref ref="FILE-ROLLING"/>
     </logger>
-    <logger name="com.daloji.blockchain" level="debug" additivity="false">
+    <logger name="com.daloji.blockchain" level="info" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
-  <root level="debug">
+  <root level="info">
     <appender-ref ref="STDOUT" />
   </root>
 </configuration>

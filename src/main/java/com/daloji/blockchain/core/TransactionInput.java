@@ -144,4 +144,12 @@ public class TransactionInput implements Serializable{
 		return new Pair<TransactionInput, byte[]>(transactinput, buffer);
 	}
 
+
+
+	@Override
+	public String toString() {
+		return "TransactionInput [hash=" + hash + ", index=" + index + ", sciptLeng=" + sciptLeng + ", signatureScript="
+				+ signatureScript + ", sequence=" + sequence + "]";
+	}
+
 }

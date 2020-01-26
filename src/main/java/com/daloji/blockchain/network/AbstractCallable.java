@@ -279,7 +279,9 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		String trame = verAck.generateMessage(netparam, peernode);
 		byte[] dataoutput = Utils.hexStringToByteArray(trame);
 		outPut.write(dataoutput, 0, dataoutput.length);
-		logger.info("<OUT>  Verack " +trame);
+		if(logger.isDebugEnabled()) {
+			logger.debug("<OUT>  Verack " +trame);
+		}
 		return state;
 	}
 
@@ -292,7 +294,9 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		String trame = getblock.generateMessage(netParameters, peerNode);
 		byte[] data = Utils.hexStringToByteArray(trame);
 		outPut.write(data, 0, data.length);	
-		logger.info("<OUT>  GetBlocks :"+Utils.bytesToHex(data));
+		if(logger.isDebugEnabled()) {
+			logger.debug("<OUT>  GetBlocks :"+Utils.bytesToHex(data));
+		}
 		return state;
 	}
 
@@ -306,7 +310,9 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		String trame = getData.generateMessage(netParameters, peerNode);
 		byte[] data = Utils.hexStringToByteArray(trame);
 		outPut.write(data, 0, data.length);	
-		logger.info("<OUT>  GetData :"+Utils.bytesToHex(data));
+		if(logger.isDebugEnabled()) {
+			logger.debug("<OUT>  GetData :"+Utils.bytesToHex(data));
+		}
 		return state;
 	}
 
@@ -319,7 +325,9 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		String trame = version.generateMessage(netParameters, peerNode);
 		byte[] data = Utils.hexStringToByteArray(trame);
 		outPut.write(data, 0, data.length);
-		logger.info("["+peernode.getHost()+"]" +" <OUT>  Version " +trame);
+		if(logger.isDebugEnabled()) {
+			logger.debug("["+peernode.getHost()+"]" +" <OUT>  Version " +trame);
+		}
 		return state;
 	}
 

@@ -175,114 +175,6 @@ public class VersionTrameMessage  extends TrameHeader{
 
 
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.daloji.blockchain.network.trame.TrameHeader#deserialise(byte[])
-	 */
-	/*
-	@Override
-	public <T> T deserialise(byte[] msg) {
-		VersionTrameReceive versionReceive = new VersionTrameReceive();
-		VersionTrameMessage version = new VersionTrameMessage(false);
-		int offset =0;
-		byte[] buffer = new byte[4];
-		System.arraycopy(msg, offset, buffer, 0, buffer.length);
-		version.setMagic(Utils.bytesToHex(buffer));
-		buffer = new byte[12];
-		offset = offset +4;
-		System.arraycopy(msg, offset, buffer, 0, buffer.length);
-		version.setCommande(Utils.bytesToHex(buffer));
-		offset = offset +buffer.length;
-		buffer = new byte[4];
-		System.arraycopy(msg, offset, buffer, 0, 4);
-		String hex = Utils.bytesToHex(buffer);
-		long length=Utils.little2big(hex);
-		version.setLength((int)length);
-		buffer = new byte[(int)length];
-		System.arraycopy(msg, offset+8, buffer, 0,(int) length);
-		String payload = Utils.bytesToHex(buffer);
-		if(!Utils.allZero(Utils.hexStringToByteArray(payload))){
-			buffer = new byte[4];
-			offset = offset +buffer.length;
-			System.arraycopy(msg, offset, buffer, 0, 4);
-			version.setChecksum(Utils.bytesToHex(buffer));
-			offset = offset +buffer.length;;
-			System.arraycopy(msg, offset, buffer, 0, 4);
-			hex = Utils.bytesToHex(buffer);
-			this.version = Utils.little2big(hex);
-			offset = offset +buffer.length;
-			buffer = new byte[8];
-			System.arraycopy(msg, offset, buffer, 0, 8);
-			this.service = Utils.bytesToHex(buffer);
-			buffer = new byte[4];
-			System.arraycopy(msg,36, buffer, 0, 4);
-			String time = Utils.bytesToHex(buffer);
-			long epoch = Utils.little2big(time);
-			this.epoch = epoch;
-			buffer = new byte[16];
-			System.arraycopy(msg,52, buffer, 0, 16);
-			this.setAddressReceive(Utils.bytesToHex(buffer));
-			buffer = new byte[2];
-			System.arraycopy(msg,68, buffer, 0, 2);
-			String strport = Utils.bytesToHex(buffer);
-			long port = Long.parseLong(strport,16);
-			this.portReceive = (int)port;
-			buffer = new byte[16];
-			System.arraycopy(msg,78, buffer, 0, 16);
-			this.setAddressTrans(Utils.bytesToHex(buffer));
-			buffer = new byte[2];
-			System.arraycopy(msg,94, buffer, 0, 2);
-			strport = Utils.bytesToHex(buffer);
-			port = Long.parseLong(strport,16); 
-			this.portTrans=(int)port;
-			buffer = new byte[8];
-			System.arraycopy(msg,96, buffer, 0, 8);
-			this.nonce=Utils.bytesToHex(buffer);
-			buffer = new byte[1];
-			System.arraycopy(msg,104, buffer, 0, 1);
-			String sizeUserAgentStr = Utils.bytesToHex(buffer);
-			long sizeUserAgent = Long.parseLong(sizeUserAgentStr,16);
-			buffer = new byte[(int)sizeUserAgent];
-			System.arraycopy(msg,105, buffer, 0,(int) sizeUserAgent);
-			String useragent = Utils.bytesToHex(buffer);
-			this.userAgent=Utils.hexToAscii(useragent);
-			buffer = new byte[4];
-			offset =(int) (105+sizeUserAgent);
-			System.arraycopy(msg,offset, buffer, 0, 4);
-			String startheigthStr = Utils.bytesToHex(buffer);
-			long startheigth = Long.parseLong(startheigthStr,16);
-			this.startHeigth = (int)startheigth;
-			offset =offset+4;
-			if(msg.length>offset) {
-				offset =offset+1;
-				if(msg[offset]>0){
-					this.relay = true;
-				}
-			}
-
-			versionReceive.setVersion(version);
-			//fin du block version selon le protocole 
-			/**
-	 * le contenu de l'objet version est definie dans 
-	 * See <a href="https://bitcoin.org/en/developer-reference#version"</a>.
-	 *
-			if(msg.length-offset>0) {
-				VersionAckTrame verak = new VersionAckTrame();
-				buffer = new byte[msg.length-offset];
-				System.arraycopy(msg,offset, buffer, 0, buffer.length);
-				VersionAckTrame deserialiseVerak = verak.deserialise(buffer);
-				versionReceive.setVersionAck(deserialiseVerak);
-
-			}
-		}else {
-			this.setPartialTrame(true);
-
-		}
-
-
-		return (T) this;
-	}*/
-
 	/**
 	 * Dans certain cas un noeud peut renvoyer sa Trame version en 2 parties
 	 * @return true si on est dans ce cas
@@ -504,11 +396,13 @@ public class VersionTrameMessage  extends TrameHeader{
 			}
 			byte[] info =new byte[offset];
 			System.arraycopy(msg,0, info, 0, info.length);
-			logger.info("["+getFromPeer().getHost()+"]"+"<IN> Version  "+Utils.bytesToHex(info));
+			if(logger.isDebugEnabled()) {
+				logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Version  "+Utils.bytesToHex(info));
+			}
 			this.setPartialTrame(false);
 			buffer = new byte[msg.length-offset];
 			System.arraycopy(msg,offset, buffer, 0, buffer.length);
-			
+
 		}else {
 			this.setPartialTrame(true);
 			buffer = new byte[0];

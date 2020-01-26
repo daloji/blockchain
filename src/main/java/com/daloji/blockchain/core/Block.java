@@ -182,6 +182,30 @@ public class Block implements Serializable{
 		return bloc;
 	}
 
+	@Override
+	public String toString() {
+		String transact = "";
+		if(listTransaction != null) {
+			for(Transaction transaction:listTransaction) {
+				List<TransactionInput> listInput= transaction.getTxIn();
+				if(listInput !=null) {
+					for(TransactionInput transactioninput:listInput) {
+						transact = transact +transactioninput.toString();
+					}
+				}
+				List<TransactionOutput> listout= transaction.getTxOut();
+				if(listInput !=null) {
+					for(TransactionOutput transactionoutput:listout) {
+						transact = transact +transactionoutput.toString();
+					}
+				}
+			}
+		}
+		return "Block [version=" + version + ", prevBlockHash=" + prevBlockHash + ", merkleRoot=" + merkleRoot
+				+ ", time=" + time + ", difficultyTarget=" + difficultyTarget + ", nonce=" + nonce + ", txCount="
+				+ txCount + ", listTransaction=" + transact + "]";
+	}
+
 	
 	
 }

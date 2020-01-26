@@ -95,5 +95,11 @@ public class TransactionOutput implements Serializable{
 		}
 		return new Pair<TransactionOutput, byte[]>(transactoupt, buffer) ;
 	}
+
+	@Override
+	public String toString() {
+		return "TransactionOutput [value=" + value + ", pkScriptLength=" + pkScriptLength + ", pkScript=" + pkScript
+				+ "]";
+	}
 	
 }

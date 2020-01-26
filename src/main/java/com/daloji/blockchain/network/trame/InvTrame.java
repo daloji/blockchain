@@ -164,8 +164,9 @@ public class InvTrame extends TrameHeader{
 		}
 		byte[] info =new byte[offset];
 		System.arraycopy(msg,0, info, 0, info.length);
-		logger.info("["+getFromPeer().getHost()+"]"+"<IN> Inv   "+Utils.bytesToHex(info));
-
+		if(logger.isDebugEnabled()) {
+			logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Inv   "+Utils.bytesToHex(info));
+		}
 		if(offset<msg.length) {
 
 			buffer = new byte[msg.length -offset];

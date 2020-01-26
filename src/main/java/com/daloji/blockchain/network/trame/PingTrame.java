@@ -52,7 +52,9 @@ public class PingTrame extends TrameHeader{
 		byte[] info =new byte[offset+(int)length];
 		System.arraycopy(msg,0, info, 0, info.length);
 		offset = offset + (int)length;
-		logger.info("["+getFromPeer().getHost()+"]"+"<IN> Ping : "+Utils.bytesToHex(info));
+		if(logger.isDebugEnabled()) {
+		logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Ping : "+Utils.bytesToHex(info));
+		}
 		if(Utils.allZero(Utils.hexStringToByteArray(payload))){
 			this.setPartialTrame(true);
 			buffer = new byte[0];

@@ -130,7 +130,7 @@ public class BlockTrame  extends TrameHeader{
 				buffer = new byte[sizesplit];
 				System.arraycopy(msg, offset, buffer, 0, buffer.length);
 				for(int i=0;i<size;i++) {
-					
+
 					Pair<Transaction,byte[]> transactionBuild = Transaction.buildTransaction(buffer);
 					if(transactionBuild != null) {
 						listTransacation.add(transactionBuild._first);	
@@ -138,14 +138,16 @@ public class BlockTrame  extends TrameHeader{
 					if(transactionBuild._second != null) {
 						buffer = transactionBuild._second;
 					}
-					
+
 				}
-				
+
 				byte[] info =new byte[offset];
 				System.arraycopy(msg,0, info, 0, info.length);
-				logger.info("["+getFromPeer().getHost()+"]"+"<IN> Block : " +this.getMerkelRoot());
+				if(logger.isDebugEnabled()) {
+					logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Block : " +this.getMerkelRoot());
+				}
 			}else {
-				
+
 			}
 
 		}else {
@@ -231,8 +233,8 @@ public class BlockTrame  extends TrameHeader{
 				+ ", time=" + time + ", nBits=" + nBits + ", nonce=" + nonce + ", listTransacation=" + listTransacation
 				+ "]";
 	}
-	
-	
+
+
 	public Block generateBlock() {
 		Block block = new Block();
 		block.setDifficultyTarget(this.getnBits());
@@ -241,10 +243,11 @@ public class BlockTrame  extends TrameHeader{
 		block.setNonce(this.getNonce());
 		block.setPrevBlockHash(this.getPreviousHash());
 		block.setTime(this.getTime());
+		block.setVersion(Utils.little2big(this.getVersion()));
 		if(this.getListTransacation() !=null) {
 			block.setTxCount(this.getListTransacation().size());	
 		}
-		
+
 		return block;
 	}
 

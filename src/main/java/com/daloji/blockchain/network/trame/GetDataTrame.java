@@ -25,10 +25,10 @@ public class GetDataTrame extends TrameHeader{
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(GetDataTrame.class);
 
 	private static final String commande="getdata";
-	
+
 	private List<Inventory> listInv;
 
-	
+
 	public GetDataTrame(List<Inventory> listinv) {
 		listInv =listinv;
 	}
@@ -50,7 +50,7 @@ public class GetDataTrame extends TrameHeader{
 			Inventory inv = listInv.get(i);
 			payload = payload + Utils.intHexpadding(inv.getType().getValue(), 4);
 			payload = payload + inv.getHash();
-			
+
 		}
 
 		return payload;
@@ -105,7 +105,7 @@ public class GetDataTrame extends TrameHeader{
 					size = Integer.parseInt(len,16);
 					offset = offset + buffer.length;
 				}
-				
+
 				listInv = new ArrayList<Inventory>();	
 				for(int i=0;i<size;i++) {
 					buffer = new byte[4];
@@ -166,8 +166,9 @@ public class GetDataTrame extends TrameHeader{
 		}
 		byte[] info =new byte[offset];
 		System.arraycopy(msg,0, info, 0, info.length);
-		logger.info("["+getFromPeer().getHost()+"]"+"<IN> Inv   "+Utils.bytesToHex(info));
-
+		if(logger.isDebugEnabled()) {
+			logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Inv   "+Utils.bytesToHex(info));
+		}
 		if(offset<msg.length) {
 
 			buffer = new byte[msg.length -offset];

@@ -37,15 +37,19 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(NetworkOrchestrator.class);
 
 	private ExecutorService executorService;
+	
+	private ExecutorService executorServiceBlockDownloaded;
 
-	private static final int sizePool = 1;
+	private static final int SIZE_POOL = 3;
+	
+	private static final int NB_THREAD = 2;
 
 	private  CopyOnWriteArrayList<ConnectionNode> listPeerConnected = new CopyOnWriteArrayList<ConnectionNode>(); 
 
 	private  CopyOnWriteArrayList<Inventory> listHeaderBlock = new CopyOnWriteArrayList<Inventory>(); 
 
 	private BlockChain blokchain = new BlockChain();
-	
+
 	/*
 	 * List des Threads clients
 	 */
@@ -76,24 +80,23 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 		logger.info("onStart NetworkOrchestrator");
 
 		ConnectionNode connectionNode = null;
-		executorService = Executors.newFixedThreadPool(2);
+		executorService = Executors.newFixedThreadPool(SIZE_POOL);
+		executorServiceBlockDownloaded = new ThreadPoolExecutor( NB_THREAD, SIZE_POOL, 2, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());		
+				
 		listThreadNodeRunning = new ArrayList<ConnectionNode>();
 		listThreadInPool = new ArrayList<ConnectionNode>();
 		Pair<Retour, List<PeerNode>> dnslookup = DnsLookUp.getInstance().getAllNodePeer();
 		Retour retour = dnslookup._first;
 		if(Utils.isRetourOK(retour)) {
 			listPeer = dnslookup._second;
-			for (int i = 0; i < sizePool; i++) {
+			for (int i = 0; i < NB_THREAD; i++) {
 				PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
 				connectionNode = new ConnectionNode(this,this, NetParameters.MainNet, peer);
 				listThreadInPool.add(connectionNode);
 			}
 			executorService.invokeAll(listThreadInPool);
+//			final ThreadPoolExecutor executor = new ThreadPoolExecutor(sizePool, 3, 10, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
 
-				 final ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 3, 10, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
-					 //new ThreadPoolExecutor(2, 3, 100, TimeUnit.MILLISECONDS,
-		               // new LinkedBlockingQueue<Runnable>(), new ThreadPoolExecutor.CallerRunsPolicy());
-			List<Future<ConnectionNode>> resultList = null;
 		}
 	}
 	@Override
@@ -141,7 +144,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 	@Override
 	public void onBlockHeaderReceive(DataOutputStream dataOut, DataInputStream dataInput, Inventory inventory) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -151,16 +154,17 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 			//logger.info("onBlockHeaderReceive");
 			PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
 			BlockChainHandler blockChain = new BlockChainHandler(this,this, NetParameters.MainNet, peer,inventory);
-			executorService.submit(blockChain);
+			executorServiceBlockDownloaded.submit(blockChain);
 
 		}
 	}
 
 	@Override
 	public void onBlockReiceve(Block block) {
+		logger.info(block.toString());
 		blokchain.setBlock(block.getPrevBlockHash(), block);		
 	}
 
-	
+
 
 }

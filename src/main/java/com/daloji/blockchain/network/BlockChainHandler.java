@@ -70,7 +70,6 @@ public class BlockChainHandler  extends AbstractCallable{
 
 				count = input.read(data);
 				if(count > 0) {
-					logger.info(Utils.bytesToHex(data));
 					ArrayDeque<TrameHeader> deserialize = DeserializerTrame.getInstance().deserialise(lastTrame,data,peerNode);
 					TrameHeader trame = deserialize.getLast();
 					lastTrame = trame;
@@ -80,9 +79,9 @@ public class BlockChainHandler  extends AbstractCallable{
 			}
 
 		}catch (Exception e) {
-			// TODO: handle exception
+			logger.error(e.getMessage());	
 		}
-	
+
 		return null;
 	}
 
