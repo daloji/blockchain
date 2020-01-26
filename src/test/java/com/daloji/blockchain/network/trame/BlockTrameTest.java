@@ -71,8 +71,8 @@ public class BlockTrameTest {
 	   Assert.assertEquals(Utils.allZero(data),true);
 	}
 	
-	@Test
-	public void BlockTrameTest_001() {
+	//@Test
+	public void BlockTrameTest_002() {
 		BlockTrame block = new BlockTrame();
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
