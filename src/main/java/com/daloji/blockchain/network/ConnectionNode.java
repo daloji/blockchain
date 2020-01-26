@@ -74,6 +74,7 @@ public class ConnectionNode  extends AbstractCallable{
 				lastTrame = trame;
 				callGetBlock(deserialize);
 				state = findNExtStep(deserialize);
+				replyAllRequest(deserialize,outPut, netParameters, peerNode);
 			}
 
 		}	

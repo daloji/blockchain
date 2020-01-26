@@ -42,7 +42,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 
 	private static final int SIZE_POOL = 3;
 	
-	private static final int NB_THREAD = 2;
+	private static final int NB_THREAD = 3;
 
 	private  CopyOnWriteArrayList<ConnectionNode> listPeerConnected = new CopyOnWriteArrayList<ConnectionNode>(); 
 

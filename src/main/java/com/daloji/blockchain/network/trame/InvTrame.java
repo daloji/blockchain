@@ -194,4 +194,41 @@ public class InvTrame extends TrameHeader{
 		return null;
 	}
 
+
+
+	@Override
+	public String toString() {
+		return "InvTrame [listinv=" + listinv + "]";
+	}
+
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((listinv == null) ? 0 : listinv.hashCode());
+		return result;
+	}
+
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		InvTrame other = (InvTrame) obj;
+		if (listinv == null) {
+			if (other.listinv != null)
+				return false;
+		} else if (!listinv.equals(other.listinv))
+			return false;
+		return true;
+	}
+	
+
 }

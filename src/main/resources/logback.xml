@@ -20,13 +20,13 @@
         </encoder>
     </appender>
  
-  <logger name="com.daloji.blockchain" level="info" additivity="false">
+  <logger name="com.daloji.blockchain" level="debug" additivity="false">
         <appender-ref ref="FILE-ROLLING"/>
     </logger>
-    <logger name="com.daloji.blockchain" level="info" additivity="false">
+    <logger name="com.daloji.blockchain" level="debug" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
-  <root level="info">
+  <root level="debug">
     <appender-ref ref="STDOUT" />
   </root>
 </configuration>

@@ -96,4 +96,31 @@ public class PingTrame extends TrameHeader{
 		return null;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cmd == null) ? 0 : cmd.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PingTrame other = (PingTrame) obj;
+		if (cmd == null) {
+			if (other.cmd != null)
+				return false;
+		} else if (!cmd.equals(other.cmd))
+			return false;
+		return true;
+	}
+
+	
+	
 }

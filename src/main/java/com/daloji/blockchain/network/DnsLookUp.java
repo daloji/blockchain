@@ -75,19 +75,45 @@ public class DnsLookUp {
 		if(listpeer !=null) {
 			boolean find = false;	
 			int randomNum = ThreadLocalRandom.current().nextInt(0, listpeer.size() + 1);
-			while(!find) {
-				randomNum = ThreadLocalRandom.current().nextInt(0, listpeer.size() + 1);
-				if(randomNum<listpeer.size()) {
-					peernode = listpeer.get(randomNum);
-				}if(peernode !=null) {
-					if(IPVersion.IPV4.equals(peernode.getVersion())) {
-						find = true;
+			boolean peerFree = allPeerisUsed(listpeer);
+			if(!peerFree) {
+				while(!find) {
+					randomNum = ThreadLocalRandom.current().nextInt(0, listpeer.size() + 1);
+					if(randomNum<listpeer.size()) {
+						peernode = listpeer.get(randomNum);
+					}
+					if(peernode !=null) {
+						if(IPVersion.IPV4.equals(peernode.getVersion())) {
+							if(!peernode.isUse()) {
+								listpeer.remove(peernode);
+								peernode.setUse(true);
+								listpeer.add(peernode);
+								find = true;
+							}else {
+								peernode = null;
+							}
+							
+							
+						
+						}
 					}
 				}
 			}
 		}
-
 		return peernode;
+	}
+
+
+	private boolean allPeerisUsed(List<PeerNode> listpeer) {
+		boolean allused = true;
+		if(listpeer !=null) {
+			for(PeerNode peer:listpeer) {
+				if(!peer.isUse()) {
+					allused = false;
+				}
+			}
+		}
+		return allused;
 	}
 
 	/**

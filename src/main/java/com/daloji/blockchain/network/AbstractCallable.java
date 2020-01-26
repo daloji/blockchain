@@ -13,16 +13,20 @@ import java.util.concurrent.Callable;
 
 import org.slf4j.LoggerFactory;
 
+import com.daloji.blockchain.core.Block;
+import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.Utils;
-import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
 import com.daloji.blockchain.network.trame.BlockTrame;
 import com.daloji.blockchain.network.trame.GetBlocksTrame;
 import com.daloji.blockchain.network.trame.GetDataTrame;
+import com.daloji.blockchain.network.trame.InvTrame;
 import com.daloji.blockchain.network.trame.ObjectTrame;
+import com.daloji.blockchain.network.trame.PingTrame;
+import com.daloji.blockchain.network.trame.PongTrame;
 import com.daloji.blockchain.network.trame.STATE_ENGINE;
 import com.daloji.blockchain.network.trame.TrameHeader;
 import com.daloji.blockchain.network.trame.VersionAckTrame;
@@ -204,14 +208,22 @@ public abstract class AbstractCallable  implements Callable<Object>{
 	 */
 
 	public STATE_ENGINE isBlocDownloaded(ArrayDeque<TrameHeader> stacktramHeader) {
-		TrameHeader trame = null;
+		List<Block> listBlock = null;
 		if(state== STATE_ENGINE.GETDATA_SEND ||state == STATE_ENGINE.READY ) {
-			for(int i=0;i<stacktramHeader.size();i++) {
-				trame = stacktramHeader.poll();
+			for(TrameHeader trame:stacktramHeader) {
 				if(trame instanceof BlockTrame) {
+					if(listBlock == null) {
+						listBlock = new ArrayList<>();
+					}
 					state = STATE_ENGINE.STOP;
-					blockChainListener.onBlockReiceve(((BlockTrame) trame).generateBlock());
+					Block block = ((BlockTrame) trame).generateBlock();
+					listBlock.add(block);
 				}
+			}
+		}
+		if(listBlock !=null) {
+			for(Block block:listBlock) {
+				blockChainListener.onBlockReiceve(block);
 			}
 		}
 		return state;
@@ -286,6 +298,27 @@ public abstract class AbstractCallable  implements Callable<Object>{
 	}
 
 
+	protected void replyAllRequest(ArrayDeque<TrameHeader> arrayTrame,DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
+		List<TrameHeader> list	=new ArrayList<TrameHeader>();	
+		if(arrayTrame !=null) {
+			for(TrameHeader trame:arrayTrame) {
+				if(trame instanceof PingTrame) {
+					list.add(trame);
+					PongTrame pong = new PongTrame();
+					String pongtrame = pong.generateMessage(netParameters, peerNode);
+					byte[] dataoutput = Utils.hexStringToByteArray(pongtrame);
+					outPut.write(dataoutput, 0, dataoutput.length);
+					if(logger.isDebugEnabled()) {
+						logger.debug("<OUT>  Pong " +pongtrame);
+					}
+				}
+			}
+			arrayTrame.removeAll(list);
+			
+		}
+
+	}
+
 
 	protected STATE_ENGINE sendGetBlock(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
 		state = STATE_ENGINE.GETBLOCK_SEND;
@@ -299,7 +332,17 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		}
 		return state;
 	}
-
+	/**
+	 * envoi Get DATA Trame
+	 * @param outPut
+	 * DataOutputStream
+	 * @param netparam
+	 * NetParameters
+	 * @param peernode
+	 * peer
+	 * @return STATE_ENGINE
+	 * @throws IOException
+	 */
 
 	protected STATE_ENGINE sendGetData(DataOutputStream outPut,NetParameters netparam,PeerNode peernode,Inventory inv) throws IOException {
 		state = STATE_ENGINE.GETDATA_SEND;
@@ -317,7 +360,17 @@ public abstract class AbstractCallable  implements Callable<Object>{
 	}
 
 
-
+	/**
+	 * envoi Version Trame
+	 * @param outPut
+	 * DataOutputStream
+	 * @param netparam
+	 * NetParameters
+	 * @param peernode
+	 * peer
+	 * @return STATE_ENGINE
+	 * @throws IOException
+	 */
 	protected STATE_ENGINE sendVersion(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
 
 		STATE_ENGINE state = STATE_ENGINE.VERSION_SEND;

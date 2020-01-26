@@ -69,4 +69,36 @@ public class PongTrame extends TrameHeader{
 		return null;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cmd == null) ? 0 : cmd.hashCode());
+		result = prime * result + ((nonce == null) ? 0 : nonce.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PongTrame other = (PongTrame) obj;
+		if (cmd == null) {
+			if (other.cmd != null)
+				return false;
+		} else if (!cmd.equals(other.cmd))
+			return false;
+		if (nonce == null) {
+			if (other.nonce != null)
+				return false;
+		} else if (!nonce.equals(other.nonce))
+			return false;
+		return true;
+	}
+ 
+	 
 }
