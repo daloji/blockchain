@@ -90,7 +90,6 @@
 									<goal>prepare-agent</goal>
 								</goals>
 							</execution>
-							<!-- attached to Maven test phase -->
 							<execution>
 								<id>report</id>
 								<phase>test</phase>
@@ -100,43 +99,6 @@
 							</execution>
 						</executions>
 					</plugin>
-
-					<plugin>
-                 <groupId>org.Apache.maven.plugins</groupId>
-                 <artifactId>maven-dependency-plugin</artifactId>
-                 <version>2.6</version>
-                 <executions>
-                     <execution>
-                         <id>unpack-dependencies</id>
-                         <phase>package</phase>
-                         <goals>
-                             <goal>unpack-dependencies</goal>
-                         </goals>
-                         <configuration>
-                             <excludeScope>system</excludeScope>
-                             <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                         </configuration>
-                     </execution>
-                 </executions>
-             </plugin>
-
-             <plugin>
-                 <groupId>org.Apache.maven.plugins</groupId>
-                 <artifactId>maven-jar-plugin</artifactId>
-                 <version>2.5</version>
-                 <configuration>
-                     <useDefaultManifestFile>true</useDefaultManifestFile>
-                     <archive>
-                         <manifest>
-                             <mainClass>${mainClass}</mainClass>
-                             <packageName>${packageName}</packageName>
-                             <addClasspath>true</addClasspath>
-                             <classpathPrefix>classes/</classpathPrefix>
-                         </manifest>
-
-                     </archive>
-                 </configuration>
-             </plugin>
 
 				</plugins>
 			</build>
