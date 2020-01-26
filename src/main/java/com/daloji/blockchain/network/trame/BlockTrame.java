@@ -71,7 +71,7 @@ public class BlockTrame  extends TrameHeader{
 		System.arraycopy(msg, offset, buffer, 0, buffer.length);
 		String payload = Utils.bytesToHex(buffer);
 		//TODO protection taille de buffer
-		if(!Utils.allZero(Utils.hexStringToByteArray(payload))){
+		if(!Utils.allZero(Utils.hexStringToByteArray(payload)) && !isStartMagic(payload)){
 			if((buffer.length+offset)<msg.length) {
 				buffer = new byte[4];
 				System.arraycopy(msg, offset, buffer, 0, buffer.length);
@@ -152,7 +152,6 @@ public class BlockTrame  extends TrameHeader{
 
 		}else {
 			this.setPartialTrame(true);
-			buffer = new byte[0];
 		}
 		return (T) buffer;
 	}
@@ -249,6 +248,17 @@ public class BlockTrame  extends TrameHeader{
 		}
 
 		return block;
+	}
+	
+	
+	private boolean isStartMagic(String payload) {
+		boolean isStartMagic = true;
+		if( payload !=null) {
+			if(!payload.startsWith(NetParameters.MainNet.getMagic())) {
+				isStartMagic = false;
+			}
+		}
+		return isStartMagic;
 	}
 
 }

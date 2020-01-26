@@ -27,6 +27,8 @@ public class DeserializerTrameTest {
 	private static String partial_trame="F9BEB4D976657273696F6E000000000068000000C79722900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 
 	 private static String trame_block;
+	 
+	 private static String trame_block_receive_002;
 	
 	@BeforeClass
 	public static void before() throws IOException {
@@ -36,7 +38,7 @@ public class DeserializerTrameTest {
         // load a properties file
         prop.load(new FileInputStream(file));
         trame_block = (prop.getProperty("trame_block"));
-          
+        trame_block_receive_002 = (prop.getProperty("bloc_receive_002"));
 	}
 	@Test
 	public  void  deserialiseTest_OK() {
@@ -210,9 +212,9 @@ public class DeserializerTrameTest {
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
 		peer.setPort(8333);
-		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(trame_block), peer);
+		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(trame_block_receive_002), peer);
 		Assert.assertNotNull(stackCommand); 
-		Assert.assertEquals(stackCommand.size(), 5);
+		Assert.assertEquals(stackCommand.size(), 6);
 		BlockTrame block = (BlockTrame) stackCommand.removeLast();
 		Assert.assertEquals(block.getChecksum(), "934D270A");
 		Assert.assertEquals(block.getMerkelRoot(), "982051FD1E4BA744BBBE680E1FEE14677BA1A3C3540BF7B1CDB606E857233E0E");
@@ -223,7 +225,5 @@ public class DeserializerTrameTest {
 
 
 	}
-	
-	
-	
+		
 }
