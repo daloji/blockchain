@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/daloji/blockchain.svg?branch=master)](https://travis-ci.org/daloji/blockchain) 
 [![Coverage Status](https://coveralls.io/repos/github/daloji/blockchain/badge.svg)](https://coveralls.io/github/daloji/blockchain)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/65c0fe9214ff4f0296102967274ef846)](https://www.codacy.com/manual/daloji/blockchain?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=daloji/blockchain&amp;utm_campaign=Badge_Grade)
 
 
 # Implémentation du protocole Bitcoin en Java
