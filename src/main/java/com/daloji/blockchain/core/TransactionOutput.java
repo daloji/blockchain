@@ -63,26 +63,9 @@ public class TransactionOutput implements Serializable{
 			System.arraycopy(data, offset, buffer, 0, buffer.length);
 			String len = Utils.bytesToHex(buffer);
 			long size = Integer.parseInt(len,16);
-			if(size<Utils.FD_HEXA) {
-				buffer = new byte[1];
-				offset = offset + buffer.length;				
-			}else if(size>=Utils.FD_HEXA && size<=Utils.FFFF_HEXA) {
-				buffer = new byte[2];
-				offset = offset + 1;
-				System.arraycopy(data, offset, buffer, 0,buffer.length);
-				len = Utils.bytesToHex(buffer);
-				len = Utils.StrLittleEndian(len);
-				size =Integer.parseInt(len,16);
-				offset = offset + buffer.length;	
-			}else if(size>Utils.FFFF_HEXA) {
-				buffer = new byte[4];
-				offset = offset + 1;
-				System.arraycopy(data, offset, buffer, 0,buffer.length);
-				len = Utils.bytesToHex(buffer);
-				len = Utils.StrLittleEndian(len);
-				size =Integer.parseInt(len,16);
-				offset = offset + buffer.length;
-			}
+			Pair<Long, Integer> compactsize = Utils.getCompactSize(size, offset, data);
+			size = compactsize.first;
+			offset = compactsize.second;
 			transactoupt.setPkScriptLength(size);
 			offset = offset + buffer.length;
 			buffer = new byte[(int)size];

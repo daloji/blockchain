@@ -131,26 +131,9 @@ public class Transaction implements Serializable {
 			System.arraycopy(data, offset, buffer, 0, buffer.length);
 			String len = Utils.bytesToHex(buffer);
 			long size = Integer.parseInt(len,16);
-			if(size<Utils.FD_HEXA) {
-				buffer = new byte[1];
-				offset = offset + buffer.length;				
-			}else if(size>=Utils.FD_HEXA && size<=Utils.FFFF_HEXA) {
-				buffer = new byte[2];
-				offset = offset + 1;
-				System.arraycopy(data, offset, buffer, 0,buffer.length);
-				len = Utils.bytesToHex(buffer);
-				len = Utils.StrLittleEndian(len);
-				size =Integer.parseInt(len,16);
-				offset = offset + buffer.length;	
-			}else if(size>Utils.FFFF_HEXA) {
-				buffer = new byte[4];
-				offset = offset + 1;
-				System.arraycopy(data, offset, buffer, 0,buffer.length);
-				len = Utils.bytesToHex(buffer);
-				len = Utils.StrLittleEndian(len);
-				size =Integer.parseInt(len,16);
-				offset = offset + buffer.length;
-			}
+			Pair<Long, Integer> compactsize = Utils.getCompactSize(size, offset, data);
+			size = compactsize.first;
+			offset = compactsize.second;
 			transaction.setTxInCount(size);
 			List<TransactionInput> list = new ArrayList<TransactionInput>();
 			int sizesplit = data.length - offset;
@@ -158,12 +141,12 @@ public class Transaction implements Serializable {
 			System.arraycopy(data, offset, buffer, 0, buffer.length);
 			for(int i=0;i<size;i++) {
 				Pair<TransactionInput, byte[]> transactionInputRep = TransactionInput.buildTransactionInput(buffer);
-				TransactionInput tansactionInput = transactionInputRep._first;
+				TransactionInput tansactionInput = transactionInputRep.first;
 				if(tansactionInput != null) {
 					list.add(tansactionInput);
 				}
-				if(transactionInputRep._second !=null) {
-					data = 	transactionInputRep._second;
+				if(transactionInputRep.second !=null) {
+					data = 	transactionInputRep.second;
 				}
 			}
 			transaction.setTxIn(list);
@@ -199,12 +182,12 @@ public class Transaction implements Serializable {
 			System.arraycopy(data, offset, buffer, 0, buffer.length);
 			for(int i=0;i<size;i++) {
 				Pair<TransactionOutput, byte[]> transactionoutputRep = TransactionOutput.buildTransactionOutput(buffer);
-				TransactionOutput tansactionOutput = transactionoutputRep._first;
+				TransactionOutput tansactionOutput = transactionoutputRep.first;
 				if(tansactionOutput != null) {
 					listOupt.add(tansactionOutput);
 				}
-				if(transactionoutputRep._second !=null) {
-					data = 	transactionoutputRep._second;
+				if(transactionoutputRep.second !=null) {
+					data = 	transactionoutputRep.second;
 				}
 			}
 			transaction.setTxOut(listOupt);

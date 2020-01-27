@@ -7,12 +7,12 @@ import java.io.Serializable;
  * Class generique  pour les pairs 
  * @author daloji
  *
- * @param <F>
+ * @param <T>
  *  	Objet generique
- * @param <S>
+ * @param <L>
  * 		Objet Generique
  */
-public class Pair<F, S> implements Serializable
+public class Pair<T, L> implements Serializable
 {
 
 	/**
@@ -21,23 +21,23 @@ public class Pair<F, S> implements Serializable
 	private static final long serialVersionUID = 1L;
 
 
-	public F _first; 
+	public T first; 
 
 
-	public S _second;
+	public L second;
 
-	public Pair(F first_p, S second_p)
+	public Pair(T first, L second)
 	{
-		_first = first_p;
-		_second = second_p;
+		this.first = first;
+		this.second = second;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((_first == null) ? 0 : _first.hashCode());
-		result = prime * result + ((_second == null) ? 0 : _second.hashCode());
+		result = prime * result + ((first == null) ? 0 : first.hashCode());
+		result = prime * result + ((second == null) ? 0 : second.hashCode());
 		return result;
 	}
 
@@ -50,15 +50,15 @@ public class Pair<F, S> implements Serializable
 		if (getClass() != obj.getClass())
 			return false;
 		Pair other = (Pair) obj;
-		if (_first == null) {
-			if (other._first != null)
+		if (first == null) {
+			if (other.first != null)
 				return false;
-		} else if (!_first.equals(other._first))
+		} else if (!first.equals(other.first))
 			return false;
-		if (_second == null) {
-			if (other._second != null)
+		if (second == null) {
+			if (other.second != null)
 				return false;
-		} else if (!_second.equals(other._second))
+		} else if (!second.equals(other.second))
 			return false;
 		return true;
 	}

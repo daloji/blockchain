@@ -4,6 +4,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
+import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.commons.Retour;
 import com.daloji.blockchain.network.NetParameters;
 /**
@@ -19,11 +20,11 @@ public class Utils {
 	public static String RETOUR_OK ="OK";
 
 	public static String RETOUR_NOK ="NOK";
-	
+
 	public static int FD_HEXA = 253;
-	
+
 	public static int FFFF_HEXA = 65535;
-	
+
 
 	public static String FATAL_ERROR ="FATAL_ERROR";
 
@@ -38,6 +39,46 @@ public class Utils {
 
 	/* timeout peer */
 	public static final int timeoutPeer = 1000*3600*2;
+
+
+	/**
+	 * calcul du compact size
+	 * @param size
+	 * taille du buffer
+	 * @param offset
+	 * offest du buffer
+	 * @param data
+	 * donnée buffer
+	 * @return
+	 */
+	public static Pair<Long,Integer>  getCompactSize(long size,int offset,byte[] data){
+		Pair<Long,Integer> compactSize = null;
+		String len;
+		byte[] buffer;
+		if(size<Utils.FD_HEXA) {
+			buffer = new byte[1];
+			offset = offset + buffer.length;				
+		}else if(size>=Utils.FD_HEXA && size<=Utils.FFFF_HEXA) {
+			buffer = new byte[2];
+			offset = offset + 1;
+			System.arraycopy(data, offset, buffer, 0,buffer.length);
+			len = Utils.bytesToHex(buffer);
+			len = Utils.StrLittleEndian(len);
+			size =Integer.parseInt(len,16);
+			offset = offset + buffer.length;	
+		}else if(size>Utils.FFFF_HEXA) {
+			buffer = new byte[4];
+			offset = offset + 1;
+			System.arraycopy(data, offset, buffer, 0,buffer.length);
+			len = Utils.bytesToHex(buffer);
+			len = Utils.StrLittleEndian(len);
+			size =Integer.parseInt(len,16);
+			offset = offset + buffer.length;
+		}
+
+		compactSize = new Pair<Long, Integer>(size, offset);
+		return compactSize;
+	}
 
 	/**
 	 * 
@@ -79,18 +120,18 @@ public class Utils {
 		return data;
 	}
 
-	
+
 	public static String StrLittleEndian(final String endian) {
 		byte[] bs = Utils.hexStringToByteArray(endian);
-    	byte b;
-    	for(int i=0; i<bs.length/2; i++){
-    			b = bs[i];
-    			bs[i] = bs[bs.length-1-i];
-    			bs[bs.length-1-i] = b;
-    	}
-    	return Utils.bytesToHex(bs);
+		byte b;
+		for(int i=0; i<bs.length/2; i++){
+			b = bs[i];
+			bs[i] = bs[bs.length-1-i];
+			bs[bs.length-1-i] = b;
+		}
+		return Utils.bytesToHex(bs);
 	}
-	
+
 	/**
 	 * conversion d'un entier en chaine hexadecimal 
 	 * @param value

@@ -6,11 +6,9 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -86,9 +84,9 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 		listThreadNodeRunning = new ArrayList<ConnectionNode>();
 		listThreadInPool = new ArrayList<ConnectionNode>();
 		Pair<Retour, List<PeerNode>> dnslookup = DnsLookUp.getInstance().getAllNodePeer();
-		Retour retour = dnslookup._first;
+		Retour retour = dnslookup.first;
 		if(Utils.isRetourOK(retour)) {
-			listPeer = dnslookup._second;
+			listPeer = dnslookup.second;
 			for (int i = 0; i < NB_THREAD; i++) {
 				PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
 				connectionNode = new ConnectionNode(this,this, NetParameters.MainNet, peer);

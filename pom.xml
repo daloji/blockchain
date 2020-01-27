@@ -18,10 +18,11 @@
 		<powermock.version>1.7.0</powermock.version>
 		<easymock.version>3.4</easymock.version>
 		<podam.version>7.0.5.RELEASE</podam.version>
+		<leveldb.version>0.12</leveldb.version>
 		<logback.version>1.2.3</logback.version>
 		<commons-lang3>3.9</commons-lang3>
 		<packageName>com.daloji.blockchain.core</packageName>
-         <mainClass>App</mainClass>
+		<mainClass>App</mainClass>
 	</properties>
 
 	<dependencies>
@@ -69,7 +70,17 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.iq80.leveldb</groupId>
+			<artifactId>leveldb-api</artifactId>
+			<version>${leveldb.version}</version>
+		</dependency>
 
+		<dependency>
+			<groupId>org.iq80.leveldb</groupId>
+			<artifactId>leveldb</artifactId>
+			<version>${leveldb.version}</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>

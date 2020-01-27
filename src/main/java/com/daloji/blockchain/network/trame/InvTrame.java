@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.Utils;
+import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
 
@@ -83,28 +84,9 @@ public class InvTrame extends TrameHeader{
 				System.arraycopy(msg, offset, buffer, 0, buffer.length);
 				String len = Utils.bytesToHex(buffer);
 				long size = Integer.parseInt(len,16);
-				if(size<Utils.FD_HEXA) {
-					buffer = new byte[1];
-					offset = offset + buffer.length;				
-				}else if(size>=Utils.FD_HEXA && size<=Utils.FFFF_HEXA) {
-					buffer = new byte[2];
-					offset = offset + 1;
-					System.arraycopy(msg, offset, buffer, 0,buffer.length);
-					len = Utils.bytesToHex(buffer);
-					len = Utils.StrLittleEndian(len);
-					size =Integer.parseInt(len,16);
-					offset = offset + buffer.length;	
-				}else if(size>Utils.FFFF_HEXA) {
-					buffer = new byte[4];
-					offset = offset + 1;
-					System.arraycopy(msg, offset, buffer, 0,buffer.length);
-					len = Utils.bytesToHex(buffer);
-					len = Utils.StrLittleEndian(len);
-					size =Integer.parseInt(len,16);
-					offset = offset + buffer.length;
-				}
-
-
+				Pair<Long, Integer> compactsize = Utils.getCompactSize(size, offset, msg);
+				size = compactsize.first;
+				offset = compactsize.second;
 				for(int i=0;i<size;i++) {
 					buffer = new byte[4];
 					if((offset+buffer.length)<msg.length) {
