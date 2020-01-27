@@ -222,7 +222,7 @@ public class DeserializerTrameTest {
 		Assert.assertEquals(block.getPreviousHash(), null);
 		Assert.assertEquals(block.getVersion(), null);
 		Assert.assertEquals(block.getNonce(),0);
-		Assert.assertEquals(block.isPartialTrame(),true);
+		Assert.assertEquals(block.isPartialTrame(),true );
 
 	}
 		
