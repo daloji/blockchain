@@ -22,6 +22,7 @@ import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.commons.Retour;
+import com.daloji.blockchain.core.commons.proxy.LevelDbProxy;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
@@ -160,6 +161,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 	@Override
 	public void onBlockReiceve(Block block) {
 		logger.info(block.toString());
+		LevelDbProxy.getInstance().addObject(block);
 		blokchain.setBlock(block.getPrevBlockHash(), block);		
 	}
 

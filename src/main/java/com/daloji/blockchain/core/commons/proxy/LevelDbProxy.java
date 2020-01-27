@@ -1,7 +1,9 @@
 package com.daloji.blockchain.core.commons.proxy;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.concurrent.locks.Lock;
 
 import org.iq80.leveldb.DB;
@@ -9,6 +11,7 @@ import org.iq80.leveldb.Options;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Block;
+import com.daloji.blockchain.core.Utils;
 
 import static org.iq80.leveldb.impl.Iq80DBFactory.*;
 import ch.qos.logback.classic.Logger;
@@ -17,13 +20,13 @@ public class LevelDbProxy implements DatabaseExchange {
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(LevelDbProxy.class);
 
-	private static final LevelDbProxy instance = new LevelDbProxy();
+	private static  LevelDbProxy instance = null; 
 
 	private static final String LEVEL_DB_FILE ="Blockchain";
 
 	/** level-Db **/
 	private static DB database;
-	
+
 	private Lock lock;
 
 	/**
@@ -33,7 +36,11 @@ public class LevelDbProxy implements DatabaseExchange {
 	 */
 	public static LevelDbProxy getInstance()
 	{
-		initDatabase();
+		if(instance == null) {
+			initDatabase();
+			instance = new LevelDbProxy();
+		}
+
 		return instance;
 	}
 
@@ -69,22 +76,39 @@ public class LevelDbProxy implements DatabaseExchange {
 		String hash = "";
 		if(bloc !=null) {
 			hash = bloc.generateHash();	
-			database.put(bytes(hash), null);
+			database.put(bytes(hash), Utils.convertToBytes(bloc));
 		}
-		
+
 	}
 
 
 	@Override
 	public Block findBlock(String hash) {
-		// TODO Auto-generated method stub
-		return null;
+		Block bloc = null;
+		ObjectInputStream is = null;
+		try {
+			byte[] data = database.get(bytes(hash));
+			if(data !=null) {
+				ByteArrayInputStream in = new ByteArrayInputStream(data);
+				is = new ObjectInputStream(in);
+				bloc = (Block) is.readObject();
+				if(is!=null) {
+					is.close();
+				}
+				if(in != null) {
+					in.close();
+				}
+			}
+		} catch (IOException | ClassNotFoundException ex) {
+			logger.error(ex.getMessage());
+		}
+		return bloc ;
 	}
 
 
 	@Override
 	public boolean deleteBlock(String hash) {
-		//database.delete(bytes(hash), wo);
+		database.delete(bytes(hash));
 		return false;
 	}
 

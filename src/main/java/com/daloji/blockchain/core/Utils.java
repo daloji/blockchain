@@ -1,5 +1,9 @@
 package com.daloji.blockchain.core;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -118,6 +122,18 @@ public class Utils {
 					+ Character.digit(s.charAt(i+1), 16));
 		}
 		return data;
+	}
+	
+	
+	
+	public static byte[] convertToBytes(Object object)  {
+	    try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	         ObjectOutput out = new ObjectOutputStream(bos)) {
+	        out.writeObject(object);
+	        return bos.toByteArray(); 
+	    } catch (IOException e) {
+			return null;
+		} 
 	}
 
 
