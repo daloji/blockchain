@@ -136,7 +136,7 @@ public class Block implements Serializable{
 	 * @return
 	 * @throws IOException 
 	 */
-	public String generateHash() throws IOException {
+	public String generateHash() {
 		String info = "";
 		info = info + Utils.intHexpadding((int)version,4);
 		info = info + prevBlockHash;
