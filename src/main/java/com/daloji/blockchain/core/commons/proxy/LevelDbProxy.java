@@ -58,7 +58,7 @@ public class LevelDbProxy implements DatabaseExchange {
 
 	}
 
-	private void closeDatabase() {
+	public void closeDatabase() {
 		try {
 			if(database !=null) {
 				database.close();	

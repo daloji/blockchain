@@ -21,6 +21,7 @@ public class LevelDbProxyTest {
 		 LevelDbProxy.getInstance().deleteBlock(bloc.generateHash());
 		  blockreceive = LevelDbProxy.getInstance().findBlock(bloc.generateHash());
 		 Assert.assertNull(blockreceive);
+		 LevelDbProxy.getInstance().closeDatabase();
 	}		 
 
 }
