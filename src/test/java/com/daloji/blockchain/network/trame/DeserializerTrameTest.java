@@ -215,14 +215,14 @@ public class DeserializerTrameTest {
 		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(trame_block_receive_002), peer);
 		Assert.assertNotNull(stackCommand); 
 		Assert.assertEquals(stackCommand.size(), 6);
-		BlockTrame block = (BlockTrame) stackCommand.removeLast();
-		Assert.assertEquals(block.getChecksum(), "934D270A");
-		Assert.assertEquals(block.getMerkelRoot(), "982051FD1E4BA744BBBE680E1FEE14677BA1A3C3540BF7B1CDB606E857233E0E");
-		Assert.assertEquals(block.getTime(), 1231469665);
-		Assert.assertEquals(block.getPreviousHash(), "6FE28C0AB6F1B372C1A6A246AE63F74F931E8365E15A089C68D6190000000000");
-		Assert.assertEquals(block.getVersion(), "01000000");
-		Assert.assertEquals(block.getNonce(),(long) 2573394689L);
-
+		BlockTrame block = (BlockTrame) stackCommand.removeFirst();
+		Assert.assertEquals(block.getChecksum(), "96D90DEB");
+		Assert.assertEquals(block.getMerkelRoot(), null);
+		Assert.assertEquals(block.getTime(), 0);
+		Assert.assertEquals(block.getPreviousHash(), null);
+		Assert.assertEquals(block.getVersion(), null);
+		Assert.assertEquals(block.getNonce(),0);
+		Assert.assertEquals(block.isPartialTrame(),true);
 
 	}
 		
