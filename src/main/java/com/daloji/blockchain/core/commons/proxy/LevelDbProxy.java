@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.util.concurrent.locks.Lock;
 
 import org.iq80.leveldb.DB;
+import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.Options;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,7 @@ public class LevelDbProxy implements DatabaseExchange {
 
 	private static  LevelDbProxy instance = null; 
 
-	private static final String LEVEL_DB_FILE ="Blockchain";
+	private static  String LEVEL_DB_FILE ="Blockchain";
 
 	/** level-Db **/
 	private static DB database;
@@ -77,8 +78,7 @@ public class LevelDbProxy implements DatabaseExchange {
 	public void addObject(Block bloc) {
 		String hash = "";
 		if(bloc !=null) {
-			hash = bloc.generateHash();	
-			database.put(bytes(hash), Utils.convertToBytes(bloc));
+			database.put(Utils.hexStringToByteArray(bloc.generateHash()), Utils.convertToBytes(bloc));
 		}
 
 	}
@@ -111,6 +111,12 @@ public class LevelDbProxy implements DatabaseExchange {
 	@Override
 	public void deleteBlock(String hash) {
 		database.delete(bytes(hash));
+	}
+	
+	public DBIterator getIterator() {
+		DBIterator iterator = database.iterator();
+		return iterator;
+	
 	}
 
 }
