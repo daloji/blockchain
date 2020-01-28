@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.commons.Retour;
-import com.daloji.blockchain.core.utils.BlockChainThreadFactory;
+import com.daloji.blockchain.core.utils.BlockChainWareHouseThreadFactory;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.peers.PeerNode;
 
@@ -21,12 +21,11 @@ public class DnsLookUp {
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(DnsLookUp.class);
 
-	protected final ReentrantLock lock = BlockChainThreadFactory.lockThisObject(DnsLookUp.class);
+	protected final ReentrantLock lock = BlockChainWareHouseThreadFactory.lockThisObject(DnsLookUp.class);
 	
 	private static final DnsLookUp instance = new DnsLookUp();
 	
 
-	
 	
 	/**
 	 * singleton
