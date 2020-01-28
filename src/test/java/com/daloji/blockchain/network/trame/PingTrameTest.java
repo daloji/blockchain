@@ -3,7 +3,7 @@ package com.daloji.blockchain.network.trame;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.daloji.blockchain.core.Utils;
+import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.IPVersion;
 import com.daloji.blockchain.network.peers.PeerNode;
 import com.daloji.blockchain.network.trame.PingTrame;

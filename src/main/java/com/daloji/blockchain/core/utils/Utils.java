@@ -1,4 +1,4 @@
-package com.daloji.blockchain.core;
+package com.daloji.blockchain.core.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

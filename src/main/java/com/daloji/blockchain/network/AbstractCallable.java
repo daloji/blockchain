@@ -14,16 +14,14 @@ import java.util.concurrent.Callable;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Block;
-import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Inventory;
-import com.daloji.blockchain.core.Utils;
+import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
 import com.daloji.blockchain.network.trame.BlockTrame;
 import com.daloji.blockchain.network.trame.GetBlocksTrame;
 import com.daloji.blockchain.network.trame.GetDataTrame;
-import com.daloji.blockchain.network.trame.InvTrame;
 import com.daloji.blockchain.network.trame.ObjectTrame;
 import com.daloji.blockchain.network.trame.PingTrame;
 import com.daloji.blockchain.network.trame.PongTrame;

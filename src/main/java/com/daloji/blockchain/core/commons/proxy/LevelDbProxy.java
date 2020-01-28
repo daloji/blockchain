@@ -1,5 +1,8 @@
 package com.daloji.blockchain.core.commons.proxy;
 
+import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
+import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -11,9 +14,8 @@ import org.iq80.leveldb.Options;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Block;
-import com.daloji.blockchain.core.Utils;
+import com.daloji.blockchain.core.utils.Utils;
 
-import static org.iq80.leveldb.impl.Iq80DBFactory.*;
 import ch.qos.logback.classic.Logger;
 
 public class LevelDbProxy implements DatabaseExchange {
@@ -107,9 +109,8 @@ public class LevelDbProxy implements DatabaseExchange {
 
 
 	@Override
-	public boolean deleteBlock(String hash) {
+	public void deleteBlock(String hash) {
 		database.delete(bytes(hash));
-		return false;
 	}
 
 }

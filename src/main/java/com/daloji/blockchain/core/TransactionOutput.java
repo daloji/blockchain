@@ -3,6 +3,7 @@
 import java.io.Serializable;
 
 import com.daloji.blockchain.core.commons.Pair;
+import com.daloji.blockchain.core.utils.Utils;
 
 /**
  *  Transaction output

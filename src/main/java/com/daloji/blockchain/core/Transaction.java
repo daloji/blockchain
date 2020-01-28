@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.daloji.blockchain.core.commons.Pair;
+import com.daloji.blockchain.core.utils.Utils;
 
 /**
  *  Objet Transaction

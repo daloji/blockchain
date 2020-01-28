@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
+import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.trame.BlockTrame;
 
 /**

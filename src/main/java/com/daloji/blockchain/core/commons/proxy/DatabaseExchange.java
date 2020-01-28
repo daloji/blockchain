@@ -8,6 +8,6 @@ public interface DatabaseExchange {
 	
 	public Block findBlock(String hash);
 	
-	public boolean deleteBlock(String hash);
+	public void deleteBlock(String hash);
 	
 }

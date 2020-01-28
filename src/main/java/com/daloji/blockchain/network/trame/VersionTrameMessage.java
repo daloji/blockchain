@@ -6,8 +6,8 @@ import java.util.Arrays;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Crypto;
-import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.core.commons.Retour;
+import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
 

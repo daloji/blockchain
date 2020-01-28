@@ -13,7 +13,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.daloji.blockchain.core.InvType;
-import com.daloji.blockchain.core.Utils;
+import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.IPVersion;
 import com.daloji.blockchain.network.peers.PeerNode;
 import com.daloji.blockchain.network.trame.InvTrame;

@@ -5,12 +5,14 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.LoggerFactory;
 
-import com.daloji.blockchain.core.Utils;
 import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.commons.Retour;
+import com.daloji.blockchain.core.utils.BlockChainThreadFactory;
+import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.peers.PeerNode;
 
 import ch.qos.logback.classic.Logger;
@@ -19,8 +21,13 @@ public class DnsLookUp {
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(DnsLookUp.class);
 
+	protected final ReentrantLock lock = BlockChainThreadFactory.lockThisObject(DnsLookUp.class);
+	
 	private static final DnsLookUp instance = new DnsLookUp();
+	
 
+	
+	
 	/**
 	 * singleton
 	 * 
