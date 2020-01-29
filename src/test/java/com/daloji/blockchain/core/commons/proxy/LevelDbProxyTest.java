@@ -1,25 +1,41 @@
 package com.daloji.blockchain.core.commons.proxy;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
 
 import org.iq80.leveldb.DBIterator;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
+import org.powermock.api.easymock.annotation.MockStrict;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import com.daloji.blockchain.core.Block;
 import com.daloji.blockchain.core.utils.Utils;
-import com.daloji.blockchain.network.BlockChainHandler;
-import com.daloji.blockchain.network.NetParameters;
-import com.daloji.blockchain.network.trame.InvTrameTest;
-import com.daloji.blockchain.network.trame.STATE_ENGINE;
 
+
+//@RunWith(PowerMockRunner.class)
+//@PowerMockIgnore({"javax.crypto.*","javax.security.auth.*"})
+//@PrepareForTest({LevelDbProxy.class})
 public class LevelDbProxyTest {
 
-	@Test
+	
+	//@MockStrict
+	private LevelDbProxy levelDbproxy;
+	
+	//@Before
+	public void beforeTest() {
+		PowerMock.resetAll();
+		
+	}
+	
+	//@Test
 	public void  addLevelDb() {
 		Block bloc = new Block();
 		bloc.setPrevBlockHash("previous");
