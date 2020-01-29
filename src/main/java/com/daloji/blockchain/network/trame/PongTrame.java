@@ -53,7 +53,6 @@ public class PongTrame extends TrameHeader{
 		msg = msg + network.getMagic();
 		msg = msg + getCommande();
 		msg = msg + Utils.intHexpadding(getLength(), 4);
-		nonce = Utils.generateNonce(16);
 		byte[] array = Crypto.doubleSha256(Utils.hexStringToByteArray(nonce));
 		String checksum =Utils.bytesToHex(array);
 		checksum =checksum.substring(0, 8);

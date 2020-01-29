@@ -303,6 +303,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 				if(trame instanceof PingTrame) {
 					list.add(trame);
 					PongTrame pong = new PongTrame();
+					pong.setNonce(((PingTrame) trame).getNonce());
 					String pongtrame = pong.generateMessage(netParameters, peerNode);
 					byte[] dataoutput = Utils.hexStringToByteArray(pongtrame);
 					outPut.write(dataoutput, 0, dataoutput.length);

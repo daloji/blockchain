@@ -18,8 +18,12 @@ public class PongTrameTest {
 		PongTrame pongtrame = new PongTrame();
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
+		PingTrame ping = new PingTrame();
+		String pingMess = ping.generateMessage(NetParameters.MainNet, peer);
 		pongtrame.setFromPeer(peer);
+		pongtrame.setNonce(ping.getNonce());
 		String pong = pongtrame.generateMessage(NetParameters.MainNet, peer);
+		System.out.println(pong);
 		Assert.assertEquals(pong.substring(0,8),"F9BEB4D9");
 		Assert.assertEquals(pong.substring(8,32),"706f6e670000000000000000");
 		Assert.assertEquals(pong.substring(32,40),"08000000");
@@ -28,7 +32,7 @@ public class PongTrameTest {
 		String checksum =Utils.bytesToHex(array);
 		checksum =checksum.substring(0, 8);
 		Assert.assertEquals(pong.substring(40,48),checksum);
-		Assert.assertEquals(pong.substring(48,64),nonce);
+		Assert.assertEquals(pong.substring(48,64),ping.getNonce());
 
 
 	}

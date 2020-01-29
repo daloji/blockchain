@@ -14,6 +14,8 @@ public class PingTrame extends TrameHeader{
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(PingTrame.class);
 
 	private String cmd = "ping";
+	
+	private String nonce ;
 	/**
 	 * 
 	 */
@@ -21,8 +23,20 @@ public class PingTrame extends TrameHeader{
 
 	@Override
 	public String generatePayload(NetParameters network) {
-		// TODO Auto-generated method stub
-		return null;
+		String msg = "";
+		setMagic(network.getMagic());
+		setCommande(Utils.convertStringToHex(cmd,12));
+		setLength(8);
+		msg = msg + network.getMagic();
+		msg = msg + getCommande();
+		msg = msg + Utils.intHexpadding(getLength(), 4);
+		nonce = Utils.generateNonce(16);
+		byte[] array = Crypto.doubleSha256(Utils.hexStringToByteArray(nonce));
+		String checksum =Utils.bytesToHex(array);
+		checksum =checksum.substring(0, 8);
+		msg = msg +checksum;
+		msg = msg +nonce;
+		return msg;
 	}
 
 	@Override
@@ -49,6 +63,7 @@ public class PingTrame extends TrameHeader{
 		buffer = new byte[(int)length];
 		System.arraycopy(msg, offset, buffer, 0, buffer.length);
 		String payload = Utils.bytesToHex(buffer);
+		this.nonce = payload;
 		byte[] info =new byte[offset+(int)length];
 		System.arraycopy(msg,0, info, 0, info.length);
 		offset = offset + (int)length;
@@ -71,6 +86,14 @@ public class PingTrame extends TrameHeader{
 		return (T) buffer;
 	}
 
+	public String getNonce() {
+		return nonce;
+	}
+
+	public void setNonce(String nonce) {
+		this.nonce = nonce;
+	}
+
 	@Override
 	public String generateMessage(NetParameters network, PeerNode peer) {
 		String msg = "";
@@ -80,7 +103,8 @@ public class PingTrame extends TrameHeader{
 		msg = msg + network.getMagic();
 		msg = msg + getCommande();
 		msg = msg + Utils.intHexpadding(getLength(), 4);
-		String payload = Utils.generateNonce(8);
+		String payload = Utils.generateNonce(16);
+		this.nonce = payload;
 		byte[] array = Crypto.doubleSha256(Utils.hexStringToByteArray(payload));
 		String checksum =Utils.bytesToHex(array);
 		checksum =checksum.substring(0, 8);
@@ -101,6 +125,7 @@ public class PingTrame extends TrameHeader{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((cmd == null) ? 0 : cmd.hashCode());
+		result = prime * result + ((nonce == null) ? 0 : nonce.hashCode());
 		return result;
 	}
 
@@ -118,9 +143,13 @@ public class PingTrame extends TrameHeader{
 				return false;
 		} else if (!cmd.equals(other.cmd))
 			return false;
+		if (nonce == null) {
+			if (other.nonce != null)
+				return false;
+		} else if (!nonce.equals(other.nonce))
+			return false;
 		return true;
 	}
 
-	
 	
 }
