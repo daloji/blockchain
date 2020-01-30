@@ -6,9 +6,11 @@ import java.util.Arrays;
 
 import org.slf4j.LoggerFactory;
 
+import com.daloji.blockchain.core.Crypto;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
+import com.daloji.blockchain.network.peers.PeerParameters;
 
 import ch.qos.logback.classic.Logger;
 
@@ -49,7 +51,6 @@ public class DeserializerTrame implements Serializable{
 				}
 				System.arraycopy(data, offset, buffer, 0, buffer.length);
 				String cmd = Utils.bytesToHex(buffer);
-				//System.out.println(Utils.bytesToHex(data));
 				if(TrameType.VERACK.getInfo().equals(cmd)) {
 					trameHeader = new VersionAckTrame();
 					trameHeader.setFromPeer(peer);
@@ -101,8 +102,12 @@ public class DeserializerTrame implements Serializable{
 				}else {
 					if(trame.isPartialTrame()) {
 						byte[] header =	trame.generateHeader();
-						String info = Utils.bytesToHex(header) +  Utils.bytesToHex(data);
-						data = trame.deserialise(Utils.hexStringToByteArray(info));
+						if(validCheckSum(trame.getChecksum(),data)) {
+							String info = Utils.bytesToHex(header) +  Utils.bytesToHex(data);
+							data = trame.deserialise(Utils.hexStringToByteArray(info));
+						}else {
+							data = findCommand(data);
+						}
 						trameHeader =trame;
 					}else {
 						if(trame instanceof InvTrame) {
@@ -115,7 +120,7 @@ public class DeserializerTrame implements Serializable{
 							data = findCommand(data);
 							trameHeader = new ErrorTrame();	
 						}
-						
+
 					}
 				}
 				trame = trameHeader;
@@ -134,25 +139,42 @@ public class DeserializerTrame implements Serializable{
 	 * @return
 	 */
 	private byte[] findCommand(byte[] data) {
-		logger.info(Utils.bytesToHex(data));
-		byte[] value= new byte[0];
-		if(data != null) {
-			int offset = 0;
-			while(offset<data.length) {
-				byte[] buffer = new byte[4];
-				System.arraycopy(data, offset, buffer, 0, buffer.length);  
-				value = new byte[data.length-offset];
-				if(!Arrays.equals(buffer, Utils.hexStringToByteArray(NetParameters.MainNet.getMagic()))) {
-					System.arraycopy(data, offset, value, 0, value.length);  
-					data =value;
-				}else {
-					System.arraycopy(data, offset, value, 0, value.length);  
-					return value;
-				}
-				offset = offset +buffer.length;
-			}
+		byte[] info = new byte[0];
+		String value = Utils.bytesToHex(data);
+		int indexMagic = value.indexOf(NetParameters.MainNet.getMagic());
+		if(indexMagic>0) {
+			value = value.substring(indexMagic, value.length());
+			info = Utils.hexStringToByteArray(value);
 		}
-		return value;
+		return info;
 
+	}
+
+
+	private boolean validCheckSum(String checksum,byte[] data) {
+		boolean valid= false;
+		if(data !=null) {
+			int offset = 0;
+			byte[] buffer = new byte[4];
+			if(offset+24<data.length) {
+				System.arraycopy(data, offset, buffer, 0, buffer.length);
+				String strlength = Utils.bytesToHex(buffer);
+				long length = Utils.little2big(strlength);
+				offset = offset + 24;
+				buffer = new byte[(int)length ];
+				if(length<data.length) {
+					System.arraycopy(data, offset, buffer, 0, buffer.length);
+					byte[] bytecheck = Crypto.doubleSha256(buffer);
+					String checksumCompute = Utils.bytesToHex(bytecheck);
+					if(checksumCompute.equals(checksum)) {
+						valid = true;
+					}
+				}
+
+
+			}
+
+		}
+		return valid;
 	}
 }

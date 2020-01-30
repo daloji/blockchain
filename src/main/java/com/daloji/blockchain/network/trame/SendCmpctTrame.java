@@ -63,14 +63,14 @@ public class SendCmpctTrame extends TrameHeader {
 		long length = Utils.little2big(hex);
 		this.setLength((int)length);
 		offset = offset +buffer.length;
+		buffer = new byte[4];
+		System.arraycopy(msg, offset, buffer, 0, buffer.length);
+		this.setChecksum(Utils.bytesToHex(buffer));
+		offset = offset +buffer.length;
 		buffer = new byte[(int)length];
-		System.arraycopy(msg, offset+4, buffer, 0, buffer.length);
+		System.arraycopy(msg, offset, buffer, 0, buffer.length);
 		String payload = Utils.bytesToHex(buffer);
 		if(!Utils.allZero(Utils.hexStringToByteArray(payload))){
-			buffer = new byte[4];
-			System.arraycopy(msg, offset, buffer, 0, buffer.length);
-			this.setChecksum(Utils.bytesToHex(buffer));
-			offset = offset +buffer.length;
 			buffer = new byte[1];
 			System.arraycopy(msg, offset, buffer, 0, buffer.length);
 			hex = Utils.bytesToHex(buffer);
@@ -91,7 +91,13 @@ public class SendCmpctTrame extends TrameHeader {
 			}
 		}else {
 			this.setPartialTrame(true);
-			buffer = new byte[0];
+			offset = offset +buffer.length;
+			if(offset<msg.length) {
+				buffer = new byte[msg.length -offset];
+				System.arraycopy(msg,offset, buffer, 0, buffer.length);
+			}else {
+				buffer = new byte[0];
+			}
 		}
 		return (T) buffer;
 	}

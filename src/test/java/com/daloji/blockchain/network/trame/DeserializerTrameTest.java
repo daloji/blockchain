@@ -156,7 +156,7 @@ public class DeserializerTrameTest {
 	
 	
 	/**
-	 * 
+	 *  VerACk et SendCmpct  deserialisation 
 	 */
 	
 	@Test
@@ -167,7 +167,7 @@ public class DeserializerTrameTest {
 		peer.setPort(8333);
 		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(trame), peer);
 		Assert.assertNotNull(stackCommand); 
-		Assert.assertEquals(stackCommand.size(), 2);
+		Assert.assertEquals(stackCommand.size(), 4);
 
 	}
 	
@@ -192,7 +192,7 @@ public class DeserializerTrameTest {
 	 * 
 	 */
 	
-	//@Test
+	@Test
 	public void deserialise_009() {
 		String trame = "F9BEB4D973656E646865616465727300000000005DF6E0E2F9BEB4D973656E64636D70637400000009000000E92F5EF80000000000000000000000000000FFFF55AA7073E0100D04000000000000000000000000000000000000000000000000C9C03247391F06D8112F5361746F7368693A302E31372E39392FA35C090001F9BEB4D976657261636B000000000000000000005DF6E0E200";
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
@@ -200,9 +200,9 @@ public class DeserializerTrameTest {
 		peer.setPort(8333);
 		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(trame), peer);
 		Assert.assertNotNull(stackCommand); 
-		Assert.assertEquals(stackCommand.size(), 5);
-		GetHeadersTrame getHeader =(GetHeadersTrame) stackCommand.getLast();
-		Assert.assertEquals(getHeader.isPartialTrame(), true);
+		Assert.assertEquals(stackCommand.size(), 4);
+		VersionAckTrame versionAckTrame =(VersionAckTrame) stackCommand.getLast();
+		Assert.assertEquals(versionAckTrame.isPartialTrame(), false);
 
 	}
 	
@@ -229,16 +229,17 @@ public class DeserializerTrameTest {
 
 	}
 	
-	//@Test
+	@Test
 	public void deserialise_011() {
+		
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
 		peer.setPort(8333);
 		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(trame_block_receive_003), peer);
 		Assert.assertNotNull(stackCommand); 
-		Assert.assertEquals(stackCommand.size(), 6);
+		Assert.assertEquals(stackCommand.size(), 5);
 		BlockTrame block = (BlockTrame) stackCommand.removeFirst();
-		Assert.assertEquals(block.getChecksum(), "96D90DEB");
+		Assert.assertEquals(block.getChecksum(), "49366053");
 		Assert.assertEquals(block.getMerkelRoot(), null);
 		Assert.assertEquals(block.getTime(), 0);
 		Assert.assertEquals(block.getPreviousHash(), null);

@@ -135,6 +135,17 @@ public class BlockTrame  extends TrameHeader{
 
 		}else {
 			this.setPartialTrame(true);
+			int indexMagic = payload.indexOf(NetParameters.MainNet.getMagic());
+			if(indexMagic>0) {
+				if(offset<msg.length) {
+					byte[] info =new byte[msg.length-offset];
+					System.arraycopy(msg,offset, info, 0, info.length);
+					payload = Utils.bytesToHex(info);
+					indexMagic = payload.indexOf(NetParameters.MainNet.getMagic()); 
+					payload = payload.substring(indexMagic, payload.length());
+					buffer = Utils.hexStringToByteArray(payload);
+				}
+			}
 		}
 		return (T) buffer;
 	}
