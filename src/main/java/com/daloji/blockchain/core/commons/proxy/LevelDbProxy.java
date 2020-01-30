@@ -89,7 +89,7 @@ public class LevelDbProxy implements DatabaseExchange {
 		Block bloc = null;
 		ObjectInputStream is = null;
 		try {
-			byte[] data = database.get(bytes(hash));
+			byte[] data = database.get(Utils.hexStringToByteArray(hash));
 			if(data !=null) {
 				ByteArrayInputStream in = new ByteArrayInputStream(data);
 				is = new ObjectInputStream(in);
@@ -110,7 +110,7 @@ public class LevelDbProxy implements DatabaseExchange {
 
 	@Override
 	public void deleteBlock(String hash) {
-		database.delete(bytes(hash));
+		database.delete(Utils.hexStringToByteArray(hash));
 	}
 	
 	public DBIterator getIterator() {
