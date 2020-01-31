@@ -2,7 +2,6 @@ package com.daloji.blockchain.core.commons.proxy;
 
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,7 +12,6 @@ import java.nio.file.StandardCopyOption;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.Options;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,8 +27,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import com.daloji.blockchain.core.Block;
-import com.daloji.blockchain.core.utils.Utils;
-import com.daloji.blockchain.network.trame.InvTrameTest;
 
 
 @RunWith(PowerMockRunner.class)
