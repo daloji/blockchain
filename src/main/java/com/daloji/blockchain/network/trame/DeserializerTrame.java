@@ -100,7 +100,7 @@ public class DeserializerTrame implements Serializable{
 					trameHeader.setFromPeer(peer);
 					data = trameHeader.deserialise(data);
 				}else {
-					if(trame.isPartialTrame()) {
+					if(trame.isPartialTrame() || trame instanceof InvTrame) {
 						byte[] header =	trame.generateHeader();
 						if(validCheckSum(trame.getChecksum(),data)) {
 							String info = Utils.bytesToHex(header) +  Utils.bytesToHex(data);
@@ -110,16 +110,11 @@ public class DeserializerTrame implements Serializable{
 						}
 						trameHeader =trame;
 					}else {
-						if(trame instanceof InvTrame) {
-							byte[] header =	trame.generateHeader();
-							String info = Utils.bytesToHex(header) +  Utils.bytesToHex(data);
-							data = trame.deserialise(Utils.hexStringToByteArray(info));
-							trameHeader = trame;
-						}else {
-							logger.error(cmd);
-							data = findCommand(data);
-							trameHeader = new ErrorTrame();	
-						}
+
+						logger.error(cmd);
+						data = findCommand(data);
+						trameHeader = new ErrorTrame();	
+
 
 					}
 				}

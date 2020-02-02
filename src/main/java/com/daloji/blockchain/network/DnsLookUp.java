@@ -78,7 +78,7 @@ public class DnsLookUp {
 
 	public PeerNode getBestPeer(List<PeerNode> listpeer) {
 		PeerNode peernode = null;
-		lock.lock();
+		//lock.lock();
 		if(listpeer !=null) {
 			boolean find = false;	
 			int randomNum = ThreadLocalRandom.current().nextInt(0, listpeer.size() + 1);
@@ -99,16 +99,26 @@ public class DnsLookUp {
 							}else {
 								peernode = null;
 							}
-							
-							
-						
 						}
 					}
 				}
 			}
 		}
-		lock.unlock();
+		//lock.unlock();
 		return peernode;
+	}
+	
+	
+	public void restorePeerStatus(List<PeerNode> listpeer ,PeerNode peernode ) {
+		//lock.lock();
+		if(listpeer !=null) {
+			for(PeerNode peer:listpeer) {
+			 if(peer.getHost().equals(peernode.getHost())) {
+				 peer.setUse(false);
+			 }
+			}
+		}
+		//lock.unlock();
 	}
 
 

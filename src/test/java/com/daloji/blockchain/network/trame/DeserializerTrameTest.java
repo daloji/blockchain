@@ -31,6 +31,8 @@ public class DeserializerTrameTest {
 	 private static String trame_block_receive_002;
 	 
 	 private static String trame_block_receive_003;
+	 
+	 private static String invTrame_receive;
 	
 	@BeforeClass
 	public static void before() throws IOException {
@@ -42,6 +44,8 @@ public class DeserializerTrameTest {
         trame_block = (prop.getProperty("trame_block"));
         trame_block_receive_002 = (prop.getProperty("bloc_receive_002"));
         trame_block_receive_003 = (prop.getProperty("trame_block_receive_003"));
+        invTrame_receive = (prop.getProperty("invTrame_receive"));
+
 	}
 	@Test
 	public  void  deserialiseTest_OK() {
@@ -248,6 +252,23 @@ public class DeserializerTrameTest {
 		Assert.assertEquals(block.isPartialTrame(),true );
 	}
 	
-	
+	//@Test
+	public void deserialise_012() {
+		
+		PeerNode peer = new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		peer.setPort(8333);
+		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(invTrame_receive), peer);
+		Assert.assertNotNull(stackCommand); 
+		Assert.assertEquals(stackCommand.size(), 3);
+		BlockTrame block = (BlockTrame) stackCommand.removeFirst();
+		Assert.assertEquals(block.getChecksum(), "49366053");
+		Assert.assertEquals(block.getMerkelRoot(), null);
+		Assert.assertEquals(block.getTime(), 0);
+		Assert.assertEquals(block.getPreviousHash(), null);
+		Assert.assertEquals(block.getVersion(), null);
+		Assert.assertEquals(block.getNonce(),0);
+		Assert.assertEquals(block.isPartialTrame(),true );
+	}
 		
 }

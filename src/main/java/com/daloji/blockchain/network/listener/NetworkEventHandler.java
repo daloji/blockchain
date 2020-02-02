@@ -20,9 +20,12 @@ public interface NetworkEventHandler {
 	 */
 	public void onNodeConnectHasError(AbstractCallable connectionNode);
 	
-	
+	/**
+	 *  Callback de deconnexion d'un node
+	 * @param connectionNode
+	 */
 
-	public void onNodeDisconnected();
+	public void onNodeDisconnected(AbstractCallable connectionNode);
 
 	/**
 	 * lancement de la configuration du reseau 

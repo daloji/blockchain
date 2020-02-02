@@ -60,7 +60,7 @@ public class ConnectionNode  extends AbstractCallable{
 			break;
 			case VERSION_SEND: //state = sendVerAck(outPut,netParameters,peerNode);
 				break;
-			case READY : //state = sendGetBlock(outPut, netParameters, peerNode);
+			case READY : networkListener.onNodeConnected(this);
 				break;
 			case GETBLOCK_SEND :state = sendGetBlock(outPut, netParameters, peerNode);
 			listState.add(state);	
@@ -77,7 +77,8 @@ public class ConnectionNode  extends AbstractCallable{
 				replyAllRequest(deserialize,outPut, netParameters, peerNode);
 			}
 
-		}	
+		}
+		//networkListener.onNodeDisconnected(this);
 		return null;
 
 	}

@@ -22,6 +22,7 @@ import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
+import com.daloji.blockchain.network.trame.FeelFilterTrame;
 import com.daloji.blockchain.network.trame.InvTrame;
 import com.daloji.blockchain.network.trame.TrameHeader;
 
@@ -87,7 +88,7 @@ public class ConnectionNodeTest  {
 		PowerMock.verify();
 		Assert.assertEquals(trame instanceof InvTrame, true);
 		Assert.assertNotNull(((InvTrame) trame).getListinv());
-		Assert.assertEquals(((InvTrame) trame).getListinv().size(),70);
+		Assert.assertEquals(((InvTrame) trame).getListinv().size(),35);
 
 	}
 	
@@ -111,9 +112,8 @@ public class ConnectionNodeTest  {
 		connection.call();
 		TrameHeader trame =Whitebox.getInternalState(connection, "lastTrame");
 		PowerMock.verify();
-		Assert.assertEquals(trame instanceof InvTrame, true);
-		Assert.assertNotNull(((InvTrame) trame).getListinv());
-		Assert.assertEquals(((InvTrame) trame).getListinv().size(),1);
+		Assert.assertEquals(trame instanceof FeelFilterTrame, true);
+
 
 	}
 

@@ -19,4 +19,6 @@ public interface BlockChainEventHandler {
 	public void onBlockHeaderReceive(Inventory inventory);
 	
 	public void onBlockReiceve(Block block);
+	
+	public void onWatchDogSendRestart();
 }

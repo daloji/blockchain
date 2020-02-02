@@ -33,7 +33,8 @@ public class Test {
 		System.out.println(Utils.StrLittleEndian("4944469562AE1C2C74D9A535E00B6F3E40FFBAD4F2FDA3895501B58200000000"));
 		System.out.println(Utils.StrLittleEndian("5E2B8043BD9F8DB558C284E00EA24F78879736F4ACD110258E48C22700000000"));
 */
-		
-	
+		String hash = LevelDbProxy.getInstance().getObject("LAST_HASH");	
+		System.out.println(Utils.StrLittleEndian(hash));
+
 }
 }

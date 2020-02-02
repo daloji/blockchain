@@ -82,7 +82,7 @@ public class LevelDbProxyTest {
 		bloc.setTxCount(1);
 		PowerMock.replayAll();
 		Whitebox.setInternalState(LevelDbProxy.class,database );
-		LevelDbProxy.getInstance().addObject(bloc);
+		LevelDbProxy.getInstance().addBlock(bloc);
 		Block blockreceive = LevelDbProxy.getInstance().findBlock(bloc.generateHash());
 		Assert.assertNotNull(blockreceive);
 		Assert.assertEquals(blockreceive.getTime(), bloc.getTime());
@@ -90,9 +90,13 @@ public class LevelDbProxyTest {
 		LevelDbProxy.getInstance().deleteBlock(bloc.generateHash());
 		blockreceive = LevelDbProxy.getInstance().findBlock(bloc.generateHash());
 		Assert.assertNull(blockreceive);
+		String hash = LevelDbProxy.getInstance().getObject("LAST_HASH");
+		Assert.assertEquals(hash, bloc.generateHash());
 		LevelDbProxy.getInstance().closeDatabase();
 		PowerMock.verify();
 	}		 
+
+	
 
 
 	@Test
