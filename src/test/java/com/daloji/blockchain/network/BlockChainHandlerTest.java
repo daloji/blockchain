@@ -51,6 +51,8 @@ public class BlockChainHandlerTest  {
 	private DataInputStream datainput;
 	
 	private static String trame_receive;
+	
+	private static String trame_receive_bloc001;
 
 	@Before
 	public void beforeTest() {
@@ -69,6 +71,7 @@ public class BlockChainHandlerTest  {
 	    // load a properties file
 	    prop.load(new FileInputStream(file));
 	    trame_receive = (prop.getProperty("block_receive_001"));
+	    trame_receive_bloc001 = (prop.getProperty("trame_receive_bloc001"));
 	}
 
 	/**
@@ -104,10 +107,29 @@ public class BlockChainHandlerTest  {
 		Whitebox.setInternalState(blockhandler, "state", STATE_ENGINE.READY);
 		blockhandler.call();
 		PowerMock.verify();
-		/*
-		Assert.assertEquals(trame instanceof InvTrame, true);
-		Assert.assertNotNull(((InvTrame) trame).getListinv());
-		Assert.assertEquals(((InvTrame) trame).getListinv().size(),70);
-*/
+
+	}
+	@Test
+	public void getBlock_002() throws Exception {
+		String hash_header ="4860EB18BF1B1620E37E9490FC8A427514416FD75159AB86688E9A8300000000";
+		PeerNode peer =new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		peer.setPort(8333);
+		Inventory inventory = new Inventory();
+		inventory.setHash(hash_header);
+		inventory.setType(InvType.MSG_BLOCK);
+		byte[] content = Utils.hexStringToByteArray(trame_receive_bloc001);
+		InputStream anyInputStream = new ByteArrayInputStream(content);
+		datainput = new DataInputStream(anyInputStream);
+		PowerMock.expectNew(Socket.class,peer.getHost(),peer.getPort()).andReturn(socket);
+		socket.setSoTimeout(Utils.timeoutPeer);
+		EasyMock.expect(socket.getOutputStream()).andReturn(dataouput);
+		EasyMock.expect(socket.getInputStream()).andReturn(datainput);
+		dataouput.write(EasyMock.anyObject(byte[].class), EasyMock.anyInt(), EasyMock.anyInt());
+		PowerMock.replayAll();
+		BlockChainHandler blockhandler= new BlockChainHandler(null, null, NetParameters.MainNet, peer, inventory);
+		Whitebox.setInternalState(blockhandler, "state", STATE_ENGINE.READY);
+		blockhandler.call();
+		PowerMock.verify();
 	}
 }
