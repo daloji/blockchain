@@ -14,6 +14,7 @@ import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
+import com.daloji.blockchain.network.listener.InitialDownloadBlock;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
 import com.daloji.blockchain.network.trame.DeserializerTrame;
@@ -23,12 +24,14 @@ import com.daloji.blockchain.network.trame.TrameHeader;
 
 import ch.qos.logback.classic.Logger;
 
-public class ConnectionNode  extends AbstractCallable{
+public class ConnectionNode  extends AbstractCallable implements InitialDownloadBlock{
 
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(ConnectionNode.class);
 
 	private  TrameHeader lastTrame;
+
+	private volatile boolean isInterrupt = false;
 
 	public ConnectionNode(NetworkEventHandler networkListener,BlockChainEventHandler blockchaiListener,NetParameters netparam,PeerNode peerNode) throws NamingException {
 		super();
@@ -39,51 +42,59 @@ public class ConnectionNode  extends AbstractCallable{
 	}
 
 
+	
 	@Override
 	public Object call() throws Exception {
-
-		byte[] data = new byte[Utils.BUFFER_SIZE];
-		socketClient = new Socket(peerNode.getHost(),peerNode.getPort());
-		socketClient.setSoTimeout(Utils.timeoutPeer);
-		outPut = new DataOutputStream(socketClient.getOutputStream());
-		input = new DataInputStream(socketClient.getInputStream()); 
-		int count = 1;
-		listState.add(STATE_ENGINE.BOOT);
-		while(state !=STATE_ENGINE.START && count!=-1) {
-			switch(state) {
-			case BOOT : state = sendVersion(outPut,netParameters,peerNode);
-			listState.add(state);
-			break;
-			case VER_ACK_RECEIVE:state = sendVerAck(outPut,netParameters,peerNode);
-			listState.add(state);
-
-			break;
-			case VERSION_SEND: //state = sendVerAck(outPut,netParameters,peerNode);
+		try{
+			byte[] data = new byte[Utils.BUFFER_SIZE];
+			socketClient = new Socket(peerNode.getHost(),peerNode.getPort());
+			socketClient.setSoTimeout(Utils.timeoutPeer);
+			outPut = new DataOutputStream(socketClient.getOutputStream());
+			input = new DataInputStream(socketClient.getInputStream()); 
+			int count = 1;
+			listState.add(STATE_ENGINE.BOOT);
+			while(state !=STATE_ENGINE.START && count!=-1 && !isInterrupt) {
+				switch(state) {
+				case BOOT : state = sendVersion(outPut,netParameters,peerNode);
+				listState.add(state);
 				break;
-			case READY : networkListener.onNodeConnected(this);
-				break;
-			case GETBLOCK_SEND :state = sendGetBlock(outPut, netParameters, peerNode);
-			listState.add(state);	
-			break;
-			}
-			count = input.read(data);
-			if(count > 0) {
-				//logger.info(Utils.bytesToHex(data));
-				ArrayDeque<TrameHeader> deserialize = DeserializerTrame.getInstance().deserialise(lastTrame,data,peerNode);
-				TrameHeader trame = deserialize.getLast();
-				lastTrame = trame;
-				callGetBlock(deserialize);
-				state = findNExtStep(deserialize);
-				replyAllRequest(deserialize,outPut, netParameters, peerNode);
-			}
+				case VER_ACK_RECEIVE:state = sendVerAck(outPut,netParameters,peerNode);
+				networkListener.onNodeConnected(this);
+				listState.add(state);
 
+				break;
+				case VERSION_SEND: //state = sendVerAck(outPut,netParameters,peerNode);
+					break;
+				case READY :// networkListener.onNodeConnected(this);
+					break;
+				case GETBLOCK_SEND :state = sendGetBlock(outPut, netParameters, peerNode);
+				listState.add(state);	
+				break;
+				}
+				count = input.read(data);
+				if(count > 0) {
+					logger.info(Utils.bytesToHex(data));
+					ArrayDeque<TrameHeader> deserialize = DeserializerTrame.getInstance().deserialise(lastTrame,data,peerNode);
+					if(deserialize.size()>0) {
+						TrameHeader trame = deserialize.getLast();
+						lastTrame = trame;
+						callGetBlock(deserialize);
+						state = findNExtStep(deserialize);
+						replyAllRequest(deserialize,outPut, netParameters, peerNode);
+					}	
+				}
+			}
+			this.peerNode.setUse(false);
+			networkListener.onNodeDisconnected(this);
+				
+		}catch (Exception e) {
+			logger.error(e.getMessage());
 		}
-		//networkListener.onNodeDisconnected(this);
+		
 		return null;
 
+		
 	}
-
-
 	private void callGetBlock(ArrayDeque<TrameHeader> trameArray) {
 
 		if(trameArray !=null) {
@@ -100,6 +111,21 @@ public class ConnectionNode  extends AbstractCallable{
 			}
 		}
 	}
+
+
+
+	@Override
+	public void onRestartIDB(List<PeerNode> peer) {
+
+		for(PeerNode node :peer) {
+			if(this.peerNode.getHost().equals(node.getHost())) {
+				isInterrupt = true;
+			}
+		}
+	}
+
+
+
 
 
 }

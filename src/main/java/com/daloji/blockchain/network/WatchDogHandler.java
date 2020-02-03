@@ -28,12 +28,12 @@ public class WatchDogHandler implements Runnable,WatchDogListener {
 	@Override
 	public void run() {
 		logger.info("WatchDogHandler : WatchDogHandler ");
-		if(blockchain ==null) {
+		if(blockchain !=null) {
 			nbBlock = blockchain.getBlockChain().mappingCount();
 			if(nbBlock==oldnbBlock) {
 				logger.info("WatchDogHandler : ****** should Restart IDB *******");
 				//TODO
-			//	blockchainlistener.onWatchDogSendRestart();
+				blockchainlistener.onWatchDogSendRestart();
 			}else {
 				logger.info("WatchDogHandler : ****** Still alive IDB  nbBlock "+nbBlock+" =>oldnbBlock"+oldnbBlock+" *******");
 				oldnbBlock = nbBlock;

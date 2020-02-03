@@ -92,7 +92,27 @@ public class BlockChainWareHouseThreadFactory {
 	public void addBlockChainListener(BlockChainEventHandler eventlistener) {
 		this.blockchainlistener = eventlistener;
 		watchdog = new WatchDogHandler(blockchainlistener);
-		executorsWatchDog.scheduleWithFixedDelay( watchdog,  0 , 2 , TimeUnit.MINUTES); 
+		executorsWatchDog.scheduleWithFixedDelay( watchdog,  0 , 1 , TimeUnit.MINUTES); 
+		
+	}
+	
+	
+	public void stopExecutor() {
+		executorServiceInitialDownloadBlock.shutdown(); // Disable new tasks from being submitted
+		   try {
+		     // Wait a while for existing tasks to terminate
+		     if (!executorServiceInitialDownloadBlock.awaitTermination(60, TimeUnit.SECONDS)) {
+		    	 executorServiceInitialDownloadBlock.shutdownNow(); // Cancel currently executing tasks
+		       // Wait a while for tasks to respond to being cancelled
+		       if (!executorServiceInitialDownloadBlock.awaitTermination(60, TimeUnit.SECONDS))
+		           System.err.println("Pool did not terminate");
+		     }
+		   } catch (InterruptedException ie) {
+		     // (Re-)Cancel if current thread also interrupted
+			   executorServiceInitialDownloadBlock.shutdownNow();
+		     // Preserve interrupt status
+		     Thread.currentThread().interrupt();
+		   }
 		
 	}
 }

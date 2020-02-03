@@ -81,7 +81,6 @@ public class GetHeadersTrame extends TrameHeader{
 			size = compactsize.first;
 			offset = compactsize.second;
 			listHash = new ArrayList<String>();
-			System.out.println( " +" +Utils.bytesToHex(msg));
 			for(int i=0;i<size;i++) {
 				buffer = new byte[32];
 				if(offset +buffer.length <= msg.length) {

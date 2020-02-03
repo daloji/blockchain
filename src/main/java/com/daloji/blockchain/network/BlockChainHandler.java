@@ -72,10 +72,12 @@ public class BlockChainHandler  extends AbstractCallable{
 				if(count > 0) {
 					logger.info(Utils.bytesToHex(data));
 					ArrayDeque<TrameHeader> deserialize = DeserializerTrame.getInstance().deserialise(lastTrame,data,peerNode);
-					TrameHeader trame = deserialize.getLast();
-					lastTrame = trame;
-					state = findNExtStepBlock(deserialize);
-					state = isBlocDownloaded(deserialize);
+					if(deserialize.size()>0) {
+						TrameHeader trame = deserialize.getLast();
+						lastTrame = trame;
+						state = findNExtStepBlock(deserialize);
+						state = isBlocDownloaded(deserialize);
+					}
 				}
 			}
 

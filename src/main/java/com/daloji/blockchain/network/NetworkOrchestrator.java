@@ -37,15 +37,15 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(NetworkOrchestrator.class);
 
-	
-	private static final int NB_THREAD = 3;
+
+	private static final int NB_THREAD = 1;
 
 	private  CopyOnWriteArrayList<ConnectionNode> listPeerConnected = new CopyOnWriteArrayList<ConnectionNode>(); 
 
 	private  CopyOnWriteArrayList<Inventory> listHeaderBlock = new CopyOnWriteArrayList<Inventory>(); 
 
 	private BlockChain blokchain = new BlockChain();
-	
+
 	/*
 	 * List des Threads clients
 	 */
@@ -56,7 +56,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 	private List<BlockChainHandler> listThreadBlochChain;
 
 	private List<PeerNode> listPeer;
-	
+
 
 	/*
 	 * (non-Javadoc)
@@ -83,7 +83,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 			logger.error(e.getMessage());
 
 		}
-		DnsLookUp.getInstance().restorePeerStatus(listPeer,connectionNode.getPeerNode());
+		//DnsLookUp.getInstance().restorePeerStatus(listPeer,connectionNode.getPeerNode());
 
 	}
 
@@ -111,8 +111,8 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 			BlockChainWareHouseThreadFactory.getInstance().invokeAllIntialDownloadBlock(listThreadConnected);
 		}
 	}
-	
-	
+
+
 	@Override
 	public void onStop() {
 		// TODO Auto-generated method stub
@@ -132,7 +132,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 
 	@Override
 	public void onNodeConnectHasError(AbstractCallable connectionNode) {
-		
+
 
 	}
 
@@ -158,7 +158,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 
 	@Override
 	public void onBlockReiceve(Block block) {
-		
+
 		LevelDbProxy.getInstance().addBlock(block);
 		blokchain.setBlock(block.getPrevBlockHash(), block);
 		BlockChainWareHouseThreadFactory.getInstance().onBlockChainChange(blokchain);
@@ -166,12 +166,19 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 
 	@Override
 	public void onWatchDogSendRestart() {
+		if(listThreadConnected !=null) {
+			for(ConnectionNode connection:listThreadConnected) {
+				connection.onRestartIDB(listPeer);
+			}
+		}
+
+		/*
 		if(listThreadConnected!=null) {
 			for(ConnectionNode connection:listThreadConnected) {
 				this.onNodeDisconnected(connection);
 			}
-		}
-		
+		}*/
+
 	}
 
 
