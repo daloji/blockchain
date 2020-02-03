@@ -32,7 +32,11 @@ public class DeserializerTrameTest {
 	 
 	 private static String trame_block_receive_003;
 	 
-	 private static String invTrame_receive;
+	 private static String trame_receive_0012;
+	 
+	 private static String trame_receive_0013;
+	 
+	 private static String trame_receive_0014;
 	
 	@BeforeClass
 	public static void before() throws IOException {
@@ -44,8 +48,9 @@ public class DeserializerTrameTest {
         trame_block = (prop.getProperty("trame_block"));
         trame_block_receive_002 = (prop.getProperty("bloc_receive_002"));
         trame_block_receive_003 = (prop.getProperty("trame_block_receive_003"));
-        invTrame_receive = (prop.getProperty("invTrame_receive"));
-
+        trame_receive_0012 = (prop.getProperty("trame_receive_0012"));
+        trame_receive_0013 =(prop.getProperty("trame_receive_0013"));
+        trame_receive_0014 =(prop.getProperty("trame_receive_0014"));
 	}
 	@Test
 	public  void  deserialiseTest_OK() {
@@ -103,7 +108,13 @@ public class DeserializerTrameTest {
 		peer.setPort(8333);
 		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(trame), peer);
 		Assert.assertNotNull(stackCommand); 
-		Assert.assertEquals(stackCommand.size(), 2);
+		Assert.assertEquals(stackCommand.size(), 3);
+		SendHeadersTrame sendheaders = (SendHeadersTrame) stackCommand.poll();
+		Assert.assertEquals(sendheaders instanceof SendHeadersTrame, true);
+		sendheaders = (SendHeadersTrame) stackCommand.poll();
+		Assert.assertEquals(sendheaders instanceof SendHeadersTrame, true);
+		VersionAckTrame versionAck = (VersionAckTrame) stackCommand.poll();
+		Assert.assertEquals(versionAck instanceof VersionAckTrame, true);
 	}
 	
 	
@@ -252,23 +263,56 @@ public class DeserializerTrameTest {
 		Assert.assertEquals(block.isPartialTrame(),true );
 	}
 	
-	//@Test
+	@Test
 	public void deserialise_012() {
 		
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
 		peer.setPort(8333);
-		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(invTrame_receive), peer);
+		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(trame_receive_0012), peer);
 		Assert.assertNotNull(stackCommand); 
 		Assert.assertEquals(stackCommand.size(), 3);
-		BlockTrame block = (BlockTrame) stackCommand.removeFirst();
-		Assert.assertEquals(block.getChecksum(), "49366053");
-		Assert.assertEquals(block.getMerkelRoot(), null);
-		Assert.assertEquals(block.getTime(), 0);
-		Assert.assertEquals(block.getPreviousHash(), null);
-		Assert.assertEquals(block.getVersion(), null);
-		Assert.assertEquals(block.getNonce(),0);
-		Assert.assertEquals(block.isPartialTrame(),true );
+		InvTrame inv = (InvTrame) stackCommand.poll();
+		Assert.assertEquals(inv.getChecksum(), "77D560F5");
+		Assert.assertEquals(inv.getListinv().size(), 19);
+		 inv = (InvTrame) stackCommand.poll();
+		Assert.assertEquals(inv.getChecksum(), "77D560F5");
+		Assert.assertEquals(inv.getListinv().size(), 19);
+		FeelFilterTrame feelfilter = (FeelFilterTrame) stackCommand.poll();
+		Assert.assertEquals(feelfilter instanceof FeelFilterTrame, true);
+
+	}
+	
+	@Test
+	public void deserialise_013() {
+		
+		PeerNode peer = new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		peer.setPort(8333);
+		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(trame_receive_0013), peer);
+		Assert.assertNotNull(stackCommand); 
+		Assert.assertEquals(stackCommand.size(), 3);
+		InvTrame inv = (InvTrame) stackCommand.poll();
+		Assert.assertEquals(inv.getChecksum(), "985C12F9");
+		Assert.assertEquals(inv.getListinv().size(), 0);
+		inv = (InvTrame) stackCommand.poll();
+		Assert.assertEquals(inv.getChecksum(), "985C12F9");
+		Assert.assertEquals(inv.getListinv().size(), 0);
+		FeelFilterTrame feelfilter = (FeelFilterTrame) stackCommand.peek();
+		Assert.assertEquals(feelfilter instanceof FeelFilterTrame, true);
+	}
+	
+	@Test
+	public void deserialise_014() {
+		
+		PeerNode peer = new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		peer.setPort(8333);
+		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(trame_receive_0014), peer);
+		Assert.assertNotNull(stackCommand); 
+		Assert.assertEquals(stackCommand.size(), 1);
+		FeelFilterTrame feelfilter = (FeelFilterTrame) stackCommand.peek();
+		Assert.assertEquals(feelfilter instanceof FeelFilterTrame, true);
 	}
 		
 }

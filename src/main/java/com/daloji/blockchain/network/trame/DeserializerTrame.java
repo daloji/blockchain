@@ -2,7 +2,6 @@ package com.daloji.blockchain.network.trame;
 
 import java.io.Serializable;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 
 import org.slf4j.LoggerFactory;
 
@@ -10,11 +9,12 @@ import com.daloji.blockchain.core.Crypto;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
-import com.daloji.blockchain.network.peers.PeerParameters;
 
 import ch.qos.logback.classic.Logger;
 
 public class DeserializerTrame implements Serializable{
+
+
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(DeserializerTrame.class);
 
@@ -100,27 +100,29 @@ public class DeserializerTrame implements Serializable{
 					trameHeader.setFromPeer(peer);
 					data = trameHeader.deserialise(data);
 				}else {
-					if(trame.isPartialTrame() || trame instanceof InvTrame) {
-						byte[] header =	trame.generateHeader();
-						if(validCheckSum(trame.getChecksum(),data)) {
-							String info = Utils.bytesToHex(header) +  Utils.bytesToHex(data);
-							data = trame.deserialise(Utils.hexStringToByteArray(info));
+					if(trame !=null) {
+						if(trame.isPartialTrame() || trame instanceof InvTrame) {
+							byte[] header =	trame.generateHeader();
+							if(validCheckSum(trame.getChecksum(),data)) {
+								String info = Utils.bytesToHex(header) +  Utils.bytesToHex(data);
+								data = trame.deserialise(Utils.hexStringToByteArray(info));
+								trameHeader =trame;
+							}else {
+								data = findCommand(data);
+							}
+						
 						}else {
+							logger.error(cmd);
 							data = findCommand(data);
 						}
-						trameHeader =trame;
 					}else {
-
-						logger.error(cmd);
-						data = findCommand(data);
-						trameHeader = new ErrorTrame();	
-
-
+						data = findCommand(data);	
 					}
 				}
-				trame = trameHeader;
-				stack.add(trameHeader);
-
+				if(trameHeader !=null) {
+					trame = trameHeader;
+					stack.add(trameHeader);	
+				}
 			}
 		}
 
@@ -156,6 +158,9 @@ public class DeserializerTrame implements Serializable{
 				String strlength = Utils.bytesToHex(buffer);
 				long length = Utils.little2big(strlength);
 				offset = offset + 24;
+				if(length>data.length) {
+					length= data.length - offset;
+				}
 				buffer = new byte[(int)length ];
 				if(length<data.length) {
 					System.arraycopy(data, offset, buffer, 0, buffer.length);

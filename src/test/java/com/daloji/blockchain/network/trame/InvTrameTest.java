@@ -3,12 +3,9 @@ package com.daloji.blockchain.network.trame;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Properties;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -16,7 +13,6 @@ import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.IPVersion;
 import com.daloji.blockchain.network.peers.PeerNode;
-import com.daloji.blockchain.network.trame.InvTrame;
 /**
  * Test unitaire des Messages Inventory
  * @author daloji
