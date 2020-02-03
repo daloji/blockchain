@@ -41,6 +41,8 @@ public class DeserializerTrameTest {
 	 private static String trame_receive_0015;
 	 
 	 private static String trame_receive_0016;
+	 
+	 private static String trame_receive_0017;
 	
 	@BeforeClass
 	public static void before() throws IOException {
@@ -57,6 +59,7 @@ public class DeserializerTrameTest {
         trame_receive_0014 =(prop.getProperty("trame_receive_0014"));
         trame_receive_0015 =(prop.getProperty("trame_receive_0015"));
         trame_receive_0016 = (prop.getProperty("trame_receive_0016"));
+        trame_receive_0017 = (prop.getProperty("trame_receive_0017"));
 	}
 	@Test
 	public  void  deserialiseTest_OK() {
@@ -347,5 +350,18 @@ public class DeserializerTrameTest {
 		Assert.assertEquals(inv instanceof InvTrame, true);
 	}
 	
+	@Test
+	public void deserialise_017() {
+		
+		PeerNode peer = new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		peer.setPort(8333);
+		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(trame_receive_0017), peer);
+		Assert.assertNotNull(stackCommand); 
+		Assert.assertEquals(stackCommand.size(), 1);
+		InvTrame inv = (InvTrame) stackCommand.poll();
+		Assert.assertEquals(inv instanceof InvTrame, true);
+		Assert.assertEquals(inv.getListinv().size(), 35);
+	}
 	
 }
