@@ -3,12 +3,17 @@ package com.daloji.blockchain.network;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.util.Properties;
 
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
@@ -24,6 +29,7 @@ import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
 import com.daloji.blockchain.network.trame.FeelFilterTrame;
 import com.daloji.blockchain.network.trame.InvTrame;
+import com.daloji.blockchain.network.trame.InvTrameTest;
 import com.daloji.blockchain.network.trame.TrameHeader;
 
 
@@ -44,7 +50,21 @@ public class ConnectionNodeTest  {
 
 	@MockStrict
 	private DataInputStream datainput;
+	
+	private static String trame_block;
 
+	
+	@BeforeClass
+	public static void before() throws IOException {
+		ClassLoader classLoader = InvTrameTest.class.getClassLoader();
+		File file = new File(classLoader.getResource("test.properties").getFile());
+		Properties prop = new Properties();
+        // load a properties file
+        prop.load(new FileInputStream(file));
+        trame_block = (prop.getProperty("trame_receive_bloc001"));
+
+	}
+	
 	@Before
 	public void beforeTest() {
 		PowerMock.resetAll();
@@ -92,7 +112,7 @@ public class ConnectionNodeTest  {
 
 	}
 	
-	//@Test
+	@Test
 	public void startConnection_002() throws Exception {
 
 		String trameReceive = "F9BEB4D9696E76000000000000000000A9030000D2BA55827F1101001FBD88DB5DE2E562DCE74A6733563E911BE3386FC520EB0F0000000000000000005AC37385BE11C0A5A825F1C7726BC391A40BCD21A4E70100000000000000000036CDD7572016DAD3154988B1D352DDA2BAD68CA23C9D0C000000000000000000C06DB9573BC7B4B5C105908CE4E3EB27A24F6E13428A1100000000000000000016E904D4E53455146DC2B01754A5102CC682692E979F0D00000000000000000029D318A1993C55AA5BD944C3F1AFC7DD584DA4A223EC0D00000000000000000095D67C841831C9F67CBE02DC0FF5DD4895A4A77E5F0408000000000000000000E9064DBB90A28C23173669505EC69949DB04B9E8C7860E0000000000000000008A04E13252D0FE7839109D6A82570D294D090FEEEF4D03000000000000000000286C7BAC109A0D63836DF34136924796B687E052CC8903000000000000000000D14978BCF5B6FE5544E148B2D77BE4B29B4EED15016701000000000000000000D6DD0CE820319C2C254BF918D6F8A5F3B2029F21DF6A0500000000000000000046DDB0FDACD8CEB7FFFD1C91F5AB170BD0ED2CB6049A01000000000000000000AAB79BBB69624DB41A85DF1BD121037816AFA96A47BC120000000000000000004781062D9DB285BD326B077DE45DAA4FC554A8DAAFB6040000000000000000006CED9C5E2B17A04855D99D4890F93B92D6E58B9772A70D000000000000000000CF1F74FA63805F0C6BA46415529F4C2E7A6FFF7648D8030000000000000000000D8656F04AFBB67CF3D52984973B9B70AD80F99D5C420900000000000000000039D08D76EBED32F8F7735D410B24C43759F6CAECFDA010000000000000000000F58DD455E006756888C1EC21446910835F896E93A3AD040000000000000000006E3462F45A5CC2B78BDBF88FE3154A9C9B4192E9C4D90E000000000000000000DD57D631DBDEEFF1DCC7B85EDC815D4EC5036450B29910000000000000000000233E774B1AFBFEB87EE77734AA95165DC7CD22F29927040000000000000000007A4B4BCE86B7BA20AA20BFF76C37B4AA600CF0CC764E0D0000000000000000001AA355E7DC2C9C7BA53EBCD7411A918D951F30C193AC1500000000000000000054C5D0381EEFD677BA787AFF9DB7BADE20B5D6817E2402000000000000000000567A170F92462C727F69B9CCBC17FC789BFC29E72F1A1600000000000000000062EBF432D6A55F665041ADD4C9B64166F92EBDE5E4E8C4000000000000000000A9F6146B0FC011F0CFEF489F35784EEF9C380A2F6E478C0800000000000000008A79BCFC401665426E5DB3609A8C30D259E827911985B196C0F50100000000006FE28C0AB6F1B372C1A6A246AE63F74F931E8365E15A089C68D61900000000000000000000000000000000000000000000000000000000000000000000000000F9BEB4D966656566696C74657200000008000000E80FD19FE80300";
@@ -100,6 +120,30 @@ public class ConnectionNodeTest  {
 		peer.setHost("127.0.0.1");
 		peer.setPort(8333);
 		byte[] content = Utils.hexStringToByteArray(trameReceive);
+		InputStream anyInputStream = new ByteArrayInputStream(content);
+		datainput = new DataInputStream(anyInputStream);
+		PowerMock.expectNew(Socket.class,peer.getHost(),peer.getPort()).andReturn(socket);
+		socket.setSoTimeout(Utils.timeoutPeer);
+		EasyMock.expect(socket.getOutputStream()).andReturn(dataouput);
+		EasyMock.expect(socket.getInputStream()).andReturn(datainput);
+		dataouput.write(EasyMock.anyObject(byte[].class), EasyMock.anyInt(), EasyMock.anyInt());
+		PowerMock.replayAll();
+		ConnectionNode connection = new ConnectionNode(null, null, NetParameters.MainNet, peer);
+		connection.call();
+		TrameHeader trame =Whitebox.getInternalState(connection, "lastTrame");
+		PowerMock.verify();
+		Assert.assertEquals(trame instanceof FeelFilterTrame, true);
+
+
+	}
+	
+	@Test
+	public void startConnection_003() throws Exception {
+
+		PeerNode peer =new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		peer.setPort(8333);
+		byte[] content = Utils.hexStringToByteArray(trame_block);
 		InputStream anyInputStream = new ByteArrayInputStream(content);
 		datainput = new DataInputStream(anyInputStream);
 		PowerMock.expectNew(Socket.class,peer.getHost(),peer.getPort()).andReturn(socket);
