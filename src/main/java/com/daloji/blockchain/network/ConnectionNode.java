@@ -86,7 +86,7 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 			}
 			this.peerNode.setUse(false);
 			networkListener.onNodeDisconnected(this);
-				
+				logger.info("fin du Thread ConnectoionNode");
 		}catch (Exception e) {
 			logger.error(e.getMessage());
 		}

@@ -77,6 +77,10 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 			logger.error(e.getMessage());
 
 		}
+		listThreadConnected.remove(connectionNode);
+		if(listThreadConnected.isEmpty()) {
+			logger.info("il n'y a plus de Thread Connexion ");
+		}
 		//DnsLookUp.getInstance().restorePeerStatus(listPeer,connectionNode.getPeerNode());
 
 	}

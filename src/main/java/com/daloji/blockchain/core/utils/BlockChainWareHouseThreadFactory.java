@@ -11,16 +11,23 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.slf4j.LoggerFactory;
+
 import com.daloji.blockchain.core.BlockChain;
 import com.daloji.blockchain.network.ConnectionNode;
 import com.daloji.blockchain.network.WatchDogHandler;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.google.common.util.concurrent.CycleDetectingLockFactory;
 
+import ch.qos.logback.classic.Logger;
+
 
 public class BlockChainWareHouseThreadFactory {
 
-	private static final  int SIZE_POOL = 3;
+	
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(BlockChainWareHouseThreadFactory.class);
+
+	private static final  int SIZE_POOL = 20;
 
 	private ExecutorService executorServiceInitialDownloadBlock ;
 
@@ -82,6 +89,7 @@ public class BlockChainWareHouseThreadFactory {
 
 	public <T> void invokeBlock(Callable<T> task) throws InterruptedException {
 		executorServiceBlockDownloaded.submit(task);
+		logger.info("*****************************************************************************");
 	}
 
 	public  void onBlockChainChange(BlockChain blockchain) {
@@ -91,7 +99,7 @@ public class BlockChainWareHouseThreadFactory {
 	public void addBlockChainListener(BlockChainEventHandler eventlistener) {
 		this.blockchainlistener = eventlistener;
 		watchdog = new WatchDogHandler(blockchainlistener);
-		executorsWatchDog.scheduleWithFixedDelay( watchdog,  0 , 1 , TimeUnit.MINUTES); 
+		executorsWatchDog.scheduleWithFixedDelay( watchdog,  0 , 20 , TimeUnit.SECONDS); 
 
 	}
 

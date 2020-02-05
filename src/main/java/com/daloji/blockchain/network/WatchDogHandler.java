@@ -20,6 +20,10 @@ public class WatchDogHandler implements Runnable,WatchDogListener {
 	
 	private long oldnbBlock = 0;
 	
+	private long nbcycleRestart =3;
+	
+	private long nbCounterWatchdog =0;
+	
 	
 	public WatchDogHandler(BlockChainEventHandler blockchainlistener) {
 		this.blockchainlistener = blockchainlistener;
@@ -40,6 +44,11 @@ public class WatchDogHandler implements Runnable,WatchDogListener {
 			}
 		}else {
 			
+			if(nbCounterWatchdog<nbcycleRestart) {
+				nbCounterWatchdog = nbCounterWatchdog +1;
+			}else {
+				blockchainlistener.onWatchDogSendRestart();
+			}
 		}
 		
 	}
