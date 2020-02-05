@@ -156,7 +156,7 @@ public class ConnectionNodeTest  {
 		connection.call();
 		TrameHeader trame =Whitebox.getInternalState(connection, "lastTrame");
 		PowerMock.verify();
-		Assert.assertEquals(trame instanceof FeelFilterTrame, true);
+		Assert.assertEquals(trame instanceof InvTrame, true);
 
 
 	}
