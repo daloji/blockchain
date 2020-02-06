@@ -4,6 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.ArrayDeque;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +27,12 @@ public class BlockChainHandler  extends AbstractCallable{
 	private STATE_ENGINE state = STATE_ENGINE.BOOT;
 
 	private  TrameHeader lastTrame;
+	
+	private volatile Timer timer = new Timer(true);
 
 	private Inventory inventory;
+	
+	private volatile boolean isStopping = false;
 
 	public BlockChainHandler(DataOutputStream dataOut,DataInputStream dataInput){
 		outPut = dataOut;
@@ -45,6 +51,7 @@ public class BlockChainHandler  extends AbstractCallable{
 	@Override
 	public Object call() throws Exception {
 		logger.info("start BlockChainHandler");
+		timer.schedule(new TimeOutTimer(Thread.currentThread()), Utils.TIMEOUT_BLOCKCHAIN_THREAD);
 		byte[] data = new byte[Utils.BUFFER_SIZE];
 		try {
 			socketClient = new Socket(peerNode.getHost(),peerNode.getPort());
@@ -53,7 +60,7 @@ public class BlockChainHandler  extends AbstractCallable{
 			input = new DataInputStream(socketClient.getInputStream()); 
 			int count = 1;
 			listState.add(STATE_ENGINE.BOOT);
-			while(state !=STATE_ENGINE.STOP && count!=-1) {
+			while(state !=STATE_ENGINE.STOP && count!=-1 && !isStopping ) {
 				switch(state) {
 				case BOOT : state = sendVersion(outPut,netParameters,peerNode);
 				listState.add(state);
@@ -84,10 +91,28 @@ public class BlockChainHandler  extends AbstractCallable{
 		}catch (Exception e) {
 			logger.error(e.getMessage());	
 		}
-
+		timer.cancel();
+		logger.info("End download Block ");	
+		networkListener.onNodeDisconnected(this);
 		return null;
 	}
 
+	class TimeOutTimer extends TimerTask {
+		Thread thread;
+
+		TimeOutTimer(Thread thread) {
+			this.thread = thread;
+		}
+
+		@Override
+		public void run() {
+			logger.info("Timer handle " +thread.getName() );
+			if (thread != null &&thread.isAlive()) {
+				isStopping = true;
+				thread.interrupt();
+			}
+		}
+	}
 
 
 }

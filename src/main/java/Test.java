@@ -1,12 +1,10 @@
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.iq80.leveldb.DBIterator;
 
 import com.daloji.blockchain.core.commons.proxy.LevelDbProxy;
 import com.daloji.blockchain.core.utils.Utils;
-import com.google.common.collect.Lists;
 
 public class Test {
 
@@ -35,6 +33,15 @@ public class Test {
 */
 		String hash = LevelDbProxy.getInstance().getObject("LAST_HASH");	
 		System.out.println(Utils.StrLittleEndian(hash));
+		
+		
+		//int randomNum = ThreadLocalRandom.current().nextInt(0, listPeerFree.size() + 1);
+		
+		int randomNum = 0;
+		while(true) {
+			randomNum = ThreadLocalRandom.current().nextInt(0, 9);
+			System.out.println(randomNum);
+		}
 
 }
 }

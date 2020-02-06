@@ -78,7 +78,7 @@ public class NetworkOrchestratorTest {
 		EasyMock.expect(DnsLookUp.getInstance()).andReturn(dnsLookup);
 		EasyMock.expect(dnsLookup.getAllNodePeer()).andReturn(dnslookup);
 		EasyMock.expect(DnsLookUp.getInstance()).andReturn(dnsLookup);
-		EasyMock.expect(dnsLookup.getBestPeer(listnode)).andReturn(peernode);	
+		EasyMock.expect(dnsLookup.getBestPeer()).andReturn(peernode);	
 		byte[] content = Utils.hexStringToByteArray(trameVersionReceive);
 		InputStream anyInputStream = new ByteArrayInputStream(content);
 		datainput = new DataInputStream(anyInputStream);

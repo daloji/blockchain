@@ -25,6 +25,9 @@ public class DnsLookUp {
 	
 	private static final DnsLookUp instance = new DnsLookUp();
 	
+	private List<PeerNode> listPeerUsed = new ArrayList<PeerNode>();
+	
+	private List<PeerNode> listPeerFree = new ArrayList<PeerNode>();
 
 	
 	/**
@@ -44,30 +47,36 @@ public class DnsLookUp {
 	 * @return Retour OK et la liste des noeuds du reseaux bitcoin 
 	 */
 	public Pair<Retour,List<PeerNode>> getAllNodePeer(){
-		List<PeerNode> listNodePeer =null;
 		Retour retour = Utils.createRetourOK();
 		logger.info("Node discovery :  ");
 
 		try {
 			InetAddress[] listhost=InetAddress.getAllByName(Utils.DNS_SEED);
 			if(listhost!=null) {
-				listNodePeer = new ArrayList<PeerNode>();
 				for(InetAddress netAddr:listhost) {
-
 					IPVersion ipversion = getVersionIp(netAddr.getHostAddress());
-					PeerNode peer = new PeerNode(ipversion);
-					peer.setHost(netAddr.getHostAddress());
-					peer.setPort(8333);
-					listNodePeer.add(peer);
-					logger.info("peer  " +peer.getHost()  +"        " + peer.getVersion() );
+					//seulement IPV4
+					if(IPVersion.IPV4.equals(ipversion)) {
+						PeerNode peer = new PeerNode(ipversion);
+						peer.setHost(netAddr.getHostAddress());
+						peer.setPort(8333);
+						listPeerFree.add(peer);
+						logger.info("peer  " +peer.getHost()  +"        " + peer.getVersion() );
+					}
+					
 				}
 			}
 		} catch (UnknownHostException e) {
 			logger.error(e.getMessage());
 			retour = Utils.createRetourNOK(Utils.FATAL_ERROR, e.getMessage());
 		}
-		return new Pair<Retour, List<PeerNode>>(retour, listNodePeer);
+		return new Pair<Retour, List<PeerNode>>(retour, listPeerFree);
 
+	}
+	
+	
+	public List<PeerNode> getListUsePeer(){
+		return listPeerUsed;
 	}
 
 	/**
@@ -76,7 +85,27 @@ public class DnsLookUp {
 	 * @return noeud bitcoin
 	 */
 
-	public PeerNode getBestPeer(List<PeerNode> listpeer) {
+	public PeerNode getBestPeer() {
+		PeerNode peernode = null;
+		lock.lock();
+		if(!listPeerFree.isEmpty()) {
+			int randomNum = ThreadLocalRandom.current().nextInt(0, listPeerFree.size());
+			peernode = listPeerFree.get(randomNum);
+			listPeerFree.remove(randomNum);
+			listPeerUsed.add(peernode);
+		}
+		lock.unlock();
+		return peernode;
+	}
+	
+	public void restorePeer(PeerNode peer) {
+		lock.lock();
+		listPeerFree.add(peer);
+		listPeerUsed.remove(peer);
+		lock.unlock();
+	}
+	
+	public PeerNode getBestPeers(List<PeerNode> listpeer) {
 		PeerNode peernode = null;
 		lock.lock();
 		if(listpeer !=null) {
@@ -107,10 +136,8 @@ public class DnsLookUp {
 		lock.unlock();
 		return peernode;
 	}
-	
-	
 	public void restorePeerStatus(List<PeerNode> listpeer ,PeerNode peernode ) {
-		//lock.lock();
+		lock.lock();
 		if(listpeer !=null) {
 			for(PeerNode peer:listpeer) {
 			 if(peer.getHost().equals(peernode.getHost())) {
@@ -118,7 +145,7 @@ public class DnsLookUp {
 			 }
 			}
 		}
-		//lock.unlock();
+		lock.unlock();
 	}
 
 

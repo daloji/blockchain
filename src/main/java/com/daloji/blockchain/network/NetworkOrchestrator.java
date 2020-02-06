@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Block;
 import com.daloji.blockchain.core.BlockChain;
-import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.commons.Retour;
@@ -77,12 +76,11 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 			logger.error(e.getMessage());
 
 		}
+		DnsLookUp.getInstance().restorePeer(connectionNode.getPeerNode());
 		listThreadConnected.remove(connectionNode);
 		if(listThreadConnected.isEmpty()) {
 			logger.info("il n'y a plus de Thread Connexion ");
 		}
-		//DnsLookUp.getInstance().restorePeerStatus(listPeer,connectionNode.getPeerNode());
-
 	}
 
 	/*
@@ -101,9 +99,11 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 		if(Utils.isRetourOK(retour)) {
 			listPeer = dnslookup.second;
 			for (int i = 0; i < NB_THREAD; i++) {
-				PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
-				connectionNode = new ConnectionNode(this,this, NetParameters.MainNet, peer);
-				listThreadConnected.add(connectionNode);
+				PeerNode peer = DnsLookUp.getInstance().getBestPeer();
+				if(peer!=null) {
+					connectionNode = new ConnectionNode(this,this, NetParameters.MainNet, peer);
+					listThreadConnected.add(connectionNode);	
+				}
 			}
 			BlockChainWareHouseThreadFactory.getInstance().addBlockChainListener(this);
 			BlockChainWareHouseThreadFactory.getInstance().invokeAllIntialDownloadBlock(listThreadConnected);
@@ -140,19 +140,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 
 	}
 
-	@Override
-	public void onBlockHeaderReceive(Inventory inventory) {
 
-		if(InvType.MSG_BLOCK==inventory.getType()) {
-			PeerNode peer = DnsLookUp.getInstance().getBestPeer(listPeer);
-			BlockChainHandler blockChain = new BlockChainHandler(this,this, NetParameters.MainNet, peer,inventory);
-			try {
-				BlockChainWareHouseThreadFactory.getInstance().invokeBlock(blockChain);
-			} catch (InterruptedException e) {
-				logger.error(e.getMessage());
-			}
-		}
-	}
 
 	@Override
 	public void onBlockReiceve(Block block) {
@@ -164,19 +152,31 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 
 	@Override
 	public void onWatchDogSendRestart() {
+		List<PeerNode> listUsingPeer = DnsLookUp.getInstance().getListUsePeer();	
 		if(listThreadConnected !=null) {
-			for(ConnectionNode connection:listThreadConnected) {
-				connection.onRestartIDB(listPeer);
-			}
+			for(ConnectionNode connection: listThreadConnected) {
+				connection.onRestartIDB(listUsingPeer);
+			}	
+			
 		}
+		
+	}
 
-		/*
-		if(listThreadConnected!=null) {
-			for(ConnectionNode connection:listThreadConnected) {
-				this.onNodeDisconnected(connection);
+	@Override
+	public void onBlockHeaderReceive(List<Inventory> listInventory) {
+		for(Inventory inventory:listInventory) {
+			PeerNode peer = DnsLookUp.getInstance().getBestPeer();
+			if(peer !=null) {
+				BlockChainHandler blockChain = new BlockChainHandler(this,this, NetParameters.MainNet, peer,inventory);
+				try {
+					BlockChainWareHouseThreadFactory.getInstance().invokeBlock(blockChain);
+				} catch (InterruptedException e) {
+					logger.error(e.getMessage());
+				}
 			}
-		}*/
-
+			
+		}
+		BlockChainWareHouseThreadFactory.getInstance().shutDownBloc();
 	}
 
 

@@ -24,13 +24,14 @@ import ch.qos.logback.classic.Logger;
 
 public class BlockChainWareHouseThreadFactory {
 
-	
+
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(BlockChainWareHouseThreadFactory.class);
 
-	private static final  int SIZE_POOL = 20;
+	private static final  int SIZE_POOL = 100;
 
-	private ExecutorService executorServiceInitialDownloadBlock ;
+	private ThreadPoolExecutor threadPoolExecutor;
 
+	
 	private ExecutorService executorServiceBlockDownloaded;
 
 	private static  ScheduledExecutorService executorsWatchDog;
@@ -54,9 +55,16 @@ public class BlockChainWareHouseThreadFactory {
 
 
 	private  BlockChainWareHouseThreadFactory() {
-
-		executorServiceInitialDownloadBlock =  Executors.newFixedThreadPool(SIZE_POOL);;
-		executorServiceBlockDownloaded =new ThreadPoolExecutor( SIZE_POOL, SIZE_POOL, 2, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+		/*
+		executorServiceInitialDownloadBlock =  Executors.newFixedThreadPool(SIZE_POOL);
+		executorServiceBlockDownloaded = Executors.newFixedThreadPool(SIZE_POOL);
+				//new ThreadPoolExecutor( SIZE_POOL, SIZE_POOL, 2, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+		 * 
+		 * 
+		 */
+		//executorServiceInitialDownloadBlock =  Executors.newFixedThreadPool(SIZE_POOL);
+		threadPoolExecutor =  new ThreadPoolExecutor(SIZE_POOL, SIZE_POOL,2, TimeUnit.MINUTES,new LinkedBlockingQueue<Runnable>());
+		threadPoolExecutor.allowCoreThreadTimeOut(true);
 		executorsWatchDog = Executors.newScheduledThreadPool(1,	new ThreadFactory() {
 			public Thread newThread(Runnable r) {
 				Thread t = Executors.defaultThreadFactory().newThread(r);
@@ -84,12 +92,20 @@ public class BlockChainWareHouseThreadFactory {
 
 
 	public <T> void invokeAllIntialDownloadBlock(List<ConnectionNode> listThreadInPool) throws InterruptedException {
-		executorServiceInitialDownloadBlock.invokeAll(listThreadInPool);
+		//executorServiceInitialDownloadBlock.invokeAll(listThreadInPool);
+		if(listThreadInPool !=null) {
+			for(ConnectionNode connectionNode:listThreadInPool) {
+				threadPoolExecutor.submit(connectionNode);
+			}
+		}
 	}
 
 	public <T> void invokeBlock(Callable<T> task) throws InterruptedException {
-		executorServiceBlockDownloaded.submit(task);
-		logger.info("*****************************************************************************");
+		threadPoolExecutor.submit(task);
+	}
+
+	public <T> void shutDownBloc() { 
+		//executorServiceBlockDownloaded.shutdown();
 	}
 
 	public  void onBlockChainChange(BlockChain blockchain) {
@@ -105,7 +121,7 @@ public class BlockChainWareHouseThreadFactory {
 
 
 	public void stopExecutor() {
-		executorServiceInitialDownloadBlock.shutdown(); // Disable new tasks from being submitted
+		/*	executorServiceInitialDownloadBlock.shutdown(); // Disable new tasks from being submitted
 		try {
 			// Wait a while for existing tasks to terminate
 			if (!executorServiceInitialDownloadBlock.awaitTermination(60, TimeUnit.SECONDS)) {
@@ -120,6 +136,6 @@ public class BlockChainWareHouseThreadFactory {
 			// Preserve interrupt status
 			Thread.currentThread().interrupt();
 		}
-
+		 */
 	}
 }

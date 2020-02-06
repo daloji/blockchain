@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -96,7 +97,7 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 		
 	}
 	private void callGetBlock(ArrayDeque<TrameHeader> trameArray) {
-
+		List<Inventory>  listBlock = new ArrayList<Inventory>();
 		if(trameArray !=null) {
 
 			for(TrameHeader trame:trameArray) {
@@ -104,10 +105,14 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 					List<Inventory> listinventory =((InvTrame) trame).getListinv();
 					for(Inventory inventory :listinventory) {
 						if(inventory.getType() ==InvType.MSG_BLOCK) {
-							blockChainListener.onBlockHeaderReceive(inventory);  
+							listBlock.add(inventory);
+							
 						}
 					}
 				}
+			}
+			if(!listBlock.isEmpty()) {
+				blockChainListener.onBlockHeaderReceive(listBlock);
 			}
 		}
 	}
@@ -116,16 +121,11 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 
 	@Override
 	public void onRestartIDB(List<PeerNode> peer) {
-
 		for(PeerNode node :peer) {
 			if(this.peerNode.getHost().equals(node.getHost())) {
 				isInterrupt = true;
 			}
 		}
 	}
-
-
-
-
 
 }

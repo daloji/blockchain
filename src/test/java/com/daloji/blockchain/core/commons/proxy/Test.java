@@ -15,7 +15,8 @@ public class Test {
 	
 	public static void main(String[] args) throws InterruptedException {
 		//ExecutorService  executorServiceInitialDownloadBlock =   Executors.newFixedThreadPool(3);
-		ExecutorService executorServiceBlockDownloaded =new ThreadPoolExecutor( 3, 3, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+		ExecutorService executorServiceBlockDownloaded =Executors.newFixedThreadPool(5);
+				//new ThreadPoolExecutor( 5, 5, 15, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
 		callable = new Callable1("callable 1");
 		callable1 = new Callable1("callable 2");
@@ -25,12 +26,13 @@ public class Test {
 
 		List<Callable1> listcallble = new ArrayList<Callable1>();
 		listcallble.add(callable);
+		
 		executorServiceBlockDownloaded.submit(callable);
 		executorServiceBlockDownloaded.submit(callable1);
 		executorServiceBlockDownloaded.submit(callable2);
 		executorServiceBlockDownloaded.submit(callable3);
 		executorServiceBlockDownloaded.submit(callable4);
-
+		//executorServiceBlockDownloaded.shutdown();
 		//invokeAll(listcallble);
 		System.out.println("******************************");
 		int nb =0;

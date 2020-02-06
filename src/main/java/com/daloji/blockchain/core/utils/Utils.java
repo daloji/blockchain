@@ -43,6 +43,9 @@ public class Utils {
 
 	/* timeout peer */
 	public static final int timeoutPeer = 1000*3600*2;
+	
+	
+	public static final int TIMEOUT_BLOCKCHAIN_THREAD =1000*60*2;
 
 
 	/**
