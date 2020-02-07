@@ -158,7 +158,7 @@ public class Block implements Serializable{
 	 * 
 	 */
 
-	public String getHashGenesisBloc() throws IOException {
+	public String getHashGenesisBloc() {
 		Block bl =createGenesisBlock();
 		return bl.generateHash();
 	}

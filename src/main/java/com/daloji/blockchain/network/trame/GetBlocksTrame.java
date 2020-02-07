@@ -33,6 +33,9 @@ public class GetBlocksTrame extends TrameHeader{
 
 	private static final String commande="getblocks";
 
+
+	private String hashToLoad;
+
 	@Override
 	public <T> T deserialise(byte[] msg) {
 		// TODO Auto-generated method stub
@@ -88,17 +91,25 @@ public class GetBlocksTrame extends TrameHeader{
 		payload = payload +Utils.intHexpadding(1, 1);
 		// hash
 		Block bl = new Block();
-		try {
+		//si debut de Initial Download Blockchain on recupere depuis genesis block 
+		//sinon on recupere  depuis le dernier bloc connu
+		if(hashToLoad ==null) {
 			payload = payload +bl.getHashGenesisBloc();
-		} catch (IOException e) {
-			payload = null;
+		}else {
+			payload = payload+hashToLoad;
 		}
-
 		String stop ="00000000000000000000000000000000"+
-				     "00000000000000000000000000000000";
+				"00000000000000000000000000000000";
 		payload = payload + stop;
-
 		return payload;
+	}
+
+	public String getHashToLoad() {
+		return hashToLoad;
+	}
+
+	public void setHashToLoad(String hashToLoad) {
+		this.hashToLoad = hashToLoad;
 	}
 
 }

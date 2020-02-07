@@ -319,10 +319,11 @@ public abstract class AbstractCallable  implements Callable<Object>{
 	}
 
 
-	protected STATE_ENGINE sendGetBlock(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
+	protected STATE_ENGINE sendGetBlock(DataOutputStream outPut,NetParameters netparam,PeerNode peernode,String hash) throws IOException {
 		state = STATE_ENGINE.GETBLOCK_SEND;
 		//construction de la blockchain
 		GetBlocksTrame getblock = new GetBlocksTrame();
+		getblock.setHashToLoad(hash);
 		String trame = getblock.generateMessage(netParameters, peerNode);
 		byte[] data = Utils.hexStringToByteArray(trame);
 		outPut.write(data, 0, data.length);	

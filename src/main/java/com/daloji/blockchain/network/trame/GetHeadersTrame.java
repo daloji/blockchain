@@ -183,12 +183,7 @@ public class GetHeadersTrame extends TrameHeader{
 		logger.debug("hash count  :"+Utils.intHexpadding(2, 1));
 		// hash
 		Block bl = new Block();
-		try {
-			payload = payload +bl.getHashGenesisBloc();
-		} catch (IOException e) {
-			payload = null;
-		}
-
+		payload = payload +bl.getHashGenesisBloc();
 		String stop ="00000000000000000000000000000000"+
 				"00000000000000000000000000000000";
 		payload = payload + stop;

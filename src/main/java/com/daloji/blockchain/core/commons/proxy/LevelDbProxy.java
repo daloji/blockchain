@@ -7,6 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.iq80.leveldb.DB;
@@ -15,8 +16,11 @@ import org.iq80.leveldb.Options;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Block;
+import com.daloji.blockchain.core.commons.Pair;
+import com.daloji.blockchain.core.commons.Retour;
 import com.daloji.blockchain.core.utils.BlockChainWareHouseThreadFactory;
 import com.daloji.blockchain.core.utils.Utils;
+import com.daloji.blockchain.network.trame.BlockTrame;
 
 import ch.qos.logback.classic.Logger;
 
@@ -89,7 +93,7 @@ public class LevelDbProxy implements DatabaseExchange {
 				lock.lock();
 				database.put(Utils.hexStringToByteArray(hash), Utils.convertToBytes(bloc));
 				database.put(bytes(LAST_HASH), Utils.hexStringToByteArray(hash));
-//				incrementNbHash();
+				incrementNbHash();
 				lock.unlock();		
 			}
 		}
@@ -187,6 +191,45 @@ public class LevelDbProxy implements DatabaseExchange {
 			object = (T) Utils.bytesToHex(data);
 		}
 		return object ;
+	}
+
+
+	@Override
+	public Pair<Retour,String> checkBlocChainStatus() {
+		Pair<Retour, String> retour;
+		boolean valid = false;
+		Block bloc = new Block();
+		String genesisHash = bloc.getHashGenesisBloc();
+		String previoushash = genesisHash;
+		String lasthash =getLastHash();
+		bloc = findBlock(lasthash);
+		while(bloc!=null) {
+			previoushash = bloc.getPrevBlockHash();
+			bloc = findBlock(previoushash);
+			if(bloc != null) {
+				if(genesisHash.equals(bloc.getPrevBlockHash())) {
+					valid = true;
+				}
+			}
+		}
+		
+		if(!valid) {
+			retour = new Pair<Retour,String>(Utils.createRetourNOK("hash manquant", "previoushash"), previoushash);
+		}else {
+			retour = new Pair<Retour,String>(Utils.createRetourOK(), null);
+
+		}
+		return retour;
+	}
+
+	
+
+	
+
+	@Override
+	public String getLastHash() {
+		String lastHash = getObject(LAST_HASH);
+		return lastHash;
 	}
 
 }

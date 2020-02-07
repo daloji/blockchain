@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Inventory;
+import com.daloji.blockchain.core.commons.Pair;
+import com.daloji.blockchain.core.commons.Retour;
+import com.daloji.blockchain.core.commons.proxy.LevelDbProxy;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.InitialDownloadBlock;
@@ -33,6 +36,8 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 	private  TrameHeader lastTrame;
 
 	private volatile boolean isInterrupt = false;
+	
+	private String lastHash ;
 
 	public ConnectionNode(NetworkEventHandler networkListener,BlockChainEventHandler blockchaiListener,NetParameters netparam,PeerNode peerNode) throws NamingException {
 		super();
@@ -47,6 +52,14 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 	@Override
 	public Object call() throws Exception {
 		try{
+			Pair<Retour, String> checkBlockChain = LevelDbProxy.getInstance().checkBlocChainStatus();
+			Retour retour = checkBlockChain.first;
+			if(Utils.isRetourOK(retour)) {
+				lastHash =  LevelDbProxy.getInstance().getLastHash();
+			}else {
+				lastHash = checkBlockChain.second;
+			}
+			
 			byte[] data = new byte[Utils.BUFFER_SIZE];
 			socketClient = new Socket(peerNode.getHost(),peerNode.getPort());
 			socketClient.setSoTimeout(Utils.timeoutPeer);
@@ -68,7 +81,7 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 					break;
 				case READY :// networkListener.onNodeConnected(this);
 					break;
-				case GETBLOCK_SEND :state = sendGetBlock(outPut, netParameters, peerNode);
+				case GETBLOCK_SEND :state = sendGetBlock(outPut, netParameters, peerNode,lastHash);
 				listState.add(state);	
 				break;
 				}

@@ -1,8 +1,12 @@
 package com.daloji.blockchain.core.commons.proxy;
 
+import java.util.List;
+
 import org.iq80.leveldb.DBIterator;
 
 import com.daloji.blockchain.core.Block;
+import com.daloji.blockchain.core.commons.Pair;
+import com.daloji.blockchain.core.commons.Retour;
 
 public interface DatabaseExchange {
 
@@ -23,5 +27,10 @@ public interface DatabaseExchange {
 	public <T> T getObject(String hash);
 	
 	public long countKeys();
+	
+	public Pair<Retour,String> checkBlocChainStatus();
+	
+	
+	public String getLastHash();
 	
 }

@@ -27,11 +27,11 @@ public class BlockChainHandler  extends AbstractCallable{
 	private STATE_ENGINE state = STATE_ENGINE.BOOT;
 
 	private  TrameHeader lastTrame;
-	
+
 	private volatile Timer timer = new Timer(true);
 
 	private Inventory inventory;
-	
+
 	private volatile boolean isStopping = false;
 
 	public BlockChainHandler(DataOutputStream dataOut,DataInputStream dataInput){
@@ -93,7 +93,9 @@ public class BlockChainHandler  extends AbstractCallable{
 		}
 		timer.cancel();
 		logger.info("End download Block ");	
-		networkListener.onNodeDisconnected(this);
+		if(networkListener !=null) {
+			networkListener.onNodeDisconnected(this);
+		}
 		return null;
 	}
 

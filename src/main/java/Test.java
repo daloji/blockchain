@@ -9,18 +9,18 @@ import com.daloji.blockchain.core.utils.Utils;
 public class Test {
 
 	public static void main(String[] args) throws IOException {
-	
+
 		DBIterator dbiterator = LevelDbProxy.getInstance().getIterator();
 		try {
-		  for(dbiterator.seekToFirst(); dbiterator.hasNext(); dbiterator.next()) {
-		    String key = Utils.bytesToHex(dbiterator.peekNext().getKey());
-		    byte[] block = dbiterator.peekNext().getValue();
-		    System.out.println(" keys :"+Utils.StrLittleEndian(key));
-		  }
+			for(dbiterator.seekToFirst(); dbiterator.hasNext(); dbiterator.next()) {
+				String key = Utils.bytesToHex(dbiterator.peekNext().getKey());
+				byte[] block = dbiterator.peekNext().getValue();
+				System.out.println(" keys :"+Utils.StrLittleEndian(key));
+			}
 		}catch (Exception e) {
 			// TODO: handle exception
 		} finally {
-		  // Make sure you close the iterator to avoid resource leaks.
+			// Make sure you close the iterator to avoid resource leaks.
 			dbiterator.close();
 		}
 		/*Date date = new Date(1231469665);
@@ -30,18 +30,11 @@ public class Test {
 		System.out.println(Utils.StrLittleEndian("214F1824D6B2EB5F201C6780488187FE72C608BD66F078B51C2BAECE00000000"));
 		System.out.println(Utils.StrLittleEndian("4944469562AE1C2C74D9A535E00B6F3E40FFBAD4F2FDA3895501B58200000000"));
 		System.out.println(Utils.StrLittleEndian("5E2B8043BD9F8DB558C284E00EA24F78879736F4ACD110258E48C22700000000"));
-*/
+		 */
 		String hash = LevelDbProxy.getInstance().getObject("LAST_HASH");	
 		System.out.println(Utils.StrLittleEndian(hash));
-		
-		
-		//int randomNum = ThreadLocalRandom.current().nextInt(0, listPeerFree.size() + 1);
-		
-		int randomNum = 0;
-		while(true) {
-			randomNum = ThreadLocalRandom.current().nextInt(0, 9);
-			System.out.println(randomNum);
-		}
 
-}
+
+		LevelDbProxy.getInstance().checkBlocChainStatus();
+	}
 }
