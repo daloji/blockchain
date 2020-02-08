@@ -1,5 +1,6 @@
 package com.daloji.blockchain.network.trame;
 
+import java.net.UnknownHostException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,11 +96,19 @@ public class AddrTrame  extends TrameHeader{
 				buffer = new byte[16];
 				System.arraycopy(msg, offset, buffer, 0,buffer.length);
 				offset = offset + buffer.length;
-				addr.setIp(Utils.bytesToHex(buffer));
+				try {
+					String ip = Utils.convertHexaToIp(buffer);
+					addr.setIp(ip);
+				} catch (Exception e) {
+					addr.setIp("0.0.0.0");
+				}
+				
 				buffer = new byte[2];
 				System.arraycopy(msg, offset, buffer, 0,buffer.length);
 				offset = offset + buffer.length;
-				addr.setPort(Utils.bytesToHex(buffer));
+				String strport = Utils.bytesToHex(buffer);
+				int port =Integer.parseInt(strport,16);
+				addr.setPort(port);
 				listAddr.add(addr);
 			}
 			byte[] info =new byte[offset];

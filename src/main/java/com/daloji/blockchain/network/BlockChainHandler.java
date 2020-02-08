@@ -92,6 +92,7 @@ public class BlockChainHandler  extends AbstractCallable{
 			logger.error(e.getMessage());	
 		}
 		timer.cancel();
+		timer.purge();
 		logger.info("End download Block ");	
 		if(networkListener !=null) {
 			networkListener.onNodeDisconnected(this);

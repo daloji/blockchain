@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.iq80.leveldb.DBIterator;
 
@@ -9,7 +8,7 @@ import com.daloji.blockchain.core.utils.Utils;
 public class Test {
 
 	public static void main(String[] args) throws IOException {
-
+		
 		DBIterator dbiterator = LevelDbProxy.getInstance().getIterator();
 		try {
 			for(dbiterator.seekToFirst(); dbiterator.hasNext(); dbiterator.next()) {
@@ -23,6 +22,7 @@ public class Test {
 			// Make sure you close the iterator to avoid resource leaks.
 			dbiterator.close();
 		}
+		
 		/*Date date = new Date(1231469665);
 		System.out.println(date);
 		System.out.println(Utils.StrLittleEndian("6FE28C0AB6F1B372C1A6A246AE63F74F931E8365E15A089C68D6190000000000"));
@@ -30,11 +30,31 @@ public class Test {
 		System.out.println(Utils.StrLittleEndian("214F1824D6B2EB5F201C6780488187FE72C608BD66F078B51C2BAECE00000000"));
 		System.out.println(Utils.StrLittleEndian("4944469562AE1C2C74D9A535E00B6F3E40FFBAD4F2FDA3895501B58200000000"));
 		System.out.println(Utils.StrLittleEndian("5E2B8043BD9F8DB558C284E00EA24F78879736F4ACD110258E48C22700000000"));
-		 */
+
 		String hash = LevelDbProxy.getInstance().getObject("LAST_HASH");	
 		System.out.println(Utils.StrLittleEndian(hash));
 
 
-		LevelDbProxy.getInstance().checkBlocChainStatus();
+		String ip ="2A020168AC05000300000242AC110002";
+		System.out.println(Utils.StrLittleEndian(ip));
+		//LevelDbProxy.getInstance().checkBlocChainStatus();
+		 */
+		
+		
+		/*Block bloc = new Block();
+		bloc.setPrevBlockHash("previous");
+		bloc.setTime(122223300);
+		bloc.setTxCount(1);
+		LevelDbProxy.getInstance().addBlock(bloc);
+		bloc = new Block();
+		bloc.setPrevBlockHash("previous1");
+		bloc.setTime(1222435);
+		bloc.setTxCount(1);
+		LevelDbProxy.getInstance().addBlock(bloc);
+		Block blockreceive = LevelDbProxy.getInstance().findBlock(bloc.generateHash());
+		LevelDbProxy.getInstance().deleteBlock(bloc.generateHash());
+		blockreceive = LevelDbProxy.getInstance().findBlock(bloc.generateHash());
+		String hash = LevelDbProxy.getInstance().getObject("LAST_HASH");
+		LevelDbProxy.getInstance().closeDatabase();*/
 	}
 }

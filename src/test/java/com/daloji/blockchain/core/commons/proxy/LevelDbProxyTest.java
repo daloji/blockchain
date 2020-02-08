@@ -50,7 +50,7 @@ public class LevelDbProxyTest {
 		PowerMock.resetAll();
 		if(!OS.contains("win")) {
 			ClassLoader classLoader = LevelDbProxyTest.class.getClassLoader();
-			File file = new File(classLoader.getResource("database/Blockchain/").getFile());
+			File file = new File(classLoader.getResource("database/database/").getFile());
 			tempFolder.create();
 			///System.out.println(file.getCanonicalPath());	
 			Path sourcepath= Paths.get(file.getCanonicalPath()+"/000010.log");

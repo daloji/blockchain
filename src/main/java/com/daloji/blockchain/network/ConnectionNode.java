@@ -36,7 +36,7 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 	private  TrameHeader lastTrame;
 
 	private volatile boolean isInterrupt = false;
-	
+
 	private String lastHash ;
 
 	public ConnectionNode(NetworkEventHandler networkListener,BlockChainEventHandler blockchaiListener,NetParameters netparam,PeerNode peerNode) throws NamingException {
@@ -48,7 +48,7 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 	}
 
 
-	
+
 	@Override
 	public Object call() throws Exception {
 		try{
@@ -59,7 +59,7 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 			}else {
 				lastHash = checkBlockChain.second;
 			}
-			
+
 			byte[] data = new byte[Utils.BUFFER_SIZE];
 			socketClient = new Socket(peerNode.getHost(),peerNode.getPort());
 			socketClient.setSoTimeout(Utils.timeoutPeer);
@@ -100,14 +100,14 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 			}
 			this.peerNode.setUse(false);
 			networkListener.onNodeDisconnected(this);
-				logger.info("fin du Thread ConnectoionNode");
+			logger.info("fin du Thread ConnectoionNode");
 		}catch (Exception e) {
 			logger.error(e.getMessage());
 		}
-		
+
 		return null;
 
-		
+
 	}
 	private void callGetBlock(ArrayDeque<TrameHeader> trameArray) {
 		List<Inventory>  listBlock = new ArrayList<Inventory>();
@@ -119,7 +119,7 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 					for(Inventory inventory :listinventory) {
 						if(inventory.getType() ==InvType.MSG_BLOCK) {
 							listBlock.add(inventory);
-							
+
 						}
 					}
 				}

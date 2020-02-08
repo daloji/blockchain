@@ -30,7 +30,7 @@ public class LevelDbProxy implements DatabaseExchange {
 
 	private static  LevelDbProxy instance = null; 
 
-	private static  String LEVEL_DB_FILE ="Blockchain";
+	private static  String LEVEL_DB_FILE ="database";
 
 	private static String LAST_HASH = "LAST_HASH";
 
@@ -93,7 +93,7 @@ public class LevelDbProxy implements DatabaseExchange {
 				lock.lock();
 				database.put(Utils.hexStringToByteArray(hash), Utils.convertToBytes(bloc));
 				database.put(bytes(LAST_HASH), Utils.hexStringToByteArray(hash));
-				incrementNbHash();
+			//	incrementNbHash();
 				lock.unlock();		
 			}
 		}
@@ -105,16 +105,18 @@ public class LevelDbProxy implements DatabaseExchange {
 		Block bloc = null;
 		ObjectInputStream is = null;
 		try {
-			byte[] data = database.get(Utils.hexStringToByteArray(hash));
-			if(data !=null) {
-				ByteArrayInputStream in = new ByteArrayInputStream(data);
-				is = new ObjectInputStream(in);
-				bloc = (Block) is.readObject();
-				if(is!=null) {
-					is.close();
-				}
-				if(in != null) {
-					in.close();
+			if(hash !=null) {
+				byte[] data = database.get(Utils.hexStringToByteArray(hash));
+				if(data !=null) {
+					ByteArrayInputStream in = new ByteArrayInputStream(data);
+					is = new ObjectInputStream(in);
+					bloc = (Block) is.readObject();
+					if(is!=null) {
+						is.close();
+					}
+					if(in != null) {
+						in.close();
+					}
 				}
 			}
 		} catch (IOException | ClassNotFoundException ex) {
@@ -164,18 +166,16 @@ public class LevelDbProxy implements DatabaseExchange {
 
 	@Override
 	public <T> void addObject(String hash,T object) {
-		lock.lock();
 		database.put(bytes(hash), Utils.convertToBytes(object));
-		lock.unlock();	
 	}
 
 
 	@Override
 	public void incrementNbHash() {
 		long nbhash = 0;
-		String nblong = getObject(NB_HASH);
-		if(nblong != null) {
-			nbhash = Long.parseLong(nblong) +1;
+		String strnblong = getObject(NB_HASH);
+		if(strnblong != null) {
+			nbhash = Long.parseLong(strnblong) +1;
 		}
 		addObject(NB_HASH, Long.toString(nbhash));
 
@@ -212,7 +212,7 @@ public class LevelDbProxy implements DatabaseExchange {
 				}
 			}
 		}
-		
+
 		if(!valid) {
 			retour = new Pair<Retour,String>(Utils.createRetourNOK("hash manquant", "previoushash"), previoushash);
 		}else {
@@ -222,9 +222,9 @@ public class LevelDbProxy implements DatabaseExchange {
 		return retour;
 	}
 
-	
 
-	
+
+
 
 	@Override
 	public String getLastHash() {

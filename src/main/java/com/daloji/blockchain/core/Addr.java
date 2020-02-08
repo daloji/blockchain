@@ -11,7 +11,7 @@ public class Addr implements Serializable{
 
 	private String ip;
 
-	private String port;
+	private int port;
 	
 	private long epoch;
 	
@@ -25,11 +25,11 @@ public class Addr implements Serializable{
 		this.ip = ip;
 	}
 
-	public String getPort() {
+	public int getPort() {
 		return port;
 	}
 
-	public void setPort(String port) {
+	public void setPort(int port) {
 		this.port = port;
 	}
 

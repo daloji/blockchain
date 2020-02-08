@@ -19,6 +19,7 @@ import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
+import com.daloji.blockchain.network.trame.AddrTrame;
 import com.daloji.blockchain.network.trame.BlockTrame;
 import com.daloji.blockchain.network.trame.GetBlocksTrame;
 import com.daloji.blockchain.network.trame.GetDataTrame;
@@ -215,6 +216,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 					}
 					state = STATE_ENGINE.STOP;
 					Block block = ((BlockTrame) trame).generateBlock();
+					logger.info("Block "+block);
 					listBlock.add(block);
 				}
 			}
@@ -310,6 +312,9 @@ public abstract class AbstractCallable  implements Callable<Object>{
 					if(logger.isDebugEnabled()) {
 						logger.debug("<OUT>  Pong " +pongtrame);
 					}
+				}
+				if(trame instanceof AddrTrame) {
+					networkListener.onAddresseReceive(((AddrTrame) trame).getListAddr());
 				}
 			}
 			arrayTrame.removeAll(list);

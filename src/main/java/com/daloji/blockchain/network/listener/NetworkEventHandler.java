@@ -1,5 +1,8 @@
 package com.daloji.blockchain.network.listener;
 
+import java.util.List;
+
+import com.daloji.blockchain.core.Addr;
 import com.daloji.blockchain.network.AbstractCallable;
 
 public interface NetworkEventHandler {
@@ -20,6 +23,9 @@ public interface NetworkEventHandler {
 	 */
 	public void onNodeConnectHasError(AbstractCallable connectionNode);
 	
+	
+	public void onAddresseReceive(List<Addr>  listAddr);
+	
 	/**
 	 *  Callback de deconnexion d'un node
 	 * @param connectionNode
@@ -31,6 +37,9 @@ public interface NetworkEventHandler {
 	 * lancement de la configuration du reseau 
 	 */
 	public void onStart() throws Exception;
+	
+		
+	public void onRestart() throws Exception;
 
 	public void onStop();
 

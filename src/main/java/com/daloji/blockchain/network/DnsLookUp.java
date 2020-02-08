@@ -9,6 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.LoggerFactory;
 
+import com.daloji.blockchain.core.Addr;
 import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.commons.Retour;
 import com.daloji.blockchain.core.utils.BlockChainWareHouseThreadFactory;
@@ -177,6 +178,25 @@ public class DnsLookUp {
 			}
 		}
 		return ipversion;
+	}
+	
+	public void receiveListAddr(List<Addr> listAddr) {
+		if(listAddr !=null) {
+			lock.lock();
+			for(Addr addr:listAddr) {
+				PeerNode peernode = new PeerNode(IPVersion.IPV4);
+				if(!"0.0.0.0".equals(addr.getIp())) {
+					peernode.setHost(addr.getIp());
+					peernode.setPort(addr.getPort());
+					if(!listPeerFree.contains(peernode)) {
+						listPeerFree.add(peernode);
+					}
+					
+				}
+				
+			}
+			lock.unlock();
+		}
 	}
 
 

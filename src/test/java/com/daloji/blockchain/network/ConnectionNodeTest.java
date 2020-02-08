@@ -23,6 +23,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
+import com.daloji.blockchain.core.commons.Pair;
+import com.daloji.blockchain.core.commons.Retour;
+import com.daloji.blockchain.core.commons.proxy.LevelDbProxy;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
@@ -35,12 +38,15 @@ import com.daloji.blockchain.network.trame.TrameHeader;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"javax.crypto.*","javax.security.auth.*"})
-@PrepareForTest({ConnectionNode.class,Socket.class,DataInputStream.class,DataOutputStream.class})
+@PrepareForTest({LevelDbProxy.class,ConnectionNode.class,Socket.class,DataInputStream.class,DataOutputStream.class})
 public class ConnectionNodeTest  {
 
 	private NetworkEventHandler networkEvent;
 
 	private BlockChainEventHandler blockchaineEvent;
+	
+	@MockStrict
+	private LevelDbProxy leveldb;
 
 	@MockStrict
 	private Socket socket;
@@ -52,6 +58,8 @@ public class ConnectionNodeTest  {
 	private DataInputStream datainput;
 	
 	private static String trame_block;
+	
+	private static String trame_verack;
 
 	
 	@BeforeClass
@@ -62,7 +70,6 @@ public class ConnectionNodeTest  {
         // load a properties file
         prop.load(new FileInputStream(file));
         trame_block = (prop.getProperty("trame_receive_bloc001"));
-
 	}
 	
 	@Before
@@ -71,6 +78,7 @@ public class ConnectionNodeTest  {
 		PowerMock.mockStaticStrict(Socket.class);
 		PowerMock.mockStaticStrict(DataOutputStream.class);
 		PowerMock.mockStaticStrict(DataInputStream.class);
+		PowerMock.mockStaticStrict(LevelDbProxy.class);
 	}
 
 	/**
@@ -91,7 +99,10 @@ public class ConnectionNodeTest  {
 		InvTrame inv = new InvTrame();
 		inv.setFromPeer(peer);
 		inv.deserialise(Utils.hexStringToByteArray(trameVersionReceive));
-		
+		Pair<Retour, String> checkBlockChain = new Pair<Retour, String>(Utils.createRetourOK(), null);
+		EasyMock.expect(LevelDbProxy.getInstance()).andReturn(leveldb).anyTimes();
+		EasyMock.expect(leveldb.checkBlocChainStatus()).andReturn(checkBlockChain);
+		EasyMock.expect(leveldb.getLastHash()).andReturn("hash");
 		byte[] content = Utils.hexStringToByteArray(trameReceive);
 		InputStream anyInputStream = new ByteArrayInputStream(content);
 		datainput = new DataInputStream(anyInputStream);
@@ -119,6 +130,10 @@ public class ConnectionNodeTest  {
 		PeerNode peer =new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
 		peer.setPort(8333);
+		Pair<Retour, String> checkBlockChain = new Pair<Retour, String>(Utils.createRetourOK(), null);
+		EasyMock.expect(LevelDbProxy.getInstance()).andReturn(leveldb).anyTimes();
+		EasyMock.expect(leveldb.checkBlocChainStatus()).andReturn(checkBlockChain);
+		EasyMock.expect(leveldb.getLastHash()).andReturn("hash");
 		byte[] content = Utils.hexStringToByteArray(trameReceive);
 		InputStream anyInputStream = new ByteArrayInputStream(content);
 		datainput = new DataInputStream(anyInputStream);
@@ -143,6 +158,10 @@ public class ConnectionNodeTest  {
 		PeerNode peer =new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
 		peer.setPort(8333);
+		Pair<Retour, String> checkBlockChain = new Pair<Retour, String>(Utils.createRetourOK(), null);
+		EasyMock.expect(LevelDbProxy.getInstance()).andReturn(leveldb).anyTimes();
+		EasyMock.expect(leveldb.checkBlocChainStatus()).andReturn(checkBlockChain);
+		EasyMock.expect(leveldb.getLastHash()).andReturn("hash");
 		byte[] content = Utils.hexStringToByteArray(trame_block);
 		InputStream anyInputStream = new ByteArrayInputStream(content);
 		datainput = new DataInputStream(anyInputStream);
@@ -160,5 +179,5 @@ public class ConnectionNodeTest  {
 
 
 	}
-
+	
 }

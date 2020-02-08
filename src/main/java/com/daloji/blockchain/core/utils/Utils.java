@@ -4,9 +4,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+
+import javax.xml.bind.DatatypeConverter;
 
 import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.commons.Retour;
@@ -43,8 +47,8 @@ public class Utils {
 
 	/* timeout peer */
 	public static final int timeoutPeer = 1000*3600*2;
-	
-	
+
+
 	public static final int TIMEOUT_BLOCKCHAIN_THREAD =1000*60*2;
 
 
@@ -126,15 +130,15 @@ public class Utils {
 		}
 		return data;
 	}
-	
-	
-	
+
+
+
 	public static byte[] convertToBytes(Object object)  {
-	    try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-	         ObjectOutput out = new ObjectOutputStream(bos)) {
-	        out.writeObject(object);
-	        return bos.toByteArray(); 
-	    } catch (IOException e) {
+		try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				ObjectOutput out = new ObjectOutputStream(bos)) {
+			out.writeObject(object);
+			return bos.toByteArray(); 
+		} catch (IOException e) {
 			return null;
 		} 
 	}
@@ -343,6 +347,19 @@ public class Utils {
 	}
 
 
+	public static String convertHexaToIp(final byte[] data) throws UnknownHostException {
+		String adresse = Utils.bytesToHex(data);
+		String ip = "0.0.0.0";
+		if(data!=null) {
+			if(adresse.contains("FFFF")) {
+				int index = adresse.indexOf("FFFF");
+				adresse = adresse.substring(index+4,adresse.length());
+				InetAddress addr = InetAddress.getByAddress(DatatypeConverter.parseHexBinary(adresse));
+				ip = addr.getHostAddress();
+			}
+		}
+		return ip;
+	}
 
 
 	public static boolean allZero(final byte[] data) {

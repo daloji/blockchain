@@ -7,9 +7,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.LoggerFactory;
 
+import com.daloji.blockchain.core.Addr;
 import com.daloji.blockchain.core.Block;
 import com.daloji.blockchain.core.BlockChain;
 import com.daloji.blockchain.core.Inventory;
@@ -26,16 +28,13 @@ import ch.qos.logback.classic.Logger;
 
 public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEventHandler {
 
-
-
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(NetworkOrchestrator.class);
 
+	protected final ReentrantLock lock = BlockChainWareHouseThreadFactory.lockThisObject(NetworkOrchestrator.class);
 
 	private static final int NB_THREAD = 1;
 
 	private  CopyOnWriteArrayList<ConnectionNode> listPeerConnected = new CopyOnWriteArrayList<ConnectionNode>(); 
-
-	private  CopyOnWriteArrayList<Inventory> listHeaderBlock = new CopyOnWriteArrayList<Inventory>(); 
 
 	private BlockChain blokchain = new BlockChain();
 
@@ -48,7 +47,6 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 
 	private List<BlockChainHandler> listThreadBlochChain;
 
-	private List<PeerNode> listPeer;
 
 
 	/*
@@ -97,7 +95,6 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 		Pair<Retour, List<PeerNode>> dnslookup = DnsLookUp.getInstance().getAllNodePeer();
 		Retour retour = dnslookup.first;
 		if(Utils.isRetourOK(retour)) {
-			listPeer = dnslookup.second;
 			for (int i = 0; i < NB_THREAD; i++) {
 				PeerNode peer = DnsLookUp.getInstance().getBestPeer();
 				if(peer!=null) {
@@ -155,13 +152,19 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 	@Override
 	public void onWatchDogSendRestart() {
 		List<PeerNode> listUsingPeer = DnsLookUp.getInstance().getListUsePeer();	
-		if(listThreadConnected !=null) {
-			for(ConnectionNode connection: listThreadConnected) {
+		List<ConnectionNode> listPeerConnected = new ArrayList<ConnectionNode>(listThreadConnected); 
+		if(listPeerConnected !=null) {
+			for(ConnectionNode connection: listPeerConnected) {
 				connection.onRestartIDB(listUsingPeer);
+			}
+			if(listPeerConnected.isEmpty()) {
+				try {
+					this.onRestart();	
+				}catch (Exception e) {
+					logger.error(e.getMessage());
+				}
 			}	
-			
 		}
-		
 	}
 
 	@Override
@@ -179,6 +182,27 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 			
 		}
 		BlockChainWareHouseThreadFactory.getInstance().shutDownBloc();
+	}
+
+	@Override
+	public void onRestart() throws Exception {
+		logger.info("***********************RESTART **********************");
+		ConnectionNode connectionNode = null;
+		for (int i = 0; i < NB_THREAD; i++) {
+			PeerNode peer = DnsLookUp.getInstance().getBestPeer();
+			if(peer!=null) {
+				connectionNode = new ConnectionNode(this,this, NetParameters.MainNet, peer);
+				listThreadConnected.add(connectionNode);	
+			}
+		}
+		BlockChainWareHouseThreadFactory.getInstance().addBlockChainListener(this);
+		BlockChainWareHouseThreadFactory.getInstance().invokeAllIntialDownloadBlock(listThreadConnected);
+		
+	}
+
+	@Override
+	public void onAddresseReceive(List<Addr> listAddr) {
+		DnsLookUp.getInstance().receiveListAddr(listAddr);
 	}
 
 
