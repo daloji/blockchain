@@ -99,9 +99,7 @@ public class ConnectionNodeTest  {
 		InvTrame inv = new InvTrame();
 		inv.setFromPeer(peer);
 		inv.deserialise(Utils.hexStringToByteArray(trameVersionReceive));
-		Pair<Retour, String> checkBlockChain = new Pair<Retour, String>(Utils.createRetourOK(), null);
 		EasyMock.expect(LevelDbProxy.getInstance()).andReturn(leveldb).anyTimes();
-		EasyMock.expect(leveldb.checkBlocChainStatus()).andReturn(checkBlockChain);
 		EasyMock.expect(leveldb.getLastHash()).andReturn("hash");
 		byte[] content = Utils.hexStringToByteArray(trameReceive);
 		InputStream anyInputStream = new ByteArrayInputStream(content);
@@ -130,9 +128,7 @@ public class ConnectionNodeTest  {
 		PeerNode peer =new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
 		peer.setPort(8333);
-		Pair<Retour, String> checkBlockChain = new Pair<Retour, String>(Utils.createRetourOK(), null);
 		EasyMock.expect(LevelDbProxy.getInstance()).andReturn(leveldb).anyTimes();
-		EasyMock.expect(leveldb.checkBlocChainStatus()).andReturn(checkBlockChain);
 		EasyMock.expect(leveldb.getLastHash()).andReturn("hash");
 		byte[] content = Utils.hexStringToByteArray(trameReceive);
 		InputStream anyInputStream = new ByteArrayInputStream(content);
@@ -158,9 +154,7 @@ public class ConnectionNodeTest  {
 		PeerNode peer =new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
 		peer.setPort(8333);
-		Pair<Retour, String> checkBlockChain = new Pair<Retour, String>(Utils.createRetourOK(), null);
 		EasyMock.expect(LevelDbProxy.getInstance()).andReturn(leveldb).anyTimes();
-		EasyMock.expect(leveldb.checkBlocChainStatus()).andReturn(checkBlockChain);
 		EasyMock.expect(leveldb.getLastHash()).andReturn("hash");
 		byte[] content = Utils.hexStringToByteArray(trame_block);
 		InputStream anyInputStream = new ByteArrayInputStream(content);
