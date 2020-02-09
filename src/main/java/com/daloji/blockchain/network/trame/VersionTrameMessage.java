@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Crypto;
 import com.daloji.blockchain.core.commons.Retour;
+import com.daloji.blockchain.core.commons.proxy.LevelDbProxy;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
@@ -296,11 +297,9 @@ public class VersionTrameMessage  extends TrameHeader{
 		//sub version protocole
 		String subversion = Utils.convertStringToHex(sub_version, 15);
 		payload = payload + "0f"+subversion ;
-		long startheigth = Utils.little2big(this.getStartHeigth());
-		String strStart = Long.toString(startheigth,16);
+		int startheigth = LevelDbProxy.getInstance().getNbHash();
 		//start_height
-		//payload = payload +Utils.paddingHexa(strStart, 4)
-		payload = payload +Utils.intHexpadding(0,4);	
+		payload = payload +Utils.intHexpadding(startheigth,4);	
 
 		//payload = payload +Utils.intHexpadding(0,1);
 		return payload;

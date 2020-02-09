@@ -195,7 +195,7 @@ public class LevelDbProxy implements DatabaseExchange {
 
 
 
-	public void updateStatus(Block bloc) {
+	public void updateStatus(final Block bloc) {
 		long nbhash = 0;
 		String previoushash = null;
 		int nb = 0;
@@ -205,11 +205,12 @@ public class LevelDbProxy implements DatabaseExchange {
 		if(value !=null) {
 			nbhash = Integer.parseInt(value);
 		}
-		if(bloc !=null) {
-			String hash = bloc.generateHash();
+		Block newBloc = bloc;
+		if(newBloc !=null) {
+			String hash = newBloc.generateHash();
 			while(bloc!=null) {
-				previoushash = bloc.getPrevBlockHash();
-				bloc = findBlock(previoushash);
+				previoushash = newBloc.getPrevBlockHash();
+				newBloc = findBlock(previoushash);
 				nb++;
 			}
 			if(nb>nbhash) {

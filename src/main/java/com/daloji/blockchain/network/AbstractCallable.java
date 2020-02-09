@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Block;
 import com.daloji.blockchain.core.Inventory;
-import com.daloji.blockchain.core.commons.proxy.LevelDbProxy;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;

@@ -60,5 +60,9 @@ public class Test {
 		blockreceive = LevelDbProxy.getInstance().findBlock(bloc.generateHash());
 		String hash = LevelDbProxy.getInstance().getObject("LAST_HASH");
 		LevelDbProxy.getInstance().closeDatabase();*/
+		
+		String info =Utils.intHexpadding(212672, 4);
+		
+		System.out.println(info);
 	}
 }
