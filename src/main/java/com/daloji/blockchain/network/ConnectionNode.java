@@ -13,8 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Inventory;
-import com.daloji.blockchain.core.commons.Pair;
-import com.daloji.blockchain.core.commons.Retour;
 import com.daloji.blockchain.core.commons.proxy.LevelDbProxy;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
@@ -38,6 +36,8 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 	private volatile boolean isInterrupt = false;
 
 	private String lastHash ;
+	
+	
 
 	public ConnectionNode(NetworkEventHandler networkListener,BlockChainEventHandler blockchaiListener,NetParameters netparam,PeerNode peerNode) throws NamingException {
 		super();
@@ -51,15 +51,9 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 
 	@Override
 	public Object call() throws Exception {
+		logger.info("Start Connection node  "+peerNode.getHost()+ " "+peerNode.getPort() );
 		try{
-			Pair<Retour, String> checkBlockChain = LevelDbProxy.getInstance().checkBlocChainStatus();
-			Retour retour = checkBlockChain.first;
-			if(Utils.isRetourOK(retour)) {
-				lastHash =  LevelDbProxy.getInstance().getLastHash();
-			}else {
-				lastHash = checkBlockChain.second;
-			}
-
+			lastHash = LevelDbProxy.getInstance().getLastHash();
 			byte[] data = new byte[Utils.BUFFER_SIZE];
 			socketClient = new Socket(peerNode.getHost(),peerNode.getPort());
 			socketClient.setSoTimeout(Utils.timeoutPeer);
@@ -68,6 +62,7 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 			int count = 1;
 			listState.add(STATE_ENGINE.BOOT);
 			while(state !=STATE_ENGINE.START && count!=-1 && !isInterrupt) {
+				logger.info("Running Connection node  "+state);
 				switch(state) {
 				case BOOT : state = sendVersion(outPut,netParameters,peerNode);
 				listState.add(state);
@@ -98,11 +93,15 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 					}	
 				}
 			}
-			this.peerNode.setUse(false);
-			networkListener.onNodeDisconnected(this);
-			logger.info("fin du Thread ConnectoionNode");
+
+			logger.info("fin du Thread ConnectoionNode "+count);
 		}catch (Exception e) {
 			logger.error(e.getMessage());
+		}finally {
+			this.peerNode.setUse(false);
+			if(networkListener !=null) {
+				networkListener.onNodeDisconnected(this);	
+			}
 		}
 
 		return null;

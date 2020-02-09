@@ -38,6 +38,7 @@ public class WatchDogHandler implements Runnable,WatchDogListener {
 				logger.info("WatchDogHandler : ****** should Restart IDB *******");
 				//TODO
 				blockchainlistener.onWatchDogSendRestart();
+				nbBlock = 0;
 			}else {
 				logger.info("WatchDogHandler : ****** Still alive IDB  nbBlock "+nbBlock+" =>oldnbBlock"+oldnbBlock+" *******");
 				oldnbBlock = nbBlock;

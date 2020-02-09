@@ -296,8 +296,12 @@ public class VersionTrameMessage  extends TrameHeader{
 		//sub version protocole
 		String subversion = Utils.convertStringToHex(sub_version, 15);
 		payload = payload + "0f"+subversion ;
+		long startheigth = Utils.little2big(this.getStartHeigth());
+		String strStart = Long.toString(startheigth,16);
 		//start_height
+		//payload = payload +Utils.paddingHexa(strStart, 4)
 		payload = payload +Utils.intHexpadding(0,4);	
+
 		//payload = payload +Utils.intHexpadding(0,1);
 		return payload;
 	}

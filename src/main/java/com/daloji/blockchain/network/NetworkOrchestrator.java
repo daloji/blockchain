@@ -195,7 +195,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 				listThreadConnected.add(connectionNode);	
 			}
 		}
-		BlockChainWareHouseThreadFactory.getInstance().addBlockChainListener(this);
+	//	BlockChainWareHouseThreadFactory.getInstance().addBlockChainListener(this);
 		BlockChainWareHouseThreadFactory.getInstance().invokeAllIntialDownloadBlock(listThreadConnected);
 		
 	}

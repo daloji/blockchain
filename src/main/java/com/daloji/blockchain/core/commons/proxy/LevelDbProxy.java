@@ -1,5 +1,6 @@
 package com.daloji.blockchain.core.commons.proxy;
 
+import static org.iq80.leveldb.impl.Iq80DBFactory.asString;
 import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
 import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
 
@@ -7,7 +8,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.iq80.leveldb.DB;
@@ -20,7 +20,6 @@ import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.commons.Retour;
 import com.daloji.blockchain.core.utils.BlockChainWareHouseThreadFactory;
 import com.daloji.blockchain.core.utils.Utils;
-import com.daloji.blockchain.network.trame.BlockTrame;
 
 import ch.qos.logback.classic.Logger;
 
@@ -30,11 +29,13 @@ public class LevelDbProxy implements DatabaseExchange {
 
 	private static  LevelDbProxy instance = null; 
 
-	private static  String LEVEL_DB_FILE ="database";
+	private static  String LEVEL_DB_FILE ="level-db";
 
 	private static String LAST_HASH = "LAST_HASH";
 
 	private static String NB_HASH = "NB_HASH";
+
+	private static String SIZE_HASH = "SIZE_HASH";
 
 	protected final ReentrantLock lock = BlockChainWareHouseThreadFactory.lockThisObject(LevelDbProxy.class);
 
@@ -92,8 +93,7 @@ public class LevelDbProxy implements DatabaseExchange {
 			if(!existKeys(hash)) {
 				lock.lock();
 				database.put(Utils.hexStringToByteArray(hash), Utils.convertToBytes(bloc));
-				database.put(bytes(LAST_HASH), Utils.hexStringToByteArray(hash));
-			//	incrementNbHash();
+				updateStatus(bloc);
 				lock.unlock();		
 			}
 		}
@@ -194,6 +194,36 @@ public class LevelDbProxy implements DatabaseExchange {
 	}
 
 
+
+	public void updateStatus(Block bloc) {
+		long nbhash = 0;
+		String previoushash = null;
+		int nb = 0;
+		Block blocgenesis = new Block();
+		String genesisHash = blocgenesis.getHashGenesisBloc();
+		String value = asString(database.get(bytes(SIZE_HASH)));
+		if(value !=null) {
+			nbhash = Integer.parseInt(value);
+		}
+		if(bloc !=null) {
+			String hash = bloc.generateHash();
+			while(bloc!=null) {
+				previoushash = bloc.getPrevBlockHash();
+				bloc = findBlock(previoushash);
+				nb++;
+			}
+			if(nb>nbhash) {
+				String strnb =String.valueOf(nb);
+				database.put(bytes(SIZE_HASH), bytes(strnb));
+				database.put(bytes(LAST_HASH), Utils.hexStringToByteArray(hash));
+			}else {
+				if(nbhash ==0) {
+					database.put(bytes(LAST_HASH), bytes(genesisHash));	
+				}
+			}
+		}
+	}
+
 	@Override
 	public Pair<Retour,String> checkBlocChainStatus() {
 		Pair<Retour, String> retour;
@@ -228,8 +258,27 @@ public class LevelDbProxy implements DatabaseExchange {
 
 	@Override
 	public String getLastHash() {
-		String lastHash = getObject(LAST_HASH);
+		String lastHash;
+		byte[] data = database.get(bytes(LAST_HASH));
+		if(data !=null) {
+			lastHash = Utils.bytesToHex(data);
+		}
+		else {
+			Block block = new Block();
+			lastHash = block.getHashGenesisBloc();
+		}
 		return lastHash;
+	}
+
+
+	@Override
+	public int getNbHash() {
+		int nbhash = 0;
+		String value = asString(database.get(bytes(SIZE_HASH)));
+		if(value !=null) {
+			nbhash = Integer.parseInt(value);
+		}
+		return nbhash;
 	}
 
 }

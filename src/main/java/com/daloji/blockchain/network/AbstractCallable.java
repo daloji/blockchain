@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Block;
 import com.daloji.blockchain.core.Inventory;
+import com.daloji.blockchain.core.commons.proxy.LevelDbProxy;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
@@ -60,7 +61,11 @@ public abstract class AbstractCallable  implements Callable<Object>{
 
 	protected STATE_ENGINE state = STATE_ENGINE.BOOT;
 
+	protected int startHeight = 0;
+	
+	//LevelDbProxy.getInstance().getNbHash();
 
+	
 	protected List<STATE_ENGINE> listState = new ArrayList<>();
 
 	protected Stack<ObjectTrame> pileCommand = new Stack<ObjectTrame>();
@@ -380,6 +385,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 
 		STATE_ENGINE state = STATE_ENGINE.VERSION_SEND;
 		VersionTrameMessage version = new VersionTrameMessage(true);
+		version.setStartHeigth(startHeight);
 		String trame = version.generateMessage(netParameters, peerNode);
 		byte[] data = Utils.hexStringToByteArray(trame);
 		outPut.write(data, 0, data.length);
