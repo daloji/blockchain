@@ -1,135 +1,58 @@
 package com.daloji.blockchain.core.commons.proxy;
 
-import static org.iq80.leveldb.impl.Iq80DBFactory.factory;
-
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
+import org.easymock.EasyMock;
 import org.iq80.leveldb.DB;
-import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.Options;
-import org.junit.AfterClass;
-import org.junit.Assert;
+import org.iq80.leveldb.impl.Iq80DBFactory;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.api.easymock.annotation.MockStrict;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 import com.daloji.blockchain.core.Block;
 
 
-//@RunWith(PowerMockRunner.class)
-//@PowerMockIgnore({"javax.crypto.*","javax.security.auth.*"})
-//@PrepareForTest({LevelDbProxy.class})
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore({"javax.crypto.*","javax.security.auth.*"})
+@PrepareForTest({DB.class,Iq80DBFactory.class})
 public class LevelDbProxyTest {
 
-	//@Rule
-	public static TemporaryFolder tempFolder = new TemporaryFolder();
 
-	//@MockStrict
-	private LevelDbProxy levelDbproxy;
-
+	
+	@MockStrict
 	private static DB database;
+	
+	@MockStrict
+	private Iq80DBFactory factory;
 
-	private static String OS = System.getProperty("os.name").toLowerCase();
-
-	//@BeforeClass
-	public static void beforeTest() throws IOException {
-
+	
+	@Before
+	public void beforeTest() {
 		PowerMock.resetAll();
-		if(!OS.contains("win")) {
-			ClassLoader classLoader = LevelDbProxyTest.class.getClassLoader();
-			File file = new File(classLoader.getResource("database/level-db/").getFile());
-			tempFolder.create();
-			///System.out.println(file.getCanonicalPath());	
-			Path sourcepath= Paths.get(file.getCanonicalPath()+"/000019.log");
-			Path destfile = Paths.get(tempFolder.getRoot().getAbsolutePath()+"/000019.log");
-			Files.copy( sourcepath,destfile, StandardCopyOption.REPLACE_EXISTING);
-			sourcepath= Paths.get(file.getCanonicalPath()+"/000013.sst");
-			destfile = Paths.get(tempFolder.getRoot().getAbsolutePath()+"/000013.sst");
-			Files.copy( sourcepath,destfile, StandardCopyOption.REPLACE_EXISTING);
-			
-			sourcepath= Paths.get(file.getCanonicalPath()+"/000018.sst");
-			destfile = Paths.get(tempFolder.getRoot().getAbsolutePath()+"/000018.sst");
-			Files.copy( sourcepath,destfile, StandardCopyOption.REPLACE_EXISTING);
+		PowerMock.mockStaticStrict(DB.class);
+		PowerMock.mockStaticStrict(Iq80DBFactory.class);
 
-			sourcepath= Paths.get(file.getCanonicalPath()+"/CURRENT");
-			destfile = Paths.get(tempFolder.getRoot().getAbsolutePath()+"/CURRENT");
-			Files.copy( sourcepath,destfile, StandardCopyOption.REPLACE_EXISTING);
-			sourcepath= Paths.get(file.getCanonicalPath()+"/LOCK");
-			destfile = Paths.get(tempFolder.getRoot().getAbsolutePath()+"/LOCK");
-			Files.copy( sourcepath,destfile, StandardCopyOption.REPLACE_EXISTING);
-			sourcepath= Paths.get(file.getCanonicalPath()+"/MANIFEST-000017");
-			destfile = Paths.get(tempFolder.getRoot().getAbsolutePath()+"/MANIFEST-000017");
-			Files.copy( sourcepath,destfile, StandardCopyOption.REPLACE_EXISTING);
-			Options options = new Options();
-			options.createIfMissing(true);
-			database = factory.open(new File(tempFolder.getRoot().toString()), options);
-		}
+	}
+	
+	@Test
+	public void addDataLevelDb() throws Exception {
+	    PowerMock.expectNew(Iq80DBFactory.class).andReturn(factory);
+		EasyMock.expect(factory.open(EasyMock.anyObject(File.class), EasyMock.anyObject(Options.class))).andReturn(database);
+		//EasyMock.expect(leveldb.getNbHash()).andReturn(1);
+		Block bloc = new Block();
+		bloc.setPrevBlockHash("previous");
+		bloc.setTime(122223300);
+		bloc.setTxCount(1);
+		PowerMock.replayAll();
+		LevelDbProxy.getInstance().addBlock(bloc);
+		PowerMock.verify();
 	}
 
-	//@AfterClass
-	public static void after() throws IOException {
-		if(!OS.contains("win")) {
-		database.close();
-		}
-	}
-
-	//@Test
-	public void  addLevelDb() {
-		if(!OS.contains("win")) {
-			Block bloc = new Block();
-			bloc.setPrevBlockHash("previous");
-			bloc.setTime(122223300);
-			bloc.setTxCount(1);
-			PowerMock.replayAll();
-			Whitebox.setInternalState(LevelDbProxy.class,database );
-			LevelDbProxy.getInstance().addBlock(bloc);
-			Block blockreceive = LevelDbProxy.getInstance().findBlock(bloc.generateHash());
-			Assert.assertNotNull(blockreceive);
-			Assert.assertEquals(blockreceive.getTime(), bloc.getTime());
-			Assert.assertEquals(blockreceive.getTxCount(), bloc.getTxCount());
-			LevelDbProxy.getInstance().deleteBlock(bloc.generateHash());
-			blockreceive = LevelDbProxy.getInstance().findBlock(bloc.generateHash());
-			Assert.assertNull(blockreceive);
-			String hash = LevelDbProxy.getInstance().getObject("LAST_HASH");
-			Assert.assertEquals(hash, bloc.generateHash());
-			LevelDbProxy.getInstance().closeDatabase();
-			PowerMock.verify();
-		}
-	}		 
-
-
-
-
-	//@Test
-	public void listKeyValue() throws IOException {
-
-		if(!OS.contains("win")) {
-			PowerMock.replayAll();
-			Whitebox.setInternalState(LevelDbProxy.class,database );
-			DBIterator dbiterator = LevelDbProxy.getInstance().getIterator();
-			dbiterator.seekToFirst();
-			int countkey = 0;
-			while(dbiterator.hasNext()) {
-				countkey++;
-				dbiterator.next();
-			}
-			dbiterator.close();
-			PowerMock.verify();
-			Assert.assertEquals(countkey, 12);
-		}
-	}
+	
 }
