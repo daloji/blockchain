@@ -1,6 +1,5 @@
 package com.daloji.blockchain.network.trame;
 
-import java.io.IOException;
 import java.time.Instant;
 
 import org.slf4j.LoggerFactory;

@@ -5,20 +5,21 @@ import java.security.Timestamp;
 import com.daloji.blockchain.network.IPVersion;
 
 public class PeerNode extends PeerParameters{
-	
-	
+
+	private String host;
+
+	private int port;
+
+	private Timestamp time;
+
+	private boolean use;
+
 	public PeerNode(IPVersion versionIp) {
 		super(versionIp);
 	}
 
-	private String host;
-	
-	private int port;
-	
-	private Timestamp time;
-	
-	private boolean use;
-	
+
+
 
 	public boolean isUse() {
 		return use;
@@ -93,5 +94,5 @@ public class PeerNode extends PeerParameters{
 			return false;
 		return true;
 	}
-	
+
 }
