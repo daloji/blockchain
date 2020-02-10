@@ -114,7 +114,9 @@ public class AddrTrame  extends TrameHeader{
 			byte[] info =new byte[offset];
 			System.arraycopy(msg,0, info, 0, info.length);
 			if(logger.isDebugEnabled()) {
-				logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Addr : "+Utils.bytesToHex(info));
+				String extractZero =Utils.bytesToHex(info);
+				extractZero = Utils.deleteEndZero(extractZero);
+				logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Addr : "+extractZero);
 			}
 			if(offset<msg.length) {
 				buffer = new byte[msg.length-offset];

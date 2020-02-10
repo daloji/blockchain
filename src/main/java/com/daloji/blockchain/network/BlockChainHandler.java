@@ -77,7 +77,9 @@ public class BlockChainHandler  extends AbstractCallable{
 
 				count = input.read(data);
 				if(count > 0) {
-					logger.info(Utils.bytesToHex(data));
+					String extractZero =Utils.bytesToHex(data);
+					extractZero = Utils.deleteEndZero(extractZero);
+					logger.info(extractZero);
 					ArrayDeque<TrameHeader> deserialize = DeserializerTrame.getInstance().deserialise(lastTrame,data,peerNode);
 					if(deserialize.size()>0) {
 						TrameHeader trame = deserialize.getLast();

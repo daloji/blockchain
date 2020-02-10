@@ -147,7 +147,9 @@ public class InvTrame extends TrameHeader{
 		byte[] info =new byte[offset];
 		System.arraycopy(msg,0, info, 0, info.length);
 		if(logger.isDebugEnabled()) {
-			logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Inv   "+Utils.bytesToHex(info));
+			String extractZero =Utils.bytesToHex(info);
+			extractZero = Utils.deleteEndZero(extractZero);
+			logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Inv   "+extractZero);
 		}
 		if(offset<msg.length) {
 

@@ -101,7 +101,9 @@ public class GetHeadersTrame extends TrameHeader{
 			byte[] info =new byte[offset];
 			System.arraycopy(msg,0, info, 0, info.length);
 			if(logger.isDebugEnabled()) {
-				logger.debug("["+getFromPeer().getHost()+"]"+"<IN> GetHeaders : "+Utils.bytesToHex(info));
+				String extractZero =Utils.bytesToHex(info);
+				extractZero = Utils.deleteEndZero(extractZero);
+				logger.debug("["+getFromPeer().getHost()+"]"+"<IN> GetHeaders : "+extractZero);
 			}
 			if(offset<msg.length) {
 				buffer = new byte[msg.length-offset];
@@ -116,8 +118,10 @@ public class GetHeadersTrame extends TrameHeader{
 			byte[] info =new byte[offset];
 			System.arraycopy(msg,0, info, 0, info.length);
 			offset = offset + (int)length;
+			String extractZero =Utils.bytesToHex(info);
+			extractZero = Utils.deleteEndZero(extractZero);
 			if(logger.isDebugEnabled()) {
-				logger.debug("["+getFromPeer().getHost()+"]"+"<IN> feelfilter : "+Utils.bytesToHex(info));
+				logger.debug("["+getFromPeer().getHost()+"]"+"<IN> GetHeaders : "+extractZero);
 			}
 			this.setPartialTrame(true);
 			buffer = new byte[0];

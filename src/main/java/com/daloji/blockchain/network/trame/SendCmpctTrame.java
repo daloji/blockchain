@@ -87,7 +87,9 @@ public class SendCmpctTrame extends TrameHeader {
 			System.arraycopy(msg,0, info, 0, info.length);
 			offset = offset + (int)length;
 			if(logger.isDebugEnabled()) {
-				logger.debug("["+getFromPeer().getHost()+"]"+"<IN> SendCmpct : "+Utils.bytesToHex(info));
+				String extractZero =Utils.bytesToHex(info);
+				extractZero = Utils.deleteEndZero(extractZero);
+				logger.debug("["+getFromPeer().getHost()+"]"+"<IN> SendCmpct : "+extractZero);
 			}
 		}else {
 			this.setPartialTrame(true);

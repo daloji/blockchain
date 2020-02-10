@@ -402,5 +402,11 @@ public class Utils {
 		return trametype;
 	}
 
-
+	public static String deleteEndZero(String data) {
+		String info = "";
+		if(data !=null) {
+			info = data.replaceFirst("0+($)", "");
+		}
+		return info;
+	}
 }
