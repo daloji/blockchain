@@ -1,16 +1,16 @@
 package com.daloji.blockchain.network;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.BlockChain;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.WatchDogListener;
 
-import ch.qos.logback.classic.Logger;
 
 public class WatchDogHandler implements Runnable,WatchDogListener {
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(WatchDogHandler.class);
+	private static final Logger logger =  LoggerFactory.getLogger(WatchDogHandler.class);
 
 	private BlockChain blockchain = null;
 	

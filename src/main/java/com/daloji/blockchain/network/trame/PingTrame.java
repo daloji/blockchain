@@ -1,5 +1,6 @@
 package com.daloji.blockchain.network.trame;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Crypto;
@@ -7,11 +8,10 @@ import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
 
-import ch.qos.logback.classic.Logger;
 
 public class PingTrame extends TrameHeader{
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(PingTrame.class);
+	private static final Logger logger =  LoggerFactory.getLogger(PingTrame.class);
 
 	private String cmd = "ping";
 	

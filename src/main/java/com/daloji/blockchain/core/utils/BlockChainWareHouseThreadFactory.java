@@ -10,6 +10,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.BlockChain;
@@ -18,13 +19,12 @@ import com.daloji.blockchain.network.WatchDogHandler;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.google.common.util.concurrent.CycleDetectingLockFactory;
 
-import ch.qos.logback.classic.Logger;
 
 
 public class BlockChainWareHouseThreadFactory {
 
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(BlockChainWareHouseThreadFactory.class);
+	private static final Logger logger =  LoggerFactory.getLogger(BlockChainWareHouseThreadFactory.class);
 
 	private static final  int SIZE_POOL = 100;
 

@@ -7,6 +7,7 @@ import java.util.ArrayDeque;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Inventory;
@@ -18,11 +19,10 @@ import com.daloji.blockchain.network.trame.DeserializerTrame;
 import com.daloji.blockchain.network.trame.STATE_ENGINE;
 import com.daloji.blockchain.network.trame.TrameHeader;
 
-import ch.qos.logback.classic.Logger;
 
 public class BlockChainHandler  extends AbstractCallable{
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(BlockChainHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(BlockChainHandler.class);
 
 	private STATE_ENGINE state = STATE_ENGINE.BOOT;
 

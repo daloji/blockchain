@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Addr;
@@ -24,11 +25,11 @@ import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
 
-import ch.qos.logback.classic.Logger;
+
 
 public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEventHandler {
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(NetworkOrchestrator.class);
+	private static final Logger logger = LoggerFactory.getLogger(NetworkOrchestrator.class);
 
 	protected final ReentrantLock lock = BlockChainWareHouseThreadFactory.lockThisObject(NetworkOrchestrator.class);
 

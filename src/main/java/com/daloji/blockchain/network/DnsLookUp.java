@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Addr;
@@ -16,7 +17,6 @@ import com.daloji.blockchain.core.utils.BlockChainWareHouseThreadFactory;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.peers.PeerNode;
 
-import ch.qos.logback.classic.Logger;
 
 /**
  * 
@@ -26,7 +26,7 @@ import ch.qos.logback.classic.Logger;
  */
 public class DnsLookUp {
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(DnsLookUp.class);
+	private static final Logger logger =  LoggerFactory.getLogger(DnsLookUp.class);
 
 	protected final ReentrantLock lock = BlockChainWareHouseThreadFactory.lockThisObject(DnsLookUp.class);
 	

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Crypto;
@@ -19,7 +20,7 @@ import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
 
-import ch.qos.logback.classic.Logger;
+
 
 
 /**
@@ -28,7 +29,7 @@ import ch.qos.logback.classic.Logger;
  */
 public abstract class TrameHeader implements Serializable {
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(TrameHeader.class);
+	private static final Logger logger =  LoggerFactory.getLogger(TrameHeader.class);
 
 
 	/**

@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Crypto;
@@ -14,7 +15,6 @@ import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
 
-import ch.qos.logback.classic.Logger;
 
 public class GetDataTrame extends TrameHeader{
 
@@ -23,7 +23,7 @@ public class GetDataTrame extends TrameHeader{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(GetDataTrame.class);
+	private static final Logger logger =  LoggerFactory.getLogger(GetDataTrame.class);
 
 	private static final String commande="getdata";
 

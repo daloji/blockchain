@@ -3,6 +3,7 @@ package com.daloji.blockchain.network.trame;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Block;
@@ -12,7 +13,6 @@ import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
 
-import ch.qos.logback.classic.Logger;
 
 /**
  * 
@@ -23,7 +23,7 @@ import ch.qos.logback.classic.Logger;
 public class BlockTrame  extends TrameHeader{
 
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(BlockTrame.class);
+	private static final Logger logger =  LoggerFactory.getLogger(BlockTrame.class);
 
 	/**
 	 * 

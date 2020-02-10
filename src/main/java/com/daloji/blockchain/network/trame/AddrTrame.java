@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Addr;
@@ -13,7 +14,7 @@ import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
 
-import ch.qos.logback.classic.Logger;
+
 /**
  *  Trame reseau qui list l'ensemble des noeuds connus par le noeud
  * 
@@ -23,7 +24,7 @@ import ch.qos.logback.classic.Logger;
 public class AddrTrame  extends TrameHeader{
 
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(AddrTrame.class);
+	private static final Logger logger = LoggerFactory.getLogger(AddrTrame.class);
 
 	private static final String commande="addr";
 

@@ -1,16 +1,16 @@
 package com.daloji.blockchain.network.trame;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
 
-import ch.qos.logback.classic.Logger;
 
 public class FeelFilterTrame  extends TrameHeader{
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(FeelFilterTrame.class);
+	private static final Logger logger =  LoggerFactory.getLogger(FeelFilterTrame.class);
 
 	private static final String cmd = "feefilter";
 	/**

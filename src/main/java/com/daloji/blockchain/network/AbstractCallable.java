@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.Callable;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Block;
@@ -31,7 +32,6 @@ import com.daloji.blockchain.network.trame.TrameHeader;
 import com.daloji.blockchain.network.trame.VersionAckTrame;
 import com.daloji.blockchain.network.trame.VersionTrameMessage;
 
-import ch.qos.logback.classic.Logger;
 
 
 /**
@@ -42,7 +42,7 @@ import ch.qos.logback.classic.Logger;
 public abstract class AbstractCallable  implements Callable<Object>{
 
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(AbstractCallable.class);
+	private static final Logger logger =  LoggerFactory.getLogger(AbstractCallable.class);
 
 	protected NetworkEventHandler networkListener;
 

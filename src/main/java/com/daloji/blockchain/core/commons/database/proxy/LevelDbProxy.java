@@ -13,6 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.Options;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Block;
@@ -21,11 +22,11 @@ import com.daloji.blockchain.core.commons.Retour;
 import com.daloji.blockchain.core.utils.BlockChainWareHouseThreadFactory;
 import com.daloji.blockchain.core.utils.Utils;
 
-import ch.qos.logback.classic.Logger;
+
 
 public class LevelDbProxy implements DatabaseExchange {
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(LevelDbProxy.class);
+	private static final Logger logger =  LoggerFactory.getLogger(LevelDbProxy.class);
 
 	private static  LevelDbProxy instance = null; 
 

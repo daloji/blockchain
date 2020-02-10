@@ -2,6 +2,7 @@ package com.daloji.blockchain.network.trame;
 
 import java.time.Instant;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Crypto;
@@ -9,7 +10,6 @@ import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
 
-import ch.qos.logback.classic.Logger;
 
 /**
  * @author daloji
@@ -18,7 +18,7 @@ import ch.qos.logback.classic.Logger;
  */
 public class VersionAckTrame  extends TrameHeader{
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(VersionAckTrame.class);
+	private static final Logger logger =  LoggerFactory.getLogger(VersionAckTrame.class);
 
 	private static final String commande="verack";
 

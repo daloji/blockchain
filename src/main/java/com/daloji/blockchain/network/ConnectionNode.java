@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.naming.NamingException;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.InvType;
@@ -24,7 +25,6 @@ import com.daloji.blockchain.network.trame.InvTrame;
 import com.daloji.blockchain.network.trame.STATE_ENGINE;
 import com.daloji.blockchain.network.trame.TrameHeader;
 
-import ch.qos.logback.classic.Logger;
 /**
  * 
  *  Thread de gestion pour un IBD (Initial Block Download ), telechargement de la blockchain
@@ -35,7 +35,7 @@ import ch.qos.logback.classic.Logger;
 public class ConnectionNode  extends AbstractCallable implements InitialDownloadBlock{
 
 
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(ConnectionNode.class);
+	private static final Logger logger =  LoggerFactory.getLogger(ConnectionNode.class);
 
 	private  TrameHeader lastTrame;
 
