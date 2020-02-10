@@ -27,19 +27,19 @@ public class WatchDogHandler implements Runnable,WatchDogListener {
 	
 	public WatchDogHandler(BlockChainEventHandler blockchainlistener) {
 		this.blockchainlistener = blockchainlistener;
-	}
+	} 
 	
 	@Override
 	public void run() {
-		logger.info("WatchDog  : Verification");
+		logger.info("WatchDog  : Verification Blockchain ["+nbCounterWatchdog+"/"+nbcycleRestart+"]");
 		if(blockchain !=null) {
 			nbBlock = blockchain.getBlockChain().mappingCount();
 			if(nbBlock==oldnbBlock) {
-				logger.info("WatchDog : Restart Initial Block Download");
+				logger.info("WatchDog : Restart Initial Block Download nombre block telecharge "+nbBlock);
 				blockchainlistener.onWatchDogSendRestart();
 				nbBlock = 0;
 			}else {
-				logger.info("WatchDog :  nombre de block telecharge depuis le demarrage" + nbBlock );
+				logger.info("WatchDog :  nombre de block telecharge depuis le demarrage " + nbBlock );
 				oldnbBlock = nbBlock;
 			}
 		}else {

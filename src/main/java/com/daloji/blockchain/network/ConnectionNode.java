@@ -68,7 +68,7 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 			int count = 1;
 			listState.add(STATE_ENGINE.BOOT);
 			while(state !=STATE_ENGINE.START && count!=-1 && !isInterrupt) {
-				logger.info("Running Connection node  "+state);
+				logger.info("Running Connection node  "+peerNode.getHost()+ " " +state);
 				switch(state) {
 				case BOOT : state = sendVersion(outPut,netParameters,peerNode);
 				listState.add(state);
@@ -102,7 +102,7 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 				}
 			}
 
-			logger.info("fin du Thread ConnectoionNode "+count);
+			logger.info("fin du Thread ConnectionNode ");
 		}catch (Exception e) {
 			logger.error(e.getMessage());
 		}finally {
