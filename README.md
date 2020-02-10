@@ -9,6 +9,8 @@ L'objectif de ce projet est la vulgarisation de la blockchain. C'est purement a 
 Le noeud crée se connecte en mode noeud complet (Full Node) .......
 
 ## prérequis
+ * Java 8+ maven 3.6.2
+ * Level-DB 
  
 ## Blockchain 
 
