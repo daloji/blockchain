@@ -61,10 +61,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 	protected STATE_ENGINE state = STATE_ENGINE.BOOT;
 
 	protected int startHeight = 0;
-	
-	//LevelDbProxy.getInstance().getNbHash();
-
-	
+		
 	protected List<STATE_ENGINE> listState = new ArrayList<>();
 
 	protected Stack<ObjectTrame> pileCommand = new Stack<ObjectTrame>();
@@ -162,9 +159,6 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		stateReady.add(STATE_ENGINE.VER_ACK_SEND);
 		stateReady.add(STATE_ENGINE.VERSION_SEND);
 		stateReady.add(STATE_ENGINE.VERSION_RECEIVE);
-
-
-		STATE_ENGINE localstate = STATE_ENGINE.ERROR;
 		Iterator<TrameHeader> iterator= stacktramHeader.iterator();
 		while(iterator.hasNext()){
 			TrameHeader trame = iterator.next();
@@ -246,9 +240,6 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		stateReady.add(STATE_ENGINE.VER_ACK_SEND);
 		stateReady.add(STATE_ENGINE.VERSION_SEND);
 		stateReady.add(STATE_ENGINE.VERSION_RECEIVE);
-
-
-		STATE_ENGINE localstate = STATE_ENGINE.ERROR;
 		Iterator<TrameHeader> iterator= stacktramHeader.iterator();
 		while(iterator.hasNext()){
 			TrameHeader trame = iterator.next();
@@ -277,14 +268,10 @@ public abstract class AbstractCallable  implements Callable<Object>{
 					}else {
 						state = STATE_ENGINE.VERSION_RECEIVE;
 						listState.add(state);
-
 					}
-
 				}
 			}
-
 		}
-
 
 		return state;
 	}		

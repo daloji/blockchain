@@ -1,4 +1,4 @@
-package com.daloji.blockchain.core.commons.proxy;
+package com.daloji.blockchain.core.commons.database.proxy;
 
 import static org.iq80.leveldb.impl.Iq80DBFactory.asString;
 import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
@@ -63,7 +63,9 @@ public class LevelDbProxy implements DatabaseExchange {
 		Options options = new Options();
 		options.createIfMissing(true);
 		try {
-			database = factory.open(new File(LEVEL_DB_FILE), options);
+			if(database == null) {
+				database = factory.open(new File(LEVEL_DB_FILE), options);
+			}
 		} catch (IOException e) {
 
 			logger.info(e.getMessage());
@@ -208,7 +210,7 @@ public class LevelDbProxy implements DatabaseExchange {
 		Block newBloc = bloc;
 		if(newBloc !=null) {
 			String hash = newBloc.generateHash();
-			while(bloc!=null) {
+			while(newBloc!=null) {
 				previoushash = newBloc.getPrevBlockHash();
 				newBloc = findBlock(previoushash);
 				nb++;

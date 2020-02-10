@@ -2,7 +2,7 @@ import java.io.IOException;
 
 import org.iq80.leveldb.DBIterator;
 
-import com.daloji.blockchain.core.commons.proxy.LevelDbProxy;
+import com.daloji.blockchain.core.commons.database.proxy.LevelDbProxy;
 import com.daloji.blockchain.core.utils.Utils;
 
 public class Test {

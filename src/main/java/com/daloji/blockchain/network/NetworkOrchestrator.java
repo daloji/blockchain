@@ -17,7 +17,7 @@ import com.daloji.blockchain.core.BlockChain;
 import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.commons.Retour;
-import com.daloji.blockchain.core.commons.proxy.LevelDbProxy;
+import com.daloji.blockchain.core.commons.database.proxy.LevelDbProxy;
 import com.daloji.blockchain.core.utils.BlockChainWareHouseThreadFactory;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
@@ -195,7 +195,6 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 				listThreadConnected.add(connectionNode);	
 			}
 		}
-	//	BlockChainWareHouseThreadFactory.getInstance().addBlockChainListener(this);
 		BlockChainWareHouseThreadFactory.getInstance().invokeAllIntialDownloadBlock(listThreadConnected);
 		
 	}

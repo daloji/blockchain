@@ -1,4 +1,4 @@
-package com.daloji.blockchain.core.commons.proxy;
+package com.daloji.blockchain.core.commons.database.proxy;
 
 import org.iq80.leveldb.DBIterator;
 

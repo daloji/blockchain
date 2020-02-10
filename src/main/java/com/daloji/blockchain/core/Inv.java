@@ -2,7 +2,11 @@ package com.daloji.blockchain.core;
 
 import java.io.Serializable;
 import java.util.List;
-
+/**
+ *  
+ * @author daloji
+ *
+ */
 public class Inv implements Serializable{
 
 	/**

@@ -14,6 +14,12 @@ import com.daloji.blockchain.network.peers.PeerNode;
 
 import ch.qos.logback.classic.Logger;
 
+/**
+ * 
+ * Echange d'un bloc header avec la liste des transaction
+ * @author Daloji
+ *
+ */
 public class BlockTrame  extends TrameHeader{
 
 

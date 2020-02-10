@@ -2,6 +2,11 @@ package com.daloji.blockchain.core;
 
 import java.io.Serializable;
 
+/**
+ *  Address IP et port d'un noeud
+ * @author daloji
+ *
+ */
 public class Addr implements Serializable{
 
 	/**

@@ -2,6 +2,12 @@ package com.daloji.blockchain.core;
 
 import java.io.Serializable;
 
+/**
+ *  Objet invetory bitcoin contenant le hash et le type d'inventory (BLOC,TX,..)
+ * @author daloji
+ *
+ */
+
 public class Inventory  implements Serializable{
 
 	/**

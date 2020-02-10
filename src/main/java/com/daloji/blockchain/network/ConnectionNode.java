@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Inventory;
-import com.daloji.blockchain.core.commons.proxy.LevelDbProxy;
+import com.daloji.blockchain.core.commons.database.proxy.LevelDbProxy;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.InitialDownloadBlock;
@@ -25,7 +25,13 @@ import com.daloji.blockchain.network.trame.STATE_ENGINE;
 import com.daloji.blockchain.network.trame.TrameHeader;
 
 import ch.qos.logback.classic.Logger;
-
+/**
+ * 
+ *  Thread de gestion pour un IBD (Initial Block Download ), telechargement de la blockchain
+ *  
+ * @author daloji
+ *
+ */
 public class ConnectionNode  extends AbstractCallable implements InitialDownloadBlock{
 
 
@@ -111,14 +117,12 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 	private void callGetBlock(ArrayDeque<TrameHeader> trameArray) {
 		List<Inventory>  listBlock = new ArrayList<Inventory>();
 		if(trameArray !=null) {
-
 			for(TrameHeader trame:trameArray) {
 				if(trame instanceof InvTrame) {
 					List<Inventory> listinventory =((InvTrame) trame).getListinv();
 					for(Inventory inventory :listinventory) {
 						if(inventory.getType() ==InvType.MSG_BLOCK) {
 							listBlock.add(inventory);
-
 						}
 					}
 				}

@@ -18,6 +18,12 @@ import com.daloji.blockchain.network.peers.PeerNode;
 
 import ch.qos.logback.classic.Logger;
 
+/**
+ * 
+ * Recuperation des noeuds bitcoin depuis le DNS seed
+ * @author daloji
+ *
+ */
 public class DnsLookUp {
 
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(DnsLookUp.class);

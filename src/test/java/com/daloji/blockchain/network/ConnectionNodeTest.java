@@ -25,7 +25,7 @@ import org.powermock.reflect.Whitebox;
 
 import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.commons.Retour;
-import com.daloji.blockchain.core.commons.proxy.LevelDbProxy;
+import com.daloji.blockchain.core.commons.database.proxy.LevelDbProxy;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;

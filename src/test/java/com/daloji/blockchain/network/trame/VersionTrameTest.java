@@ -15,7 +15,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.daloji.blockchain.core.commons.proxy.LevelDbProxy;
+import com.daloji.blockchain.core.commons.database.proxy.LevelDbProxy;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.ConnectionNode;
 import com.daloji.blockchain.network.IPVersion;
