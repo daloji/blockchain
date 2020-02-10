@@ -33,6 +33,7 @@ public class Utils {
 
 	public static int FFFF_HEXA = 65535;
 
+	public static int BITCOIN_PORT = 8333;
 
 	public static String FATAL_ERROR ="FATAL_ERROR";
 
