@@ -17,6 +17,12 @@ Le noeud crée se connecte en mode noeud complet (Full Node) .......
 # mvn clean install
 # java -jar target/blockchain.jar
 ```
+## Recommandation 
+Lors du premier lancement,le processus Initial Block Download ou processus de synchronisation permet de recuperer la blockchain (260 Go) actuellement. Cette phase de telechargement est tres long une semaine environ c'est une opération assez lourde qui peut se heurter à quatre limitations de votre machine :
+ * Votre connexion Internet 
+ * puissance processeur
+ * Memoire vive 4 Go
+ * Disque Dur (500 Go de libre minimum )
 ## Blockchain 
 
 ## Transaction
