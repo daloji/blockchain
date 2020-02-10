@@ -15,7 +15,7 @@ Le noeud crée se connecte en mode noeud complet (Full Node) .......
 ## Lancement
 ```java
 # mvn clean install
-java -jar target/blockchain.jar
+# java -jar target/blockchain.jar
 ```
 ## Blockchain 
 
