@@ -27,8 +27,13 @@ public class BlockChainWareHouseThreadFactory {
 	private static final Logger logger =  LoggerFactory.getLogger(BlockChainWareHouseThreadFactory.class);
 
 	private static final  int SIZE_POOL = 100;
+	
+	private static final  int SIZE_CLIENT_POOL = 10;
 
 	private ThreadPoolExecutor threadPoolExecutor;
+	
+	private ThreadPoolExecutor threadPoolExecutorServer;
+
 
 	private static  ScheduledExecutorService executorsWatchDog;
 
@@ -53,7 +58,9 @@ public class BlockChainWareHouseThreadFactory {
 	private  BlockChainWareHouseThreadFactory() {
 		logger.info("Initialisation BlockChainWareHouseThreadFactory");
 		threadPoolExecutor =  new ThreadPoolExecutor(SIZE_POOL, SIZE_POOL,2, TimeUnit.MINUTES,new LinkedBlockingQueue<Runnable>());
+		threadPoolExecutorServer =  new ThreadPoolExecutor(SIZE_CLIENT_POOL, SIZE_CLIENT_POOL,2, TimeUnit.MINUTES,new LinkedBlockingQueue<Runnable>());
 		threadPoolExecutor.allowCoreThreadTimeOut(true);
+		threadPoolExecutorServer.allowCoreThreadTimeOut(true);
 		executorsWatchDog = Executors.newScheduledThreadPool(1,	new ThreadFactory() {
 			public Thread newThread(Runnable r) {
 				Thread t = Executors.defaultThreadFactory().newThread(r);
@@ -91,6 +98,10 @@ public class BlockChainWareHouseThreadFactory {
 
 	public <T> void invokeBlock(Callable<T> task) throws InterruptedException {
 		threadPoolExecutor.submit(task);
+	}
+	
+	public <T> void invokeClient(Callable<T> task) throws InterruptedException {
+		threadPoolExecutorServer.submit(task);
 	}
 
 	public <T> void shutDownBloc() { 

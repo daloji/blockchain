@@ -105,6 +105,9 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 			}
 			BlockChainWareHouseThreadFactory.getInstance().addBlockChainListener(this);
 			BlockChainWareHouseThreadFactory.getInstance().invokeAllIntialDownloadBlock(listThreadConnected);
+			BitcoinServerWorker bitcoinServer = new BitcoinServerWorker(this,NetParameters.MainNet);
+			//BlockChainWareHouseThreadFactory.getInstance().invokeClient(bitcoinServer);
+
 		}
 		
 		logger.info("fin du NetworkOrchestrator");

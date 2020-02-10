@@ -204,6 +204,10 @@ public class DnsLookUp {
 			lock.unlock();
 		}
 	}
+	
+	public List<PeerNode> getListPeerFree(){
+		return listPeerFree;
+	}
 
 
 }
