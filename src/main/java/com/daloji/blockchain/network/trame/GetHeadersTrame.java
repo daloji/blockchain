@@ -1,6 +1,5 @@
 package com.daloji.blockchain.network.trame;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;

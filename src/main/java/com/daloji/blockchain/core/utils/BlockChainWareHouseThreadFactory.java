@@ -2,7 +2,6 @@ package com.daloji.blockchain.core.utils;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
@@ -31,9 +30,6 @@ public class BlockChainWareHouseThreadFactory {
 
 	private ThreadPoolExecutor threadPoolExecutor;
 
-	
-	private ExecutorService executorServiceBlockDownloaded;
-
 	private static  ScheduledExecutorService executorsWatchDog;
 
 	private static CycleDetectingLockFactory lockfactory = null;
@@ -55,14 +51,7 @@ public class BlockChainWareHouseThreadFactory {
 
 
 	private  BlockChainWareHouseThreadFactory() {
-		/*
-		executorServiceInitialDownloadBlock =  Executors.newFixedThreadPool(SIZE_POOL);
-		executorServiceBlockDownloaded = Executors.newFixedThreadPool(SIZE_POOL);
-				//new ThreadPoolExecutor( SIZE_POOL, SIZE_POOL, 2, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
-		 * 
-		 * 
-		 */
-		//executorServiceInitialDownloadBlock =  Executors.newFixedThreadPool(SIZE_POOL);
+		logger.info("Initialisation BlockChainWareHouseThreadFactory");
 		threadPoolExecutor =  new ThreadPoolExecutor(SIZE_POOL, SIZE_POOL,2, TimeUnit.MINUTES,new LinkedBlockingQueue<Runnable>());
 		threadPoolExecutor.allowCoreThreadTimeOut(true);
 		executorsWatchDog = Executors.newScheduledThreadPool(1,	new ThreadFactory() {
@@ -78,6 +67,7 @@ public class BlockChainWareHouseThreadFactory {
 
 
 	public static ReentrantLock lock(String name) {
+		logger.info("lock du fichier" +name);
 		if(lockfactory == null) {
 			lockfactory = CycleDetectingLockFactory.newInstance(policy); 
 		}
@@ -92,7 +82,6 @@ public class BlockChainWareHouseThreadFactory {
 
 
 	public <T> void invokeAllIntialDownloadBlock(List<ConnectionNode> listThreadInPool) throws InterruptedException {
-		//executorServiceInitialDownloadBlock.invokeAll(listThreadInPool);
 		if(listThreadInPool !=null) {
 			for(ConnectionNode connectionNode:listThreadInPool) {
 				threadPoolExecutor.submit(connectionNode);
@@ -113,6 +102,7 @@ public class BlockChainWareHouseThreadFactory {
 	}
 
 	public void addBlockChainListener(BlockChainEventHandler eventlistener) {
+		logger.info("Initialisation WatchDogHandler");
 		this.blockchainlistener = eventlistener;
 		watchdog = new WatchDogHandler(blockchainlistener);
 		executorsWatchDog.scheduleWithFixedDelay( watchdog,  0 , 20 , TimeUnit.SECONDS); 

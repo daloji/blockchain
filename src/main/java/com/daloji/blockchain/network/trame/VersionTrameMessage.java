@@ -212,7 +212,6 @@ public class VersionTrameMessage  extends TrameHeader{
 	 */
 	@Override
 	public <T> T receiveMessage(NetParameters network, byte[] msg) {
-		Retour retour = Utils.createRetourOK();
 		TrameHeader message = null;
 		VersionTrameReceive deserialise = null;
 		if(!isValidMessage(network, msg)) {

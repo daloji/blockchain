@@ -186,7 +186,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 
 	@Override
 	public void onRestart() throws Exception {
-		logger.info("***********************RESTART **********************");
+		logger.info("relance procedure Initial Bloc Download");
 		ConnectionNode connectionNode = null;
 		for (int i = 0; i < NB_THREAD; i++) {
 			PeerNode peer = DnsLookUp.getInstance().getBestPeer();

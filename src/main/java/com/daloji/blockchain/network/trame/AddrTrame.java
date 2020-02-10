@@ -1,6 +1,5 @@
 package com.daloji.blockchain.network.trame;
 
-import java.net.UnknownHostException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
