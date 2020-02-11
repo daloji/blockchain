@@ -22,7 +22,7 @@ Lors du premier lancement,le processus Initial Block Download ou processus de sy
  * Votre connexion Internet 
  * puissance processeur
  * Memoire vive 4 Go
- * Disque Dur (500 Go de libre minimum )
+ * Disque Dur (300 Go de libre minimum )
 ## Blockchain 
 
 ## Transaction
