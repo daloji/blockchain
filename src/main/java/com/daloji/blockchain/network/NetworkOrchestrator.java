@@ -78,7 +78,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 		DnsLookUp.getInstance().restorePeer(connectionNode.getPeerNode());
 		listThreadConnected.remove(connectionNode);
 		if(listThreadConnected.isEmpty()) {
-			logger.info("il n'y a plus de Thread Connexion ");
+			logger.info("il n'y a plus de Thread Connexion . Reconnexion en attente");
 		}
 	}
 

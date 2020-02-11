@@ -70,7 +70,7 @@ public class PingTrame extends TrameHeader{
 		if(logger.isDebugEnabled()) {
 			String extractZero =Utils.bytesToHex(info);
 			extractZero = Utils.deleteEndZero(extractZero);
-		logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Ping : "+info);
+			logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Ping : "+extractZero);
 		}
 		if(Utils.allZero(Utils.hexStringToByteArray(payload))){
 			this.setPartialTrame(true);
