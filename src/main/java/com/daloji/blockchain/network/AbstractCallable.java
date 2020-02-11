@@ -61,7 +61,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 	protected STATE_ENGINE state = STATE_ENGINE.BOOT;
 
 	protected int startHeight = 0;
-		
+
 	protected List<STATE_ENGINE> listState = new ArrayList<>();
 
 	protected Stack<ObjectTrame> pileCommand = new Stack<ObjectTrame>();
@@ -227,7 +227,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		return state;
 	}
 
-	
+
 	/**
 	 *  Recuperation du type de commande 
 	 * @param cmd
@@ -246,6 +246,9 @@ public abstract class AbstractCallable  implements Callable<Object>{
 			TrameHeader trame = iterator.next();
 			if(listState.containsAll(stateReady)) {
 				state = STATE_ENGINE.READY;	
+				if(listState.contains(STATE_ENGINE.ADDR_SEND)) {
+					state = STATE_ENGINE.START;	
+				}
 			}else {
 
 				if(trame instanceof VersionAckTrame) {
@@ -347,7 +350,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 				}
 			}
 			arrayTrame.removeAll(list);
-			
+
 		}
 
 	}
@@ -419,5 +422,26 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		return state;
 	}
 
+
+	/**
+	 * send Addr 
+	 * @param outPut
+	 * @param netparam
+	 * @param peernode
+	 * @return
+	 * @throws IOException
+	 */
+	protected STATE_ENGINE sendAddr(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
+
+		STATE_ENGINE state = STATE_ENGINE.ADDR_SEND;
+		AddrTrame addr = new AddrTrame(true);
+		String trame = addr.generateMessage(netparam, peernode);
+		byte[] data = Utils.hexStringToByteArray(trame);
+		outPut.write(data, 0, data.length);
+		if(logger.isDebugEnabled()) {
+			logger.debug("["+peernode.getHost()+"]" +" <OUT>  Addr " +trame);
+		}
+		return state;
+	}
 
 }

@@ -42,8 +42,8 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 	private volatile boolean isInterrupt = false;
 
 	private String lastHash ;
-	
-	
+
+
 
 	public ConnectionNode(NetworkEventHandler networkListener,BlockChainEventHandler blockchaiListener,NetParameters netparam,PeerNode peerNode) throws NamingException {
 		super();
@@ -83,6 +83,7 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 				case READY :// networkListener.onNodeConnected(this);
 					break;
 				case GETBLOCK_SEND :state = sendGetBlock(outPut, netParameters, peerNode,lastHash);
+				sendAddr(outPut,netParameters,peerNode);
 				listState.add(state);	
 				break;
 				}

@@ -38,7 +38,11 @@ public class AddrTrame  extends TrameHeader{
 	private static final long serialVersionUID = 8871174569589589645L;
 
 
-
+	public AddrTrame(boolean getIp) {
+		if(getIp) {
+			getExternalIp();
+		}
+	}
 
 	public List<Addr> getListAddr() {
 		return listAddr;
@@ -102,7 +106,7 @@ public class AddrTrame  extends TrameHeader{
 				} catch (Exception e) {
 					addr.setIp("0.0.0.0");
 				}
-				
+
 				buffer = new byte[2];
 				System.arraycopy(msg, offset, buffer, 0,buffer.length);
 				offset = offset + buffer.length;
@@ -150,8 +154,8 @@ public class AddrTrame  extends TrameHeader{
 	public String createPayload() {
 		String payload ="";
 		//nb addr
-		payload = payload + Utils.intHexpadding(maxAddr, 0);
-		payload = payload +Utils.convertDateString(epoch, 8);
+		payload = payload + Utils.intHexpadding(1, 0);
+		payload = payload +Utils.convertDateString(epoch, 4);
 		logger.debug("timestamp  :"+Utils.convertDateString(epoch, 8));
 		payload = payload +Utils.intHexpadding(1, 8);
 		logger.debug("service  :"+Utils.intHexpadding(1, 8));	

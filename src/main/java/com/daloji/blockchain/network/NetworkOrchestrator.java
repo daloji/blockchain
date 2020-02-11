@@ -35,7 +35,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 
 	private static final int NB_THREAD = 1;
 
-	private  CopyOnWriteArrayList<ConnectionNode> listPeerConnected = new CopyOnWriteArrayList<ConnectionNode>(); 
+	private  CopyOnWriteArrayList<AbstractCallable> listPeerConnected = new CopyOnWriteArrayList<AbstractCallable>(); 
 
 	private BlockChain blokchain = new BlockChain();
 
@@ -104,10 +104,9 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 				}
 			}
 			BlockChainWareHouseThreadFactory.getInstance().addBlockChainListener(this);
-			BlockChainWareHouseThreadFactory.getInstance().invokeAllIntialDownloadBlock(listThreadConnected);
 			BitcoinServerWorker bitcoinServer = new BitcoinServerWorker(this,NetParameters.MainNet);
-			//BlockChainWareHouseThreadFactory.getInstance().invokeClient(bitcoinServer);
-
+			BlockChainWareHouseThreadFactory.getInstance().invokeClient(bitcoinServer);
+			BlockChainWareHouseThreadFactory.getInstance().invokeAllIntialDownloadBlock(listThreadConnected);
 		}
 		
 		logger.info("fin du NetworkOrchestrator");
@@ -128,7 +127,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 	@Override
 	public void onNodeConnected(AbstractCallable connectionNode) {
 		logger.info("onNodeConnected connecté au noeud :"+ connectionNode.getPeerNode().getHost() +"  port "+connectionNode.getPeerNode().getPort());
-		listPeerConnected.add((ConnectionNode) connectionNode);
+		listPeerConnected.add(connectionNode);
 	}
 
 	@Override
@@ -167,7 +166,12 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 				}catch (Exception e) {
 					logger.error(e.getMessage());
 				}
-			}	
+			}else {
+				logger.info("nombre de connexion active :" +listPeerConnected.size());
+				for(ConnectionNode peer:listPeerConnected) {
+					logger.info("["+peer.getPeerNode().getHost() +"] toujours connecté");
+				}
+			}
 		}
 	}
 
