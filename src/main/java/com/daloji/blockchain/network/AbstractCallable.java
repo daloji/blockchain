@@ -317,6 +317,45 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		return state;
 	}		
 
+	
+	/**
+	 *  Recuperation du type de commande 
+	 * @param cmd
+	 * @return
+	 */
+	public  STATE_ENGINE findNExtStepServer(ArrayDeque<TrameHeader> stacktramHeader) {
+
+		List<STATE_ENGINE> stateReady = new ArrayList<>();
+		stateReady.add(STATE_ENGINE.BOOT);
+		stateReady.add(STATE_ENGINE.VER_ACK_RECEIVE);
+		stateReady.add(STATE_ENGINE.VER_ACK_SEND);
+		stateReady.add(STATE_ENGINE.VERSION_SEND);
+		stateReady.add(STATE_ENGINE.VERSION_RECEIVE);
+		Iterator<TrameHeader> iterator= stacktramHeader.iterator();
+		while(iterator.hasNext()){
+			TrameHeader trame = iterator.next();
+			if(listState.containsAll(stateReady)) {
+						state = STATE_ENGINE.READY;		
+
+			}else {
+
+				if(trame instanceof VersionAckTrame) {
+					state = STATE_ENGINE.VER_ACK_RECEIVE;
+					listState.add(state);
+				}
+				if(trame instanceof VersionTrameMessage) {
+					if(trame.isPartialTrame()) {
+						state = STATE_ENGINE.PARTIAL_TRAME;
+					}else {
+						state = STATE_ENGINE.VERSION_RECEIVE;
+						listState.add(state);
+					}
+				}
+			}
+		}
+
+		return state;
+	}		
 	protected STATE_ENGINE sendVerAck(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
 		state = STATE_ENGINE.VER_ACK_SEND;
 		VersionAckTrame verAck = new VersionAckTrame();

@@ -22,7 +22,7 @@ public class AddrTrameTest {
 	private static String trame_Addr;
 	@BeforeClass
 	public static void before() throws IOException {
-		ClassLoader classLoader = InvTrameTest.class.getClassLoader();
+		ClassLoader classLoader = AddrTrameTest.class.getClassLoader();
 		File file = new File(classLoader.getResource("test.properties").getFile());
 		Properties prop = new Properties();
         // load a properties file

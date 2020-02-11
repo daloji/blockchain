@@ -18,7 +18,6 @@ public class BitcoinServerWorker extends AbstractCallable {
 
 	private  ServerSocket  server = null;
 
-	private  TrameHeader lastTrame;
 
 	private boolean isRunning;
 
