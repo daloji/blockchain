@@ -23,7 +23,9 @@ public class BlockTrameTest {
 
 	private static String bloc_receive;
 
-	private static String bloc_receive_002;
+	private static String bloc_receive_002; 
+	
+	private static String bloc_receive_003;
 
 	@BeforeClass
 	public static void before() throws IOException {
@@ -34,6 +36,7 @@ public class BlockTrameTest {
 		prop.load(new FileInputStream(file));
 		bloc_receive = (prop.getProperty("bloc_receive"));
 		bloc_receive_002 = (prop.getProperty("bloc_receive_002"));
+		bloc_receive_003 = (prop.getProperty("bloc_receive_003"));
 
 	}
 
@@ -104,4 +107,6 @@ public class BlockTrameTest {
 		Assert.assertEquals(block.getListTransacation().get(0).getTxIn().get(0).getSciptLeng(),7);
 		Assert.assertEquals(Utils.allZero(data),true);
 	}
+	
+	
 }

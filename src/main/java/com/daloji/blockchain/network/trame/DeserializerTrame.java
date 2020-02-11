@@ -85,7 +85,7 @@ public class DeserializerTrame implements Serializable{
 					trameHeader.setFromPeer(peer);
 					data = trameHeader.deserialise(data);
 				}else if(TrameType.TX.getInfo().equals(cmd)) {
-
+					logger.error("***************** TX ****************************************");
 				}else if(TrameType.BLOCK.getInfo().equals(cmd)) {
 					trameHeader = new BlockTrame();
 					trameHeader.setFromPeer(peer);

@@ -41,10 +41,13 @@ public class DeserializerTrameTest {
 	 private static String trame_receive_0016;
 	 
 	 private static String trame_receive_0017;
+	 
+	 private static String bloc_receive_003;
+	 
 	
 	@BeforeClass
 	public static void before() throws IOException {
-		ClassLoader classLoader = InvTrameTest.class.getClassLoader();
+		ClassLoader classLoader = DeserializerTrameTest.class.getClassLoader();
 		File file = new File(classLoader.getResource("test.properties").getFile());
 		Properties prop = new Properties();
         // load a properties file
@@ -57,6 +60,7 @@ public class DeserializerTrameTest {
         trame_receive_0015 =(prop.getProperty("trame_receive_0015"));
         trame_receive_0016 = (prop.getProperty("trame_receive_0016"));
         trame_receive_0017 = (prop.getProperty("trame_receive_0017"));
+        bloc_receive_003 = (prop.getProperty("bloc_receive_003"));
 	}
 	@Test
 	public  void  deserialiseTest_OK() {
@@ -359,6 +363,19 @@ public class DeserializerTrameTest {
 		InvTrame inv = (InvTrame) stackCommand.poll();
 		Assert.assertEquals(inv instanceof InvTrame, true);
 		Assert.assertEquals(inv.getListinv().size(), 35);
+	}
+	
+	@Test
+	public void deserialise_block_003() {
+		
+		PeerNode peer = new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		peer.setPort(8333);
+		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(bloc_receive_003), peer);
+		Assert.assertNotNull(stackCommand); 
+		Assert.assertEquals(stackCommand.size(), 1);
+		BlockTrame block = (BlockTrame) stackCommand.poll();
+		Assert.assertEquals(block instanceof BlockTrame, true);
 	}
 	
 }
