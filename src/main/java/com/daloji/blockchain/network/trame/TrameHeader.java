@@ -75,6 +75,8 @@ public abstract class TrameHeader implements Serializable {
 	private String addressTrans;
 
 	private boolean partialTrame =false;
+	
+	
 
 	public String getAddressTrans() {
 		return addressTrans;
@@ -298,6 +300,8 @@ public abstract class TrameHeader implements Serializable {
 
 	}
 	
+
+
 	protected boolean isValidType(byte[] data) {
 		boolean value = false;
 		if(data !=null) {

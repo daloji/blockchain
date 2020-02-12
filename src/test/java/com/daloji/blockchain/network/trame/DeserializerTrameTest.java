@@ -374,8 +374,8 @@ public class DeserializerTrameTest {
 		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(bloc_receive_003), peer);
 		Assert.assertNotNull(stackCommand); 
 		Assert.assertEquals(stackCommand.size(), 1);
-		BlockTrame block = (BlockTrame) stackCommand.poll();
-		Assert.assertEquals(block instanceof BlockTrame, true);
+		ErrorTrame block = (ErrorTrame) stackCommand.poll();
+		Assert.assertEquals(block instanceof ErrorTrame, true);
 	}
 	
 }

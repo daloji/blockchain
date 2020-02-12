@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,8 +31,8 @@ public class BlockChainHandler  extends AbstractCallable{
 
 	private volatile Timer timer = new Timer(true);
 
-	private Inventory inventory;
-
+	private List<Inventory> listInventory;
+	
 	private volatile boolean isStopping = false;
 
 	public BlockChainHandler(DataOutputStream dataOut,DataInputStream dataInput){
@@ -39,13 +40,13 @@ public class BlockChainHandler  extends AbstractCallable{
 		input = dataInput;
 	}
 
-	public BlockChainHandler(NetworkEventHandler networkListener,BlockChainEventHandler blockchaiListener,NetParameters netparam,PeerNode peerNode,Inventory inventory){
+	public BlockChainHandler(NetworkEventHandler networkListener,BlockChainEventHandler blockchaiListener,NetParameters netparam,PeerNode peerNode,List<Inventory> listInv){
 		super();
 		this.peerNode = peerNode;
 		this.networkListener = networkListener;
 		this.blockChainListener = blockchaiListener;
 		this.netParameters = netparam;
-		this.inventory = inventory;
+		this.listInventory = listInv;
 	}
 
 	@Override
@@ -68,7 +69,7 @@ public class BlockChainHandler  extends AbstractCallable{
 				case VER_ACK_RECEIVE:state = sendVerAck(outPut,netParameters,peerNode);
 				listState.add(state);
 				break;
-				case GETDATA_SEND : state = sendGetData(outPut, netParameters, peerNode,inventory);
+				case GETDATA_SEND : state = sendGetData(outPut, netParameters, peerNode,listInventory);
 				listState.add(state);
 				break;
 				case GETBLOCK_SEND :

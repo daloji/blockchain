@@ -26,6 +26,8 @@ public class BlockTrameTest {
 	private static String bloc_receive_002; 
 	
 	private static String bloc_receive_003;
+	
+	private static String bloc_receive_004;
 
 	@BeforeClass
 	public static void before() throws IOException {
@@ -37,7 +39,7 @@ public class BlockTrameTest {
 		bloc_receive = (prop.getProperty("bloc_receive"));
 		bloc_receive_002 = (prop.getProperty("bloc_receive_002"));
 		bloc_receive_003 = (prop.getProperty("bloc_receive_003"));
-
+		bloc_receive_004 = (prop.getProperty("bloc_receive_004"));
 	}
 
 	@Test
@@ -108,5 +110,18 @@ public class BlockTrameTest {
 		Assert.assertEquals(Utils.allZero(data),true);
 	}
 	
+	@Test
+	public void BlockTrameTest_003() {
+		BlockTrame block = new BlockTrame();
+		PeerNode peer = new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		block.setFromPeer(peer);
+		byte[] data = block.deserialise(Utils.hexStringToByteArray(bloc_receive_004));
+		Assert.assertEquals(block.getMagic(),"F9BEB4D9");
+		Assert.assertEquals(block.getChecksum(),"F72170CE");
+		Assert.assertEquals(block.getCommande(),"626C6F636B00000000000000");
+		Assert.assertEquals(block.getLength(),216);
+		
+	}
 	
 }

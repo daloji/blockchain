@@ -44,7 +44,8 @@ public class BlockTrame  extends TrameHeader{
 	private long nonce;
 
 	private List<Transaction> listTransacation;
-
+	
+	private boolean isIncorrect = false;
 
 	@Override
 	public String generatePayload(NetParameters network) {
@@ -140,7 +141,7 @@ public class BlockTrame  extends TrameHeader{
 						logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Block : " +this.getMerkelRoot());
 					}
 				}else {
-					
+					this.isIncorrect = true;
 				}
 			}
 
@@ -236,6 +237,11 @@ public class BlockTrame  extends TrameHeader{
 		return "BlockTrame [version=" + version + ", previousHash=" + previousHash + ", merkelRoot=" + merkelRoot
 				+ ", time=" + time + ", nBits=" + nBits + ", nonce=" + nonce + ", listTransacation=" + listTransacation
 				+ "]";
+	}
+
+
+	public boolean isIncorrect() {
+		return isIncorrect;
 	}
 
 

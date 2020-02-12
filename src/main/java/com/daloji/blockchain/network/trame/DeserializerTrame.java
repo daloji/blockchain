@@ -63,7 +63,6 @@ public class DeserializerTrame implements Serializable{
 					trameHeader  = new InvTrame();
 					trameHeader.setFromPeer(peer);
 					data = trameHeader.deserialise(data);
-
 				}else if(TrameType.SENDHEADERS.getInfo().equals(cmd)) {
 					trameHeader = new SendHeadersTrame();
 					trameHeader.setFromPeer(peer);
@@ -87,10 +86,15 @@ public class DeserializerTrame implements Serializable{
 				}else if(TrameType.TX.getInfo().equals(cmd)) {
 					logger.error("***************** TX ****************************************");
 				}else if(TrameType.BLOCK.getInfo().equals(cmd)) {
-					trameHeader = new BlockTrame();
-					trameHeader.setFromPeer(peer);
-					data = trameHeader.deserialise(data);
-
+					BlockTrame	blocktrameHeader = new BlockTrame();
+					blocktrameHeader.setFromPeer(peer);
+					data = blocktrameHeader.deserialise(data);
+					if(blocktrameHeader.isIncorrect()) {
+						trameHeader = new ErrorTrame();
+					}else {
+						trameHeader = blocktrameHeader;
+					}
+					
 				}
 				else if(TrameType.REJECT.getInfo().equals(cmd)) {
 					logger.error("***************** REJECT ****************************************");

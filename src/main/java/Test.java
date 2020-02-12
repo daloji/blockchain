@@ -23,7 +23,7 @@ public class Test {
 			dbiterator.close();
 		}
 		*/
-		System.out.println(Utils.StrLittleEndian("8F1AB51EFB8D1677255F4C7780AA19D97931A8A89D607222DE8A93B900000000"));
+		System.out.println(Utils.StrLittleEndian("00E0FA9D6900BAF37B0A6BBED953551B9965C19EA2CCDA27F8585B5D3801A1379F01"));
 
 		
 		//LevelDbProxy.getInstance().checkBlocChainStatus();

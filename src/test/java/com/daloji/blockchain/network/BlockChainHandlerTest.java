@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.easymock.EasyMock;
@@ -92,6 +94,8 @@ public class BlockChainHandlerTest  {
 		Inventory inventory = new Inventory();
 		inventory.setHash(hash_header);
 		inventory.setType(InvType.MSG_BLOCK);
+		List<Inventory> listinv = new ArrayList<Inventory>();
+		listinv.add(inventory);
 		byte[] content = Utils.hexStringToByteArray(trame_receive);
 		InputStream anyInputStream = new ByteArrayInputStream(content);
 		datainput = new DataInputStream(anyInputStream);
@@ -100,7 +104,7 @@ public class BlockChainHandlerTest  {
 		EasyMock.expect(socket.getOutputStream()).andReturn(dataouput);
 		EasyMock.expect(socket.getInputStream()).andReturn(datainput);
 		dataouput.write(EasyMock.anyObject(byte[].class), EasyMock.anyInt(), EasyMock.anyInt());
-		BlockChainHandler blockhandler= new BlockChainHandler(null, null, NetParameters.MainNet, peer, inventory);
+		BlockChainHandler blockhandler= new BlockChainHandler(null, null, NetParameters.MainNet, peer, listinv);
 		PowerMock.replayAll();
 		Whitebox.setInternalState(blockhandler, "state", STATE_ENGINE.READY);
 		blockhandler.call();
@@ -116,6 +120,8 @@ public class BlockChainHandlerTest  {
 		Inventory inventory = new Inventory();
 		inventory.setHash(hash_header);
 		inventory.setType(InvType.MSG_BLOCK);
+		List<Inventory> listinv = new ArrayList<Inventory>();
+		listinv.add(inventory);
 		byte[] content = Utils.hexStringToByteArray(trame_receive_bloc001);
 		InputStream anyInputStream = new ByteArrayInputStream(content);
 		datainput = new DataInputStream(anyInputStream);
@@ -125,7 +131,33 @@ public class BlockChainHandlerTest  {
 		EasyMock.expect(socket.getInputStream()).andReturn(datainput);
 		dataouput.write(EasyMock.anyObject(byte[].class), EasyMock.anyInt(), EasyMock.anyInt());
 		PowerMock.replayAll();
-		BlockChainHandler blockhandler= new BlockChainHandler(null, null, NetParameters.MainNet, peer, inventory);
+		BlockChainHandler blockhandler= new BlockChainHandler(null, null, NetParameters.MainNet, peer, listinv);
+		Whitebox.setInternalState(blockhandler, "state", STATE_ENGINE.READY);
+		blockhandler.call();
+		PowerMock.verify();
+	}
+	
+	@Test
+	public void getBlock_003() throws Exception {
+		String hash_header ="4860EB18BF1B1620E37E9490FC8A427514416FD75159AB86688E9A8300000000";
+		PeerNode peer =new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		peer.setPort(8333);
+		Inventory inventory = new Inventory();
+		inventory.setHash(hash_header);
+		inventory.setType(InvType.MSG_BLOCK);
+		List<Inventory> listinv = new ArrayList<Inventory>();
+		listinv.add(inventory);
+		byte[] content = Utils.hexStringToByteArray(trame_receive_bloc001);
+		InputStream anyInputStream = new ByteArrayInputStream(content);
+		datainput = new DataInputStream(anyInputStream);
+		PowerMock.expectNew(Socket.class,peer.getHost(),peer.getPort()).andReturn(socket);
+		socket.setSoTimeout(Utils.timeoutPeer);
+		EasyMock.expect(socket.getOutputStream()).andReturn(dataouput);
+		EasyMock.expect(socket.getInputStream()).andReturn(datainput);
+		dataouput.write(EasyMock.anyObject(byte[].class), EasyMock.anyInt(), EasyMock.anyInt());
+		PowerMock.replayAll();
+		BlockChainHandler blockhandler= new BlockChainHandler(null, null, NetParameters.MainNet, peer, listinv);
 		Whitebox.setInternalState(blockhandler, "state", STATE_ENGINE.READY);
 		blockhandler.call();
 		PowerMock.verify();

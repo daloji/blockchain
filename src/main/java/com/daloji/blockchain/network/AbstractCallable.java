@@ -420,12 +420,11 @@ public abstract class AbstractCallable  implements Callable<Object>{
 	 * @throws IOException
 	 */
 
-	protected STATE_ENGINE sendGetData(DataOutputStream outPut,NetParameters netparam,PeerNode peernode,Inventory inv) throws IOException {
+	protected STATE_ENGINE sendGetData(DataOutputStream outPut,NetParameters netparam,PeerNode peernode,List<Inventory> listInv) throws IOException {
 		state = STATE_ENGINE.GETDATA_SEND;
 		//construction de la blockchain
-		List<Inventory> listinv =new ArrayList<Inventory>();
-		listinv.add(inv);
-		GetDataTrame getData = new GetDataTrame(listinv);
+
+		GetDataTrame getData = new GetDataTrame(listInv);
 		String trame = getData.generateMessage(netParameters, peerNode);
 		byte[] data = Utils.hexStringToByteArray(trame);
 		outPut.write(data, 0, data.length);	

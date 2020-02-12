@@ -177,19 +177,18 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 
 	@Override
 	public void onBlockHeaderReceive(List<Inventory> listInventory) {
-		for(Inventory inventory:listInventory) {
+		if(listInventory !=null) {
 			PeerNode peer = DnsLookUp.getInstance().getBestPeer();
 			if(peer !=null) {
-				BlockChainHandler blockChain = new BlockChainHandler(this,this, NetParameters.MainNet, peer,inventory);
+				BlockChainHandler blockChain = new BlockChainHandler(this,this, NetParameters.MainNet, peer,listInventory);
 				try {
 					BlockChainWareHouseThreadFactory.getInstance().invokeBlock(blockChain);
 				} catch (InterruptedException e) {
 					logger.error(e.getMessage());
 				}
 			}
-			
 		}
-		BlockChainWareHouseThreadFactory.getInstance().shutDownBloc();
+
 	}
 
 	@Override
