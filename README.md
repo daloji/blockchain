@@ -23,7 +23,8 @@ Lors du premier lancement,le processus Initial Block Download ou processus de sy
  * puissance processeur
  * Memoire vive 4 Go
  * Disque Dur (300 Go de libre minimum )
- Fonctionne avec une Raspeberry Pi 2 model B
+ 
+Cependant fonctionne avec une Raspeberry Pi 2 model B
 ## Blockchain 
 
 ## Transaction
