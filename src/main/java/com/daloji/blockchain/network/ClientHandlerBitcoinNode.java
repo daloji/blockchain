@@ -60,6 +60,8 @@ public class ClientHandlerBitcoinNode extends AbstractCallable{
 										sendVerAck(outPut,NetParameters.MainNet,peer);
 										listState.add(STATE_ENGINE.VER_ACK_SEND);
 					break;
+					case READY :replyAllRequest(deserialize,outPut, netParameters, peerNode);
+					break;
 								
 					}
 				}

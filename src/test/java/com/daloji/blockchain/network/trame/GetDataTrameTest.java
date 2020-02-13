@@ -2,9 +2,6 @@ package com.daloji.blockchain.network.trame;
 
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,7 +11,6 @@ import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.IPVersion;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
-import com.daloji.blockchain.network.trame.GetDataTrame;
 
 
 public class GetDataTrameTest {
@@ -28,9 +24,7 @@ public class GetDataTrameTest {
 		Inventory inv = new Inventory();
 		inv.setHash(hash);
 		inv.setType(InvType.MSG_BLOCK);
-		List<Inventory> list = new ArrayList<Inventory>();
-		list.add(inv);
-		GetDataTrame getData =new GetDataTrame(list);
+		GetDataTrame getData =new GetDataTrame(inv);
 		getData.setFromPeer(peer);
 		String data = getData.generateMessage(NetParameters.MainNet, peer);
 		Assert.assertNotNull(data);

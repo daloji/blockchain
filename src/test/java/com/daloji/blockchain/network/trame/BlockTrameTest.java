@@ -28,6 +28,8 @@ public class BlockTrameTest {
 	private static String bloc_receive_003;
 	
 	private static String bloc_receive_004;
+	
+	private static String block_receive_005;
 
 	@BeforeClass
 	public static void before() throws IOException {
@@ -40,6 +42,7 @@ public class BlockTrameTest {
 		bloc_receive_002 = (prop.getProperty("bloc_receive_002"));
 		bloc_receive_003 = (prop.getProperty("bloc_receive_003"));
 		bloc_receive_004 = (prop.getProperty("bloc_receive_004"));
+		block_receive_005 = (prop.getProperty("block_receive_005"));
 	}
 
 	@Test
@@ -122,6 +125,40 @@ public class BlockTrameTest {
 		Assert.assertEquals(block.getCommande(),"626C6F636B00000000000000");
 		Assert.assertEquals(block.getLength(),216);
 		
+	}
+	
+	
+	@Test
+	public void BlockTrameTest_005() {
+		BlockTrame block = new BlockTrame();
+		PeerNode peer = new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		block.setFromPeer(peer);
+		byte[] data = block.deserialise(Utils.hexStringToByteArray(block_receive_005));
+		Assert.assertEquals(block.getMagic(),"F9BEB4D9");
+		Assert.assertEquals(block.getChecksum(),"6053866F");
+		Assert.assertEquals(block.getCommande(),"626C6F636B00000000000000");
+		Assert.assertEquals(block.getLength(),216);
+		Assert.assertEquals(block.getMerkelRoot(),"3559D5EA3C76414688D91E80BBF3CE8362BAC94144E5193DFC25E5E4618881F7");
+		Assert.assertEquals(block.getnBits(),486604799);
+		Assert.assertEquals(block.getNonce(),2864320536L);
+		Assert.assertEquals(block.getPreviousHash(),"69E01E2D00D6F87ADC1F552002ABA2B7DF61AC076DD61861BE09EC7200000000");
+		Assert.assertEquals(block.getTime(),1232006385);
+		Assert.assertEquals(block.getVersion(),"01000000");
+		Assert.assertEquals(block.getListTransacation().size(),1);
+		Assert.assertEquals(block.getListTransacation().get(0).getLockTime(),0);
+		Assert.assertEquals(block.getListTransacation().get(0).getTxOutCount(),1);
+		Assert.assertEquals(block.getListTransacation().get(0).getTxOut().size(),1);
+		Assert.assertEquals(block.getListTransacation().get(0).getTxOut().get(0).getPkScript(),"04E8DD55CCFFAB2551A9563FC298B464525129B84AB036A36C92E8D1017185280D239DB08EEAD652F6E75C7834021E435C00D0758E0F322DC46116508325DC43A6AC00");
+		Assert.assertEquals(block.getListTransacation().get(0).getTxOut().get(0).getValue(),"00F2052A01000000");
+		Assert.assertEquals(block.getListTransacation().get(0).getTxOut().get(0).getPkScriptLength(),67);
+		Assert.assertEquals(block.getListTransacation().get(0).getTxIn().size(),1);
+		Assert.assertEquals(block.getListTransacation().get(0).getTxInCount(),1);
+		Assert.assertEquals(block.getListTransacation().get(0).getTxIn().get(0).getHash(),"0000000000000000000000000000000000000000000000000000000000000000");
+		Assert.assertEquals(block.getListTransacation().get(0).getTxIn().get(0).getSequence(),"FFFFFFFF");
+		Assert.assertEquals(block.getListTransacation().get(0).getTxIn().get(0).getSignatureScript(),"04FFFF001D02C205");
+		Assert.assertEquals(block.getListTransacation().get(0).getTxIn().get(0).getIndex(),"FFFFFFFF");
+		Assert.assertEquals(block.getListTransacation().get(0).getTxIn().get(0).getSciptLeng(),8);
 	}
 	
 }

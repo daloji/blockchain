@@ -30,8 +30,9 @@ public class GetDataTrame extends TrameHeader{
 	private List<Inventory> listInv;
 
 
-	public GetDataTrame(List<Inventory> listinv) {
-		listInv =listinv;
+	public GetDataTrame(Inventory inv) {
+		listInv = new ArrayList<Inventory>();
+		listInv.add(inv);
 	}
 
 	@Override

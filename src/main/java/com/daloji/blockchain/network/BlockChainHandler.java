@@ -69,7 +69,10 @@ public class BlockChainHandler  extends AbstractCallable{
 				case VER_ACK_RECEIVE:state = sendVerAck(outPut,netParameters,peerNode);
 				listState.add(state);
 				break;
-				case GETDATA_SEND : state = sendGetData(outPut, netParameters, peerNode,listInventory);
+				case GETDATA_SEND :
+					for(Inventory inventory:listInventory) {
+					state = sendGetData(outPut, netParameters, peerNode,inventory);
+					}
 				listState.add(state);
 				break;
 				case GETBLOCK_SEND :

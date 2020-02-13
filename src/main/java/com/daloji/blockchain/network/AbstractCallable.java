@@ -304,12 +304,8 @@ public abstract class AbstractCallable  implements Callable<Object>{
 					listState.add(state);
 				}
 				if(trame instanceof VersionTrameMessage) {
-					if(trame.isPartialTrame()) {
-						state = STATE_ENGINE.PARTIAL_TRAME;
-					}else {
-						state = STATE_ENGINE.VERSION_RECEIVE;
-						listState.add(state);
-					}
+					state = STATE_ENGINE.VERSION_RECEIVE;
+					listState.add(state);
 				}
 			}
 		}
@@ -387,6 +383,13 @@ public abstract class AbstractCallable  implements Callable<Object>{
 				if(trame instanceof AddrTrame) {
 					networkListener.onAddresseReceive(((AddrTrame) trame).getListAddr());
 				}
+				if(trame instanceof GetBlocksTrame) {
+				//TODO	
+				}
+				if(trame instanceof GetDataTrame) {
+					//TODO	
+				}
+				
 			}
 			arrayTrame.removeAll(list);
 
@@ -420,11 +423,9 @@ public abstract class AbstractCallable  implements Callable<Object>{
 	 * @throws IOException
 	 */
 
-	protected STATE_ENGINE sendGetData(DataOutputStream outPut,NetParameters netparam,PeerNode peernode,List<Inventory> listInv) throws IOException {
+	protected STATE_ENGINE sendGetData(DataOutputStream outPut,NetParameters netparam,PeerNode peernode,Inventory inv) throws IOException {
 		state = STATE_ENGINE.GETDATA_SEND;
-		//construction de la blockchain
-
-		GetDataTrame getData = new GetDataTrame(listInv);
+		GetDataTrame getData = new GetDataTrame(inv);
 		String trame = getData.generateMessage(netParameters, peerNode);
 		byte[] data = Utils.hexStringToByteArray(trame);
 		outPut.write(data, 0, data.length);	
