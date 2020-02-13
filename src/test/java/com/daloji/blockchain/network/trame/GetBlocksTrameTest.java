@@ -1,11 +1,5 @@
 package com.daloji.blockchain.network.trame;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
-
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.daloji.blockchain.core.utils.Utils;
@@ -15,9 +9,7 @@ import com.daloji.blockchain.network.peers.PeerNode;
 
 public class GetBlocksTrameTest {
 
-	private static String trame_block_receive_004;
 	
-
 
 	/**
 	 * verification getBlockGenesis

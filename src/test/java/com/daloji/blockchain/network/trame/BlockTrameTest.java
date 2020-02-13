@@ -1,8 +1,8 @@
 package com.daloji.blockchain.network.trame;
 
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Properties;
 
 import org.junit.Assert;
@@ -32,7 +32,7 @@ public class BlockTrameTest {
 	private static String block_receive_005;
 
 	@BeforeClass
-	public static void before() throws IOException {
+	public static void before() throws Exception {
 		ClassLoader classLoader = InvTrameTest.class.getClassLoader();
 		File file = new File(classLoader.getResource("test.properties").getFile());
 		Properties prop = new Properties();
@@ -46,7 +46,7 @@ public class BlockTrameTest {
 	}
 
 	@Test
-	public void BlockTrameTestTest() {
+	public void blockTrameTestTest() {
 		BlockTrame block = new BlockTrame();
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
@@ -80,7 +80,7 @@ public class BlockTrameTest {
 	}
 
 	//@Test
-	public void BlockTrameTest_002() {
+	public void blockTrameTest_002() {
 		BlockTrame block = new BlockTrame();
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
@@ -114,7 +114,7 @@ public class BlockTrameTest {
 	}
 	
 	@Test
-	public void BlockTrameTest_003() {
+	public void blockTrameTest_003() {
 		BlockTrame block = new BlockTrame();
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
@@ -129,7 +129,7 @@ public class BlockTrameTest {
 	
 	
 	@Test
-	public void BlockTrameTest_005() {
+	public void blockTrameTest_005() {
 		BlockTrame block = new BlockTrame();
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
