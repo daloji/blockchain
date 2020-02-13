@@ -27,6 +27,13 @@ Lors du premier lancement,le processus Initial Block Download ou processus de sy
 Cependant fonctionne avec une Raspeberry Pi 2 model B
 ## Blockchain 
 
+      
+     | Taille(octet) |     Nom      |   Type    |     Description                    |
+     | ------------ :| ------------:| --------: | ---------------------------:       | 
+     | 4             | VERSION      |int32_t    |  version du block                  |
+     | 32            | PREV HASH    |char[32]   | SHA256(SHA256()) hash du bloc precedent |
+     | 32            | MERKLE ROOT  |char[32]   | SHA256(SHA256())  merkle root transaction|
+
 ## Transaction
 
 ## Protocole peer to peer
