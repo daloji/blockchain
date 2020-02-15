@@ -53,7 +53,7 @@ public class NetworkOrchestratorTest {
 	 * Erreur DnsLookup
 	 * @throws Exception
 	 */
-	//@Test
+	@Test
 	public void startNEtworkOrchestrator_NOK_001() throws Exception {
 
 		Pair<Retour, List<PeerNode>> dnslookup = new Pair<Retour, List<PeerNode>>(Utils.createRetourNOK("diagnostic", "info"), null);
@@ -77,8 +77,11 @@ public class NetworkOrchestratorTest {
 		Pair<Retour, List<PeerNode>> dnslookup = new Pair<Retour, List<PeerNode>>(Utils.createRetourOK(), listnode);
 		EasyMock.expect(DnsLookUp.getInstance()).andReturn(dnsLookup);
 		EasyMock.expect(dnsLookup.getAllNodePeer()).andReturn(dnslookup);
-		EasyMock.expect(DnsLookUp.getInstance()).andReturn(dnsLookup);
-		EasyMock.expect(dnsLookup.getBestPeer()).andReturn(peernode);	
+		for(int i=0;i<3;i++) {
+			EasyMock.expect(DnsLookUp.getInstance()).andReturn(dnsLookup);
+			EasyMock.expect(dnsLookup.getBestPeer()).andReturn(peernode);
+		}
+			
 		byte[] content = Utils.hexStringToByteArray(trameVersionReceive);
 		InputStream anyInputStream = new ByteArrayInputStream(content);
 		datainput = new DataInputStream(anyInputStream);
