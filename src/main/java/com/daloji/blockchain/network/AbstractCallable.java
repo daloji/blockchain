@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Block;
 import com.daloji.blockchain.core.Inventory;
+import com.daloji.blockchain.core.commons.database.proxy.LevelDbProxy;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
@@ -24,6 +25,7 @@ import com.daloji.blockchain.network.trame.AddrTrame;
 import com.daloji.blockchain.network.trame.BlockTrame;
 import com.daloji.blockchain.network.trame.GetBlocksTrame;
 import com.daloji.blockchain.network.trame.GetDataTrame;
+import com.daloji.blockchain.network.trame.InvTrame;
 import com.daloji.blockchain.network.trame.ObjectTrame;
 import com.daloji.blockchain.network.trame.PingTrame;
 import com.daloji.blockchain.network.trame.PongTrame;
@@ -387,6 +389,9 @@ public abstract class AbstractCallable  implements Callable<Object>{
 				//TODO	
 				}
 				if(trame instanceof GetDataTrame) {
+					replyGetData(trame);		
+				}
+				if(trame instanceof InvTrame) {
 					//TODO	
 				}
 				
@@ -397,6 +402,24 @@ public abstract class AbstractCallable  implements Callable<Object>{
 
 	}
 
+	
+	private void replyGetData(TrameHeader trameGetData) throws IOException {
+		List<Inventory> listInv = ((GetDataTrame) trameGetData).getListInv();
+		for(Inventory inv:listInv) {
+			Block block = LevelDbProxy.getInstance().findBlock(inv.getHash());
+			if(block!=null) {
+				BlockTrame blockTrame = Block.buildBlockTrame(block);
+				String trame = blockTrame.generateMessage(netParameters, peerNode);
+				byte[] data = Utils.hexStringToByteArray(trame);
+				outPut.write(data, 0, data.length);	
+				if(logger.isDebugEnabled()) {
+					logger.debug("<REPLY>  GetData :"+Utils.bytesToHex(data));
+				}
+				
+			}
+			
+		}
+	}
 
 	protected STATE_ENGINE sendGetBlock(DataOutputStream outPut,NetParameters netparam,PeerNode peernode,String hash) throws IOException {
 		state = STATE_ENGINE.GETBLOCK_SEND;

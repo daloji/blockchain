@@ -68,7 +68,7 @@ public class TransactionOutput implements Serializable{
 			size = compactsize.first;
 			offset = compactsize.second;
 			transactoupt.setPkScriptLength(size);
-			offset = offset + buffer.length;
+			//offset = offset + buffer.length;
 			buffer = new byte[(int)size];
 			System.arraycopy(data, offset, buffer, 0, buffer.length);
 			transactoupt.setPkScript(Utils.bytesToHex(buffer));

@@ -46,7 +46,7 @@ public class BitcoinServerWorker extends AbstractCallable {
 			}else {
 				clientSocket = server.accept();
 				ClientHandlerBitcoinNode clientHandler = new ClientHandlerBitcoinNode(clientSocket);
-				BlockChainWareHouseThreadFactory.getInstance().invokeClient(clientHandler);
+				BlockChainWareHouseThreadFactory.getInstance().invokeServer(clientHandler);
 
 				
 			}

@@ -33,7 +33,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 
 	protected final ReentrantLock lock = BlockChainWareHouseThreadFactory.lockThisObject(NetworkOrchestrator.class);
 
-	private static final int NB_THREAD = 1;
+	private static final int NB_THREAD = 3;
 
 	private  CopyOnWriteArrayList<AbstractCallable> listPeerConnected = new CopyOnWriteArrayList<AbstractCallable>(); 
 
@@ -105,7 +105,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 			}
 			BlockChainWareHouseThreadFactory.getInstance().addBlockChainListener(this);
 			BitcoinServerWorker bitcoinServer = new BitcoinServerWorker(this,NetParameters.MainNet);
-			BlockChainWareHouseThreadFactory.getInstance().invokeClient(bitcoinServer);
+			BlockChainWareHouseThreadFactory.getInstance().invokeServer(bitcoinServer);
 			BlockChainWareHouseThreadFactory.getInstance().invokeAllIntialDownloadBlock(listThreadConnected);
 		}
 		

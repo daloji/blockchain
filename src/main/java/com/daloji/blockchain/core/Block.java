@@ -179,8 +179,25 @@ public class Block implements Serializable{
 			bloc.setTime(bloctrame.getTime());
 			bloc.setVersion(Utils.little2big(bloctrame.getVersion()));
 			bloc.setDifficultyTarget(bloctrame.getnBits());
+			bloc.setListTransaction(bloctrame.getListTransacation());
 		}
 		return bloc;
+	}
+	
+	
+	public static BlockTrame buildBlockTrame(Block block) {
+		BlockTrame blockTrame = null;
+		if(block!=null) {
+			blockTrame = new BlockTrame();
+			blockTrame.setMerkelRoot(block.getMerkleRoot());
+			blockTrame.setNonce(block.getNonce());
+			blockTrame.setPreviousHash(block.getPrevBlockHash());
+			blockTrame.setTime(block.getTime());
+			blockTrame.setVersion(Utils.intHexpadding((int)block.getVersion(), 4));
+			blockTrame.setnBits(block.getDifficultyTarget());
+			blockTrame.setListTransacation(block.getListTransaction());
+		}
+		return blockTrame;
 	}
 
 	@Override

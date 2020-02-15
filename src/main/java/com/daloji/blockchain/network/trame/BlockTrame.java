@@ -1,5 +1,6 @@
 package com.daloji.blockchain.network.trame;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Block;
+import com.daloji.blockchain.core.Crypto;
 import com.daloji.blockchain.core.Transaction;
+import com.daloji.blockchain.core.TransactionInput;
+import com.daloji.blockchain.core.TransactionOutput;
 import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.NetParameters;
@@ -29,6 +33,9 @@ public class BlockTrame  extends TrameHeader{
 	 * 
 	 */
 	private static final long serialVersionUID = 5410184196898052322L;
+	
+	
+	private static final String commande = "block";
 
 
 	private String version;
@@ -47,10 +54,47 @@ public class BlockTrame  extends TrameHeader{
 	
 	private boolean isIncorrect = false;
 
+	
 	@Override
 	public String generatePayload(NetParameters network) {
-		// TODO Auto-generated method stub
-		return null;
+		String payload ="";
+		String version = Utils.intHexpadding(1, 4);
+		payload = payload +version;
+		payload = payload +this.previousHash;
+		payload = payload +this.merkelRoot;
+		payload = payload +Utils.convertDateString(getTime(), 4);
+		payload = payload +Utils.intHexpadding((int)getnBits(), 4);
+		payload = payload +Utils.intHexpadding((int)getNonce(), 4);
+		int size = getListTransacation().size();
+		payload = payload + Utils.intHexpadding(size, 1);
+		for(Transaction transaction:listTransacation) {
+			payload= payload + transaction.getVersion();
+			if(transaction.getFlag()>0) {
+				payload = payload + Utils.intHexpadding(transaction.getFlag(), 4);
+			}
+			size = transaction.getTxIn().size();
+			payload = payload + Utils.intHexpadding(size, 1);
+			for(TransactionInput txinput:transaction.getTxIn()) {
+				payload = payload + txinput.getHash();
+				payload = payload + txinput.getIndex();
+				payload = payload + Utils.intHexpadding((int)txinput.getSciptLeng(), 1);
+				payload = payload + txinput.getSignatureScript();
+				payload = payload + txinput.getSequence();
+
+			}
+			size = transaction.getTxOut().size();
+			payload = payload + Utils.intHexpadding(size, 1);
+			for(TransactionOutput txoutput:transaction.getTxOut()) {
+				payload = payload + txoutput.getValue();
+				payload = payload + Utils.intHexpadding((int)txoutput.getPkScriptLength(), 1);
+				payload = payload + txoutput.getPkScript();
+		
+			}
+			payload = payload + Utils.intHexpadding((int)transaction.getLockTime(),4);
+
+		}
+
+		return payload;
 	}
 
 	@Override
@@ -79,7 +123,7 @@ public class BlockTrame  extends TrameHeader{
 		String payload = Utils.bytesToHex(buffer);
 		//TODO protection taille de buffer
 		if(!Utils.allZero(Utils.hexStringToByteArray(payload)) && !isStartMagic(payload) && !containsMagic(payload) ){
-			if((buffer.length+offset)<msg.length) {
+			if((buffer.length+offset)<=msg.length) {
 				buffer = new byte[4];
 				System.arraycopy(msg, offset, buffer, 0, buffer.length);
 				String version = Utils.bytesToHex(buffer);
@@ -222,8 +266,28 @@ public class BlockTrame  extends TrameHeader{
 
 	@Override
 	public String generateMessage(NetParameters network, PeerNode peer) {
-		// TODO Auto-generated method stub
-		return null;
+
+		setMagic(network.getMagic());
+		//get Epoch Time
+		epoch  = Instant.now().getEpochSecond();
+		setAddressTrans(peer.getHost());
+		String message ="";
+		message = message +getMagic();
+		message = message + Utils.convertStringToHex(commande,12);
+		String payload = generatePayload(network);
+		//lenght
+		int length = payload.length()/2;
+		message= message +Utils.intHexpadding(length, 4);
+		byte[] payloadbyte = Utils.hexStringToByteArray(payload);
+		//4 premier octet seulement pour le chechsum
+		byte[] array = Crypto.doubleSha256(payloadbyte);
+		String checksum =Utils.bytesToHex(array);
+		checksum =checksum.substring(0, 8);
+		message = message +checksum;
+		//ajout de la payload 
+		message = message +payload;
+		return message;
+		
 	}
 
 	@Override

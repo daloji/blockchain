@@ -56,9 +56,9 @@ public class ClientHandlerBitcoinNode extends AbstractCallable{
 
 					switch(state) {
 					case VERSION_RECEIVE : state = sendVersion(outPut,NetParameters.MainNet,peer);
-					listState.add(STATE_ENGINE.VERSION_SEND);
-										sendVerAck(outPut,NetParameters.MainNet,peer);
-										listState.add(STATE_ENGINE.VER_ACK_SEND);
+										   listState.add(STATE_ENGINE.VERSION_SEND);
+										   sendVerAck(outPut,NetParameters.MainNet,peer);
+										   listState.add(STATE_ENGINE.VER_ACK_SEND);
 					break;
 					case READY :replyAllRequest(deserialize,outPut, netParameters, peerNode);
 					break;
