@@ -100,7 +100,7 @@ public class BlockChainWareHouseThreadFactory {
 		threadPoolExecutor.submit(task);
 	}
 	
-	public <T> void invokeClient(Callable<T> task) throws InterruptedException {
+	public <T> void invokeServer(Callable<T> task) throws InterruptedException {
 		threadPoolExecutorServer.submit(task);
 	}
 
