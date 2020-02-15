@@ -18,7 +18,11 @@ import com.daloji.blockchain.network.ConnectionNode;
 import com.daloji.blockchain.network.WatchDogHandler;
 import com.daloji.blockchain.network.listener.BlockChainEventHandler;
 import com.google.common.util.concurrent.CycleDetectingLockFactory;
-
+/**
+ * Classe Utilitaire de gestion des Threads
+ * @author daloji
+ *
+ */
 
 
 public class BlockChainWareHouseThreadFactory {
@@ -121,22 +125,4 @@ public class BlockChainWareHouseThreadFactory {
 	}
 
 
-	public void stopExecutor() {
-		/*	executorServiceInitialDownloadBlock.shutdown(); // Disable new tasks from being submitted
-		try {
-			// Wait a while for existing tasks to terminate
-			if (!executorServiceInitialDownloadBlock.awaitTermination(60, TimeUnit.SECONDS)) {
-				executorServiceInitialDownloadBlock.shutdownNow(); // Cancel currently executing tasks
-				// Wait a while for tasks to respond to being cancelled
-				if (!executorServiceInitialDownloadBlock.awaitTermination(60, TimeUnit.SECONDS))
-					System.err.println("Pool did not terminate");
-			}
-		} catch (InterruptedException ie) {
-			// (Re-)Cancel if current thread also interrupted
-			executorServiceInitialDownloadBlock.shutdownNow();
-			// Preserve interrupt status
-			Thread.currentThread().interrupt();
-		}
-		 */
-	}
 }

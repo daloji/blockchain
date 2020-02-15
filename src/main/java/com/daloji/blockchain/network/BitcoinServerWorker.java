@@ -10,8 +10,13 @@ import org.slf4j.LoggerFactory;
 import com.daloji.blockchain.core.utils.BlockChainWareHouseThreadFactory;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.listener.NetworkEventHandler;
-import com.daloji.blockchain.network.trame.TrameHeader;
 
+
+/**
+ * Bitcoin Server
+ * @author daloji
+ *
+ */
 public class BitcoinServerWorker extends AbstractCallable {
 
 	private static final Logger logger =  LoggerFactory.getLogger(BitcoinServerWorker.class);
