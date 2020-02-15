@@ -53,7 +53,7 @@ public class NetworkOrchestratorTest {
 	 * Erreur DnsLookup
 	 * @throws Exception
 	 */
-	@Test
+	//@Test
 	public void startNEtworkOrchestrator_NOK_001() throws Exception {
 
 		Pair<Retour, List<PeerNode>> dnslookup = new Pair<Retour, List<PeerNode>>(Utils.createRetourNOK("diagnostic", "info"), null);
