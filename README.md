@@ -28,11 +28,14 @@ Cependant fonctionne avec une Raspeberry Pi 2 model B
 ## Blockchain 
 
       
-     | Taille(octet) |     Nom      |   Type    |     Description                    |
-     | ------------ :| ------------:| --------: | ---------------------------:       | 
-     | 4             | VERSION      |int32_t    |  version du block                  |
-     | 32            | PREV HASH    |char[32]   | SHA256(SHA256()) hash du bloc precedent |
-     | 32            | MERKLE ROOT  |char[32]   | SHA256(SHA256())  merkle root transaction|
+     | Taille(octet) |     Nom      |   Type    |     Description                           |
+     | ------------ :| ------------:| --------: | ---------------------------:              | 
+     | 4             | VERSION      |int32_t    |  version du block                         |
+     | 32            | PREV HASH    |char[32]   | SHA256(SHA256()) hash du bloc precedent   |
+     | 32            | MERKLE ROOT  |char[32]   | SHA256(SHA256())  merkle root transaction |
+     | 4             | TIME         |int32_t    | unix epoch generation du bloc             |
+     | 4             | DIFFICULTE   |int32_t    | diffuclté lors de la generation du block  |
+     | 4             | NONCE        |int32_t    | nombre aleatoire                          |
 
 ## Transaction
 
