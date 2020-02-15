@@ -313,6 +313,8 @@ public abstract class TrameHeader implements Serializable {
 		return value;
 
 	}
+	
+	
 
 	/**
 	 *  generation de la payload de la trame

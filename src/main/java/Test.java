@@ -8,7 +8,7 @@ import com.daloji.blockchain.core.utils.Utils;
 public class Test {
 
 	public static void main(String[] args) throws IOException {
-		/*
+		
 		DBIterator dbiterator = LevelDbProxy.getInstance().getIterator();
 		try {
 			for(dbiterator.seekToFirst(); dbiterator.hasNext(); dbiterator.next()) {
@@ -22,7 +22,7 @@ public class Test {
 			// Make sure you close the iterator to avoid resource leaks.
 			dbiterator.close();
 		}
-		*/
+		
 		System.out.println(Utils.StrLittleEndian("69E01E2D00D6F87ADC1F552002ABA2B7DF61AC076DD61861BE09EC7200000000"));
 
 		
