@@ -56,87 +56,75 @@ public class AddrTrame  extends TrameHeader{
 
 	@Override
 	public <T> T deserialise(byte[] msg) {
-		int offset =0;
-		byte[] buffer = new byte[4];
-		System.arraycopy(msg, offset, buffer, 0, buffer.length);
-		this.setMagic(Utils.bytesToHex(buffer));
-		offset = offset +  buffer.length;
-		buffer = new byte[12];
-		System.arraycopy(msg, offset, buffer, 0, buffer.length);
-		this.setCommande(Utils.bytesToHex(buffer));
-		offset = offset +buffer.length;
-		buffer = new byte[4];
-		System.arraycopy(msg, offset, buffer, 0, buffer.length);
-		String hex = Utils.bytesToHex(buffer);
-		long length = Utils.little2big(hex);
-		this.setLength((int)length);
-		offset = offset +buffer.length;
-		buffer = new byte[4];
-		System.arraycopy(msg, offset, buffer, 0, buffer.length);
-		this.setChecksum(Utils.bytesToHex(buffer));
-		offset = offset +buffer.length;
-		buffer = new byte[(int)length];
-		System.arraycopy(msg, offset, buffer, 0, buffer.length);
-		String payload = Utils.bytesToHex(buffer);
-		if(!Utils.allZero(Utils.hexStringToByteArray(payload))){
-			buffer = new byte[1];
-			System.arraycopy(msg, offset, buffer, 0, buffer.length);
-			String len = Utils.bytesToHex(buffer);
-			long size = Integer.parseInt(len,16);
-			Pair<Long, Integer> compactsize = Utils.getCompactSize(size, offset, msg);
-			size = compactsize.first;
-			offset = compactsize.second;
-			listAddr = new ArrayList<Addr>();
-			for(int i=0 ; i<(int)size;i++) {
-				Addr addr = new Addr();
-				buffer = new byte[4];
-				System.arraycopy(msg, offset, buffer, 0,buffer.length);
-				String epoch = Utils.bytesToHex(buffer);
-				long unixTime = Utils.little2big(epoch);
-				addr.setEpoch(unixTime);
-				offset = offset + buffer.length;
-				buffer = new byte[8];
-				System.arraycopy(msg, offset, buffer, 0,buffer.length);
-				offset = offset + buffer.length;
-				addr.setService(Utils.bytesToHex(buffer));
-				buffer = new byte[16];
-				System.arraycopy(msg, offset, buffer, 0,buffer.length);
-				offset = offset + buffer.length;
-				try {
-					String ip = Utils.convertHexaToIp(buffer);
-					addr.setIp(ip);
-				} catch (Exception e) {
-					addr.setIp("0.0.0.0");
+		byte[] buffer = deserialiseHeader(msg);
+		int offset =24;
+	    if(buffer!=null) {
+	    	String payload = Utils.bytesToHex(buffer);
+	    	if(!Utils.allZero(Utils.hexStringToByteArray(payload))){
+				buffer = new byte[1];
+				System.arraycopy(msg, offset, buffer, 0, buffer.length);
+				String len = Utils.bytesToHex(buffer);
+				long size = Integer.parseInt(len,16);
+				Pair<Long, Integer> compactsize = Utils.getCompactSize(size, offset, msg);
+				size = compactsize.first;
+				offset = compactsize.second;
+				listAddr = new ArrayList<Addr>();
+				for(int i=0 ; i<(int)size;i++) {
+					Addr addr = new Addr();
+					buffer = new byte[4];
+					System.arraycopy(msg, offset, buffer, 0,buffer.length);
+					String epoch = Utils.bytesToHex(buffer);
+					long unixTime = Utils.little2big(epoch);
+					addr.setEpoch(unixTime);
+					offset = offset + buffer.length;
+					buffer = new byte[8];
+					System.arraycopy(msg, offset, buffer, 0,buffer.length);
+					offset = offset + buffer.length;
+					addr.setService(Utils.bytesToHex(buffer));
+					buffer = new byte[16];
+					System.arraycopy(msg, offset, buffer, 0,buffer.length);
+					offset = offset + buffer.length;
+					try {
+						String ip = Utils.convertHexaToIp(buffer);
+						addr.setIp(ip);
+					} catch (Exception e) {
+						addr.setIp("0.0.0.0");
+					}
+
+					buffer = new byte[2];
+					System.arraycopy(msg, offset, buffer, 0,buffer.length);
+					offset = offset + buffer.length;
+					String strport = Utils.bytesToHex(buffer);
+					int port =Integer.parseInt(strport,16);
+					addr.setPort(port);
+					listAddr.add(addr);
+				}
+				byte[] info =new byte[offset];
+				System.arraycopy(msg,0, info, 0, info.length);
+				if(logger.isDebugEnabled()) {
+					String extractZero =Utils.bytesToHex(info);
+					extractZero = Utils.deleteEndZero(extractZero);
+					logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Addr : "+extractZero);
+				}
+				if(offset<msg.length) {
+					buffer = new byte[msg.length-offset];
+					System.arraycopy(msg, offset, buffer, 0, buffer.length);
+
+				}else {
+					buffer = new byte[0];
 				}
 
-				buffer = new byte[2];
-				System.arraycopy(msg, offset, buffer, 0,buffer.length);
-				offset = offset + buffer.length;
-				String strport = Utils.bytesToHex(buffer);
-				int port =Integer.parseInt(strport,16);
-				addr.setPort(port);
-				listAddr.add(addr);
-			}
-			byte[] info =new byte[offset];
-			System.arraycopy(msg,0, info, 0, info.length);
-			if(logger.isDebugEnabled()) {
-				String extractZero =Utils.bytesToHex(info);
-				extractZero = Utils.deleteEndZero(extractZero);
-				logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Addr : "+extractZero);
-			}
-			if(offset<msg.length) {
-				buffer = new byte[msg.length-offset];
-				System.arraycopy(msg, offset, buffer, 0, buffer.length);
 
 			}else {
+				this.setPartialTrame(true);
 				buffer = new byte[0];
 			}
-
-
-		}else {
-			this.setPartialTrame(true);
-			buffer = new byte[0];
-		}
+	    	
+	    }
+		
+		
+		
+		
 		return (T) buffer;
 	}
 

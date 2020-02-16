@@ -99,110 +99,95 @@ public class BlockTrame  extends TrameHeader{
 
 	@Override
 	public <T> T deserialise(byte[] msg) {
-		int offset =0;
-		byte[] buffer = new byte[4];
-		System.arraycopy(msg, offset, buffer, 0, buffer.length);
-		this.setMagic(Utils.bytesToHex(buffer));
-		offset = offset +  buffer.length;
-		buffer = new byte[12];
-		System.arraycopy(msg, offset, buffer, 0, buffer.length);
-		this.setCommande(Utils.bytesToHex(buffer));
-		offset = offset +buffer.length;
-		buffer = new byte[4];
-		System.arraycopy(msg, offset, buffer, 0, buffer.length);
-		String hex = Utils.bytesToHex(buffer);
-		long length = Utils.little2big(hex);
-		this.setLength((int)length);
-		offset = offset +buffer.length;
-		buffer = new byte[4];
-		System.arraycopy(msg, offset, buffer, 0, buffer.length);
-		this.setChecksum(Utils.bytesToHex(buffer));
-		offset = offset +buffer.length;
-		buffer = new byte[(int)length];
-		System.arraycopy(msg, offset, buffer, 0, buffer.length);
-		String payload = Utils.bytesToHex(buffer);
-		//TODO protection taille de buffer
-		if(!Utils.allZero(Utils.hexStringToByteArray(payload)) && !isStartMagic(payload) && !containsMagic(payload) ){
-			if((buffer.length+offset)<=msg.length) {
-				buffer = new byte[4];
-				System.arraycopy(msg, offset, buffer, 0, buffer.length);
-				String version = Utils.bytesToHex(buffer);
-				String strversion = Utils.StrLittleEndian(version);
-				int ver =Integer.parseInt(strversion,16);
-				//version 4  BIP65 version >0 et version <= 4
-				if(ver>0 && ver<=4) {
-					this.version = version;
-					offset = offset +buffer.length;
-					buffer = new byte[32];
-					System.arraycopy(msg, offset, buffer, 0, buffer.length);
-					this.previousHash = Utils.bytesToHex(buffer);
-					offset = offset +buffer.length;
-					buffer = new byte[32];
-					System.arraycopy(msg, offset, buffer, 0, buffer.length);
-					this.merkelRoot = Utils.bytesToHex(buffer);
-					offset = offset +buffer.length;
+		byte[] buffer = deserialiseHeader(msg);
+		int offset =24;
+	    if(buffer!=null) {
+	    	String payload = Utils.bytesToHex(buffer);
+			//TODO protection taille de buffer
+			if(!Utils.allZero(Utils.hexStringToByteArray(payload)) && !isStartMagic(payload) && !containsMagic(payload) ){
+				if((buffer.length+offset)<=msg.length) {
 					buffer = new byte[4];
 					System.arraycopy(msg, offset, buffer, 0, buffer.length);
-					String epoch = Utils.bytesToHex(buffer);
-					this.time = Utils.little2big(epoch);
-					offset = offset +buffer.length;
-					buffer = new byte[4];
-					System.arraycopy(msg, offset, buffer, 0, buffer.length);
-					String nbits = Utils.bytesToHex(buffer);
-					this.nBits = Utils.little2big(nbits);
-					offset = offset +buffer.length;
-					buffer = new byte[4];
-					System.arraycopy(msg, offset, buffer, 0, buffer.length);
-					String nonce = Utils.bytesToHex(buffer);
-					this.nonce = Utils.little2big(nonce);
-					offset = offset +buffer.length;
-					buffer = new byte[1];
-					System.arraycopy(msg, offset, buffer, 0, buffer.length);
-					String len = Utils.bytesToHex(buffer);
-					long size = Integer.parseInt(len,16);
-					Pair<Long, Integer> compactsize = Utils.getCompactSize(size, offset, msg);
-					size = compactsize.first;
-					offset = compactsize.second;
-					listTransacation =  new ArrayList<Transaction>();
-					int sizesplit = msg.length - offset;
-					buffer = new byte[sizesplit];
-					System.arraycopy(msg, offset, buffer, 0, buffer.length);
-					for(int i=0;i<size;i++) {
+					String version = Utils.bytesToHex(buffer);
+					String strversion = Utils.StrLittleEndian(version);
+					int ver =Integer.parseInt(strversion,16);
+					//version 4  BIP65 version >0 et version <= 4
+					if(ver>0 && ver<=4) {
+						this.version = version;
+						offset = offset +buffer.length;
+						buffer = new byte[32];
+						System.arraycopy(msg, offset, buffer, 0, buffer.length);
+						this.previousHash = Utils.bytesToHex(buffer);
+						offset = offset +buffer.length;
+						buffer = new byte[32];
+						System.arraycopy(msg, offset, buffer, 0, buffer.length);
+						this.merkelRoot = Utils.bytesToHex(buffer);
+						offset = offset +buffer.length;
+						buffer = new byte[4];
+						System.arraycopy(msg, offset, buffer, 0, buffer.length);
+						String epoch = Utils.bytesToHex(buffer);
+						this.time = Utils.little2big(epoch);
+						offset = offset +buffer.length;
+						buffer = new byte[4];
+						System.arraycopy(msg, offset, buffer, 0, buffer.length);
+						String nbits = Utils.bytesToHex(buffer);
+						this.nBits = Utils.little2big(nbits);
+						offset = offset +buffer.length;
+						buffer = new byte[4];
+						System.arraycopy(msg, offset, buffer, 0, buffer.length);
+						String nonce = Utils.bytesToHex(buffer);
+						this.nonce = Utils.little2big(nonce);
+						offset = offset +buffer.length;
+						buffer = new byte[1];
+						System.arraycopy(msg, offset, buffer, 0, buffer.length);
+						String len = Utils.bytesToHex(buffer);
+						long size = Integer.parseInt(len,16);
+						Pair<Long, Integer> compactsize = Utils.getCompactSize(size, offset, msg);
+						size = compactsize.first;
+						offset = compactsize.second;
+						listTransacation =  new ArrayList<Transaction>();
+						int sizesplit = msg.length - offset;
+						buffer = new byte[sizesplit];
+						System.arraycopy(msg, offset, buffer, 0, buffer.length);
+						for(int i=0;i<size;i++) {
 
-						Pair<Transaction,byte[]> transactionBuild = Transaction.buildTransaction(buffer);
-						if(transactionBuild != null) {
-							listTransacation.add(transactionBuild.first);	
-						}
-						if(transactionBuild.second != null) {
-							buffer = transactionBuild.second;
+							Pair<Transaction,byte[]> transactionBuild = Transaction.buildTransaction(buffer);
+							if(transactionBuild != null) {
+								listTransacation.add(transactionBuild.first);	
+							}
+							if(transactionBuild.second != null) {
+								buffer = transactionBuild.second;
+							}
+
 						}
 
+						byte[] info =new byte[offset];
+						System.arraycopy(msg,0, info, 0, info.length);
+						if(logger.isDebugEnabled()) {
+							logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Block : " +this.getMerkelRoot());
+						}
+					}else {
+						this.isIncorrect = true;
 					}
+				}
 
-					byte[] info =new byte[offset];
-					System.arraycopy(msg,0, info, 0, info.length);
-					if(logger.isDebugEnabled()) {
-						logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Block : " +this.getMerkelRoot());
+			}else {
+				this.setPartialTrame(true);
+				int indexMagic = payload.indexOf(NetParameters.MainNet.getMagic());
+				if(indexMagic>0) {
+					if(offset<msg.length) {
+						byte[] info =new byte[msg.length-offset];
+						System.arraycopy(msg,offset, info, 0, info.length);
+						payload = Utils.bytesToHex(info);
+						indexMagic = payload.indexOf(NetParameters.MainNet.getMagic()); 
+						payload = payload.substring(indexMagic, payload.length());
+						buffer = Utils.hexStringToByteArray(payload);
 					}
-				}else {
-					this.isIncorrect = true;
 				}
 			}
-
-		}else {
-			this.setPartialTrame(true);
-			int indexMagic = payload.indexOf(NetParameters.MainNet.getMagic());
-			if(indexMagic>0) {
-				if(offset<msg.length) {
-					byte[] info =new byte[msg.length-offset];
-					System.arraycopy(msg,offset, info, 0, info.length);
-					payload = Utils.bytesToHex(info);
-					indexMagic = payload.indexOf(NetParameters.MainNet.getMagic()); 
-					payload = payload.substring(indexMagic, payload.length());
-					buffer = Utils.hexStringToByteArray(payload);
-				}
-			}
-		}
+	    }
+	
+		
 		return (T) buffer;
 	}
 

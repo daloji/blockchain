@@ -315,6 +315,36 @@ public abstract class TrameHeader implements Serializable {
 	}
 	
 	
+	protected byte[] deserialiseHeader(byte[] data) {
+		byte[] buffer = null;
+		int offset =0;
+		if(data!=null) {
+			buffer = new byte[4];
+			System.arraycopy(data, offset, buffer, 0, buffer.length);
+			this.setMagic(Utils.bytesToHex(buffer));
+			offset = offset +  buffer.length;
+			buffer = new byte[12];
+			System.arraycopy(data, offset, buffer, 0, buffer.length);
+			this.setCommande(Utils.bytesToHex(buffer));
+			offset = offset +buffer.length;
+			buffer = new byte[4];
+			System.arraycopy(data, offset, buffer, 0, buffer.length);
+			String hex = Utils.bytesToHex(buffer);
+			long length = Utils.little2big(hex);
+			this.setLength((int)length);
+			offset = offset +buffer.length;
+			buffer = new byte[4];
+			System.arraycopy(data, offset, buffer, 0, buffer.length);
+			this.setChecksum(Utils.bytesToHex(buffer));
+			offset = offset +buffer.length;
+			buffer = new byte[(int)length];
+			System.arraycopy(data, offset, buffer, 0, buffer.length);
+		}
+				
+		return buffer;
+	}
+	
+	
 
 	/**
 	 *  generation de la payload de la trame
