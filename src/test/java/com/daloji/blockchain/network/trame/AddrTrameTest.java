@@ -3,14 +3,18 @@ package com.daloji.blockchain.network.trame;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.daloji.blockchain.core.Addr;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.IPVersion;
+import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
 
 public class AddrTrameTest {
@@ -60,5 +64,28 @@ public class AddrTrameTest {
 
 	}
 	
+	
+	@Test
+	public void AddrTrameTest003() {
+		AddrTrame addrTrame = new AddrTrame(false);
+		Addr addr =new Addr();
+		addr.setIp("91.197.44.133");
+		addr.setPort(8333);
+		List<Addr> listAddr = new ArrayList<Addr>();
+		listAddr.add(addr);
+		addrTrame.setListAddr(listAddr);
+		PeerNode peer = new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		addrTrame.setFromPeer(peer);
+		String payload = addrTrame.generateMessage(NetParameters.MainNet, peer);
+		AddrTrame addrTrameexpect = new AddrTrame(false);
+		addrTrameexpect.setFromPeer(peer);
+		byte[] data = addrTrameexpect.deserialise(Utils.hexStringToByteArray(payload));
+		Assert.assertEquals(Utils.allZero(data),true);
+		Assert.assertEquals(addrTrameexpect.getListAddr().size(),1);
+		Assert.assertEquals(addrTrameexpect.getListAddr().get(0).getPort(),8333);
+
+
+	}
 	
 }

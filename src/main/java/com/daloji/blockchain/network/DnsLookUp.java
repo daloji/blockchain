@@ -209,5 +209,15 @@ public class DnsLookUp {
 		return listPeerFree;
 	}
 
+	public List<PeerNode> getAllKnownPeer(){
+		List<PeerNode> listnode = new ArrayList<PeerNode>();
+		if(listPeerFree !=null) {
+			listnode.addAll(listPeerFree);
+		}
+		if(listPeerUsed !=null) {
+			listnode.addAll(listPeerUsed);
+		}
+		return listnode;
+	}
 
 }

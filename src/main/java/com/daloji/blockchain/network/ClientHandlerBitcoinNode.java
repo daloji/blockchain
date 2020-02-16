@@ -51,7 +51,6 @@ public class ClientHandlerBitcoinNode extends AbstractCallable{
 						TrameHeader trame = deserialize.getLast();
 						lastTrame = trame;
 						state = findNExtStepServer(deserialize);
-						//	replyAllRequest(deserialize,outPut, netParameters, peerNode);
 					}
 
 					switch(state) {
@@ -59,6 +58,8 @@ public class ClientHandlerBitcoinNode extends AbstractCallable{
 										   listState.add(STATE_ENGINE.VERSION_SEND);
 										   sendVerAck(outPut,NetParameters.MainNet,peer);
 										   listState.add(STATE_ENGINE.VER_ACK_SEND);
+										   sendAddr(outPut, NetParameters.MainNet, peer);
+										  
 					break;
 					case READY :replyAllRequest(deserialize,outPut, netParameters, peerNode);
 					break;
