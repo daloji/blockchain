@@ -9,7 +9,6 @@ Le noeud crée se connecte en mode noeud complet (Full Node) .......
 
 ## prérequis
  * Java 8+ maven 3.6.2
- * Level-DB 
 
 ## Lancement
 ```java
