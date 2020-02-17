@@ -3,7 +3,7 @@ sudo: false
 dist: xenial
 language: java
 jdk:
-  - openjdk6
+  - openjdk8
 script:
  - mvn clean install verify -Pjacoco coveralls:report
 after_success: "sbt coveralls"
