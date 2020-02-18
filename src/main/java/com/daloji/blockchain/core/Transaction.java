@@ -21,12 +21,15 @@ public class Transaction implements Serializable {
 
 	private static final String FLAG = "0001";
 
+	
 	private String version;
 
 	private int flag;
 
 	private long txInCount;
-
+  /**
+   *  Unspnde UTXO
+   */
 	private List<TransactionInput> txIn;
 
 	private long txOutCount;

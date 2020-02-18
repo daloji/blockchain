@@ -188,7 +188,6 @@ public class LevelDbProxy implements DatabaseExchange {
 	@Override
 	public <T> T getObject(String hash) {
 		T object = null;
-		ObjectInputStream is = null;
 		byte[] data = database.get(bytes(hash));
 		if(data !=null) {
 			object = (T) Utils.bytesToHex(data);

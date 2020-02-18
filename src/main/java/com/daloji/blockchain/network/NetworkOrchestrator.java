@@ -42,11 +42,8 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 	/*
 	 * List des Threads clients
 	 */
-	private List<ConnectionNode> listThreadNodeRunning;
 
 	private List<ConnectionNode> listThreadConnected;
-
-	private List<BlockChainHandler> listThreadBlochChain;
 
 
 
@@ -91,7 +88,6 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 	public void onStart() throws Exception {
 		logger.info("onStart NetworkOrchestrator");
 		ConnectionNode connectionNode = null;
-		listThreadNodeRunning = new ArrayList<ConnectionNode>();
 		listThreadConnected = new ArrayList<ConnectionNode>();
 		Pair<Retour, List<PeerNode>> dnslookup = DnsLookUp.getInstance().getAllNodePeer();
 		Retour retour = dnslookup.first;

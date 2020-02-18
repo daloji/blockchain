@@ -15,6 +15,9 @@ import javax.xml.bind.DatatypeConverter;
 import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.commons.Retour;
 import com.daloji.blockchain.network.NetParameters;
+
+import com.daloji.blockchain.network.trame.TrameType;
+
 /**
  * 
  * Classe Utilitaires
@@ -22,7 +25,6 @@ import com.daloji.blockchain.network.NetParameters;
  * @author daloji
  *
  */
-import com.daloji.blockchain.network.trame.TrameType;
 public class Utils {
 
 	public static String RETOUR_OK ="OK";
@@ -134,6 +136,11 @@ public class Utils {
 
 
 
+	/**
+	 * Conversion d'un objet en byte Array
+	 * @param object
+	 * @return
+	 */
 	public static byte[] convertToBytes(Object object)  {
 		try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ObjectOutput out = new ObjectOutputStream(bos)) {
@@ -144,7 +151,11 @@ public class Utils {
 		} 
 	}
 
-
+/**
+ * Conversion d'une chaine hexa Big endian  en little endian
+ * @param endian
+ * @return
+ */
 	public static String StrLittleEndian(final String endian) {
 		byte[] bs = Utils.hexStringToByteArray(endian);
 		byte b;
@@ -267,6 +278,12 @@ public class Utils {
 		return hex;
 	}
 
+	
+	/**
+	 * Conversion d'un byte array en chaine hexadecimal
+	 * @param bytes
+	 * @return
+	 */
 	public static String bytesToHex(byte[] bytes) {
 		char[] hexChars = new char[bytes.length * 2];
 		for (int j = 0; j < bytes.length; j++) {
@@ -279,7 +296,11 @@ public class Utils {
 
 
 
-
+	/**
+	 * Conversion d un big endian en little endian
+	 * @param hex
+	 * @return
+	 */
 
 	public static String toLittleEndian(final String hex) {
 
@@ -308,7 +329,11 @@ public class Utils {
 		return value;
 	}
 
-
+/**
+ * Conversion d'une chaine hexadecimal en Ascii
+ * @param hexStr
+ * @return
+ */
 	public static String hexToAscii(String hexStr) {
 		StringBuilder output = new StringBuilder("");
 		for (int i = 0; i < hexStr.length(); i += 2) {

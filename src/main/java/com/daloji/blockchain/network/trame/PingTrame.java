@@ -13,7 +13,7 @@ public class PingTrame extends TrameHeader{
 
 	private static final Logger logger =  LoggerFactory.getLogger(PingTrame.class);
 
-	private String cmd = "ping";
+	private static final String cmd = "ping";
 	
 	private String nonce ;
 	/**

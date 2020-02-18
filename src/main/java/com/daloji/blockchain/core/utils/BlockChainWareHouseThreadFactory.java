@@ -38,7 +38,6 @@ public class BlockChainWareHouseThreadFactory {
 	
 	private ThreadPoolExecutor threadPoolExecutorServer;
 
-
 	private static  ScheduledExecutorService executorsWatchDog;
 
 	private static CycleDetectingLockFactory lockfactory = null;

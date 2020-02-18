@@ -315,7 +315,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		return state;
 	}		
 
-	
+
 	/**
 	 *  Recuperation du type de commande 
 	 * @param cmd
@@ -333,7 +333,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		while(iterator.hasNext()){
 			TrameHeader trame = iterator.next();
 			if(listState.containsAll(stateReady)) {
-						state = STATE_ENGINE.READY;		
+				state = STATE_ENGINE.READY;		
 
 			}else {
 
@@ -354,6 +354,14 @@ public abstract class AbstractCallable  implements Callable<Object>{
 
 		return state;
 	}		
+	/**
+	 * envoi de Message VERACK
+	 * @param outPut
+	 * @param netparam
+	 * @param peernode
+	 * @return
+	 * @throws IOException
+	 */
 	protected STATE_ENGINE sendVerAck(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
 		state = STATE_ENGINE.VER_ACK_SEND;
 		VersionAckTrame verAck = new VersionAckTrame();
@@ -366,7 +374,14 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		return state;
 	}
 
-
+	/**
+	 * Reponse aux messages recus
+	 * @param arrayTrame
+	 * @param outPut
+	 * @param netparam
+	 * @param peernode
+	 * @throws IOException
+	 */
 	protected void replyAllRequest(ArrayDeque<TrameHeader> arrayTrame,DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
 		List<TrameHeader> list	=new ArrayList<TrameHeader>();	
 		if(arrayTrame !=null) {
@@ -386,7 +401,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 					networkListener.onAddresseReceive(((AddrTrame) trame).getListAddr());
 				}
 				if(trame instanceof GetBlocksTrame) {
-				//TODO	
+					//TODO	
 				}
 				if(trame instanceof GetDataTrame) {
 					replyGetData(trame);		
@@ -394,7 +409,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 				if(trame instanceof InvTrame) {
 					//TODO	
 				}
-				
+
 			}
 			arrayTrame.removeAll(list);
 
@@ -402,7 +417,11 @@ public abstract class AbstractCallable  implements Callable<Object>{
 
 	}
 
-	
+/**
+ * Reponse a un message GetData
+ * @param trameGetData
+ * @throws IOException
+ */
 	private void replyGetData(TrameHeader trameGetData) throws IOException {
 		List<Inventory> listInv = ((GetDataTrame) trameGetData).getListInv();
 		for(Inventory inv:listInv) {
@@ -415,12 +434,21 @@ public abstract class AbstractCallable  implements Callable<Object>{
 				if(logger.isDebugEnabled()) {
 					logger.debug("<REPLY>  GetData :"+Utils.bytesToHex(data));
 				}
-				
+
 			}
-			
+
 		}
 	}
 
+	/**
+	 * Envoi de message GETBLOCK
+	 * @param outPut
+	 * @param netparam
+	 * @param peernode
+	 * @param hash
+	 * @return
+	 * @throws IOException
+	 */
 	protected STATE_ENGINE sendGetBlock(DataOutputStream outPut,NetParameters netparam,PeerNode peernode,String hash) throws IOException {
 		state = STATE_ENGINE.GETBLOCK_SEND;
 		//construction de la blockchain

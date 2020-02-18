@@ -95,6 +95,10 @@ public class DeserializerTrame implements Serializable{
 						trameHeader = blocktrameHeader;
 					}
 					
+				}else if(TrameType.MEMPOOL.getInfo().equals(cmd)) {
+					trameHeader = new MemPoolTrame();
+					trameHeader.setFromPeer(peer);
+					data = trameHeader.deserialise(data);
 				}
 				else if(TrameType.REJECT.getInfo().equals(cmd)) {
 					logger.error("***************** REJECT ****************************************");

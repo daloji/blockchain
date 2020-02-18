@@ -55,6 +55,9 @@ public class Block implements Serializable{
 	private int  txCount = 0;
 
 
+	/**
+	 * List contenant les transactions
+	 */
 	private List<Transaction> listTransaction;
 
 	
