@@ -26,6 +26,7 @@ import com.daloji.blockchain.network.trame.BlockTrame;
 import com.daloji.blockchain.network.trame.GetBlocksTrame;
 import com.daloji.blockchain.network.trame.GetDataTrame;
 import com.daloji.blockchain.network.trame.InvTrame;
+import com.daloji.blockchain.network.trame.MemPoolTrame;
 import com.daloji.blockchain.network.trame.ObjectTrame;
 import com.daloji.blockchain.network.trame.PingTrame;
 import com.daloji.blockchain.network.trame.PongTrame;
@@ -459,6 +460,19 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		outPut.write(data, 0, data.length);	
 		if(logger.isDebugEnabled()) {
 			logger.debug("<OUT>  GetBlocks :"+Utils.bytesToHex(data));
+		}
+		return state;
+	}
+	
+	
+	protected STATE_ENGINE sendMemPool(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
+		//construction de la blockchain
+		MemPoolTrame mempool = new MemPoolTrame();
+		String trame = mempool.generateMessage(netParameters, peerNode);
+		byte[] data = Utils.hexStringToByteArray(trame);
+		outPut.write(data, 0, data.length);	
+		if(logger.isDebugEnabled()) {
+			logger.debug("<OUT>  MemPool :"+Utils.bytesToHex(data));
 		}
 		return state;
 	}
