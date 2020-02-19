@@ -21,6 +21,7 @@
 		<leveldb.version>0.12</leveldb.version>
 		<logback.version>1.2.3</logback.version>
 		<commons-lang3>3.9</commons-lang3>
+		<validation-api>2.0.1.Final</validation-api>
 		<packageName>com.daloji.blockchain.core</packageName>
 		<mainClass>App</mainClass>
 	</properties>
@@ -81,6 +82,20 @@
 			<artifactId>leveldb</artifactId>
 			<version>${leveldb.version}</version>
 		</dependency>
+		
+				
+		<dependency>
+		    <groupId>javax.validation</groupId>
+		    <artifactId>validation-api</artifactId>
+		    <version>${validation-api}</version>
+		</dependency>
+		
+		<dependency>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-validator</artifactId>
+    <version>5.2.4.Final</version>
+</dependency>
+				
 	</dependencies>
 
 	<profiles>

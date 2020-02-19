@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import com.daloji.blockchain.core.utils.Utils;
+import com.daloji.blockchain.core.validation.BlockConstraint;
 import com.daloji.blockchain.network.trame.BlockTrame;
 
 /**
@@ -13,6 +16,7 @@ import com.daloji.blockchain.network.trame.BlockTrame;
  *  * @author daloji
  *
  */
+@BlockConstraint
 public class Block implements Serializable{
 
 
@@ -30,11 +34,13 @@ public class Block implements Serializable{
 	/**
 	 * hash du bloc precedent
 	 */
+	@NotNull(message = "attribut obligatoire manqant")
 	private String  prevBlockHash;
 
 	/**
 	 * hash de l'arbre merkle
 	 */
+	@NotNull(message = "attribut obligatoire manqant")
 	private String  merkleRoot;
 	/**
 	 *  date de la creation du bloc
@@ -58,6 +64,7 @@ public class Block implements Serializable{
 	/**
 	 * List contenant les transactions
 	 */
+	@NotNull(message = "attribut obligatoire manqant")
 	private List<Transaction> listTransaction;
 
 	
