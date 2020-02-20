@@ -113,7 +113,7 @@ public class InvTrame extends TrameHeader{
 									listinv.add(inventory);
 									break;
 								case 2: 
-									inventory.setType( InvType.MSG_BLOCK);
+									inventory.setType(InvType.MSG_BLOCK);
 									inventory.setHash(hash);
 									listinv.add(inventory);
 									break;

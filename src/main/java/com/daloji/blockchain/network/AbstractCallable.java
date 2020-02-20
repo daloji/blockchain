@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daloji.blockchain.core.Block;
+import com.daloji.blockchain.core.InvType;
 import com.daloji.blockchain.core.Inventory;
 import com.daloji.blockchain.core.commons.database.proxy.LevelDbProxy;
 import com.daloji.blockchain.core.utils.Utils;
@@ -408,7 +409,12 @@ public abstract class AbstractCallable  implements Callable<Object>{
 					replyGetData(trame);		
 				}
 				if(trame instanceof InvTrame) {
-					//TODO	
+					List<Inventory> listinventory = ((InvTrame) trame).getListinv();
+					for(Inventory inventory:listinventory) {
+						if(InvType.MSG_TX.equals(inventory.getType())) {
+							
+						}
+					}
 				}
 
 			}
