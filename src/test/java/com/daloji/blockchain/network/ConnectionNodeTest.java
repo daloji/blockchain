@@ -169,6 +169,7 @@ public class ConnectionNodeTest  {
 		EasyMock.expect(socket.getOutputStream()).andReturn(dataouput);
 		EasyMock.expect(socket.getInputStream()).andReturn(datainput);
 		dataouput.write(EasyMock.anyObject(byte[].class), EasyMock.anyInt(), EasyMock.anyInt());
+		dataouput.write(EasyMock.anyObject(byte[].class), EasyMock.anyInt(), EasyMock.anyInt());
 		PowerMock.replayAll();
 		ConnectionNode connection = new ConnectionNode(null, null, NetParameters.MainNet, peer);
 		connection.call();

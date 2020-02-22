@@ -2,6 +2,8 @@ package com.daloji.blockchain.network.trame;
 
 
 
+import java.util.ArrayList;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,7 +31,7 @@ public class GetDataTrameTest {
 		String data = getData.generateMessage(NetParameters.MainNet, peer);
 		Assert.assertNotNull(data);
 		
-		GetDataTrame getData1 =new GetDataTrame(null);
+		GetDataTrame getData1 =new GetDataTrame(new ArrayList<Inventory>());
 		getData1.setFromPeer(peer);
 		byte[] value = getData1.deserialise(Utils.hexStringToByteArray(data));
 		Assert.assertNotNull(data);

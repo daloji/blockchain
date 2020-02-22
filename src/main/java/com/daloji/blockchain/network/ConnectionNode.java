@@ -96,7 +96,6 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 					if(deserialize.size()>0) {
 						TrameHeader trame = deserialize.getLast();
 						lastTrame = trame;
-						callGetBlock(deserialize);
 						state = findNExtStep(deserialize);
 						replyAllRequest(deserialize,outPut, netParameters, peerNode);
 					}	
@@ -117,25 +116,6 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 
 
 	}
-	private void callGetBlock(ArrayDeque<TrameHeader> trameArray) {
-		List<Inventory>  listBlock = new ArrayList<Inventory>();
-		if(trameArray !=null) {
-			for(TrameHeader trame:trameArray) {
-				if(trame instanceof InvTrame) {
-					List<Inventory> listinventory =((InvTrame) trame).getListinv();
-					for(Inventory inventory :listinventory) {
-						if(inventory.getType() ==InvType.MSG_BLOCK) {
-							listBlock.add(inventory);
-						}
-					}
-				}
-			}
-			if(!listBlock.isEmpty()) {
-				blockChainListener.onBlockHeaderReceive(listBlock);
-			}
-		}
-	}
-
 
 
 	@Override

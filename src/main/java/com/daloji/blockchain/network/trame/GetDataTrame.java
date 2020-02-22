@@ -35,6 +35,11 @@ public class GetDataTrame extends TrameHeader{
 		listInv.add(inv);
 	}
 
+	public GetDataTrame(List<Inventory> listInv) {
+		this.listInv = new ArrayList<Inventory>();
+		this.listInv.addAll(listInv);
+	}
+	
 	@Override
 	public String generatePayload(NetParameters network) {
 		String payload = "";

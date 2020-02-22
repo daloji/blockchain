@@ -386,6 +386,8 @@ public abstract class AbstractCallable  implements Callable<Object>{
 	 */
 	protected void replyAllRequest(ArrayDeque<TrameHeader> arrayTrame,DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
 		List<TrameHeader> list	=new ArrayList<TrameHeader>();	
+		List<Inventory>  listBlock = new ArrayList<Inventory>();
+		List<Inventory>  listTx = new ArrayList<Inventory>();
 		if(arrayTrame !=null) {
 			for(TrameHeader trame:arrayTrame) {
 				if(trame instanceof PingTrame) {
@@ -412,23 +414,33 @@ public abstract class AbstractCallable  implements Callable<Object>{
 					List<Inventory> listinventory = ((InvTrame) trame).getListinv();
 					for(Inventory inventory:listinventory) {
 						if(InvType.MSG_TX.equals(inventory.getType())) {
-							
+							listTx.add(inventory);
+						}
+						if(inventory.getType() ==InvType.MSG_BLOCK) {
+							listBlock.add(inventory);
 						}
 					}
 				}
 
 			}
 			arrayTrame.removeAll(list);
+			if(!listBlock.isEmpty()) {
+				blockChainListener.onBlockHeaderReceive(listBlock);
+			}
+			if(!listTx.isEmpty()){
+				sendGetData(outPut, netparam, peernode, listTx);	
+				arrayTrame.removeAll(listTx);
+			}
+
 
 		}
-
 	}
 
-/**
- * Reponse a un message GetData
- * @param trameGetData
- * @throws IOException
- */
+	/**
+	 * Reponse a un message GetData
+	 * @param trameGetData
+	 * @throws IOException
+	 */
 	private void replyGetData(TrameHeader trameGetData) throws IOException {
 		List<Inventory> listInv = ((GetDataTrame) trameGetData).getListInv();
 		for(Inventory inv:listInv) {
@@ -469,8 +481,8 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		}
 		return state;
 	}
-	
-	
+
+
 	protected STATE_ENGINE sendMemPool(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
 		//construction de la blockchain
 		MemPoolTrame mempool = new MemPoolTrame();
@@ -506,6 +518,30 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		return state;
 	}
 
+
+	/**
+	 * envoi Get DATA Trame
+	 * @param outPut
+	 * DataOutputStream
+	 * @param netparam
+	 * NetParameters
+	 * @param peernode
+	 * peer
+	 * @return STATE_ENGINE
+	 * @throws IOException
+	 */
+
+	protected STATE_ENGINE sendGetData(DataOutputStream outPut,NetParameters netparam,PeerNode peernode,List<Inventory> listInv) throws IOException {
+		state = STATE_ENGINE.GETDATA_SEND;
+		GetDataTrame getData = new GetDataTrame(listInv);
+		String trame = getData.generateMessage(netParameters, peerNode);
+		byte[] data = Utils.hexStringToByteArray(trame);
+		outPut.write(data, 0, data.length);	
+		if(logger.isDebugEnabled()) {
+			logger.debug("<OUT>  GetData :"+Utils.bytesToHex(data));
+		}
+		return state;
+	}
 
 	/**
 	 * envoi Version Trame

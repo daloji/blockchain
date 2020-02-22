@@ -30,11 +30,11 @@ public class Transaction implements Serializable {
   /**
    *  Unspnde UTXO
    */
-	private List<TransactionInput> txIn;
+	private List<TransactionInput> txIn = new ArrayList<TransactionInput>();
 
 	private long txOutCount;
 
-	private List<TransactionOutput> txOut;
+	private List<TransactionOutput> txOut= new ArrayList<TransactionOutput>();
 
 
 	private long lockTime;
