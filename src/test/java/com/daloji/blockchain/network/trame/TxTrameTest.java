@@ -32,7 +32,7 @@ public class TxTrameTest {
 	}
 	
 	@Test
-	public void TxDesirialise_001() {
+	public void txDesirialise001() {
 		TxTrame txTrame = new TxTrame();
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
@@ -64,7 +64,7 @@ public class TxTrameTest {
 	}
 	
 	@Test
-	public void TxDesirialise_002() {
+	public void txDesirialise002() {
 		TxTrame txTrame = new TxTrame();
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
