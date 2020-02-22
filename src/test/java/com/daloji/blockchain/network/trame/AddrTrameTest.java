@@ -36,7 +36,7 @@ public class AddrTrameTest {
 	
 	
 	@Test
-	public void AddrTrameTest_001() {
+	public void addrTrameTest001() {
 		AddrTrame addr = new AddrTrame(false);
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
@@ -51,7 +51,7 @@ public class AddrTrameTest {
 	}
 	
 	@Test
-	public void AddrTrameTest_002() {
+	public void addrTrameTest002() {
 		AddrTrame addr = new AddrTrame(false);
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
@@ -66,7 +66,7 @@ public class AddrTrameTest {
 	
 	
 	@Test
-	public void AddrTrameTest003() {
+	public void addrTrameTest003() {
 		AddrTrame addrTrame = new AddrTrame(false);
 		Addr addr =new Addr();
 		addr.setIp("91.197.44.133");

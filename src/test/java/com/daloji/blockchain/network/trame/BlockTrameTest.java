@@ -82,7 +82,7 @@ public class BlockTrameTest {
 	}
 
 	//@Test
-	public void blockTrameTest_002() {
+	public void blockTrameTest002() {
 		BlockTrame block = new BlockTrame();
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
@@ -116,7 +116,7 @@ public class BlockTrameTest {
 	}
 
 	@Test
-	public void blockTrameTest_003() {
+	public void blockTrameTest003() {
 		BlockTrame block = new BlockTrame();
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
@@ -131,7 +131,7 @@ public class BlockTrameTest {
 
 
 	@Test
-	public void blockTrameTest_005() {
+	public void blockTrameTest005() {
 		BlockTrame blockTrame = new BlockTrame();
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");

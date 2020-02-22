@@ -20,7 +20,7 @@ public class GetDataTrameTest {
 	private String hash = "6FE28C0AB6F1B372C1A6A246AE63F74F931E8365E15A089C68D6190000000000";
 
 	@Test
-	public void getDataTHeaderTest_OK() {
+	public void getDataTHeaderTestOK() {
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
 		Inventory inv = new Inventory();
