@@ -85,7 +85,7 @@ public class BlockChainHandlerTest  {
 	 */
 
 	@Test
-	public void getBlock_001() throws Exception {
+	public void getBlock001() throws Exception {
 
 		String hash_header ="4860EB18BF1B1620E37E9490FC8A427514416FD75159AB86688E9A8300000000";
 		PeerNode peer =new PeerNode(IPVersion.IPV4);
@@ -112,7 +112,7 @@ public class BlockChainHandlerTest  {
 
 	}
 	@Test
-	public void getBlock_002() throws Exception {
+	public void getBlock002() throws Exception {
 		String hash_header ="4860EB18BF1B1620E37E9490FC8A427514416FD75159AB86688E9A8300000000";
 		PeerNode peer =new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
@@ -138,7 +138,7 @@ public class BlockChainHandlerTest  {
 	}
 	
 	@Test
-	public void getBlock_003() throws Exception {
+	public void getBlock003() throws Exception {
 		String hash_header ="4860EB18BF1B1620E37E9490FC8A427514416FD75159AB86688E9A8300000000";
 		PeerNode peer =new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");

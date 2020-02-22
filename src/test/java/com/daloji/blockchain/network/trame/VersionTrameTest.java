@@ -1,9 +1,5 @@
 package com.daloji.blockchain.network.trame;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.net.Socket;
-
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,11 +13,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.daloji.blockchain.core.commons.database.proxy.LevelDbProxy;
 import com.daloji.blockchain.core.utils.Utils;
-import com.daloji.blockchain.network.ConnectionNode;
 import com.daloji.blockchain.network.IPVersion;
 import com.daloji.blockchain.network.NetParameters;
 import com.daloji.blockchain.network.peers.PeerNode;
-import com.daloji.blockchain.network.trame.VersionTrameMessage;
 
 
 @RunWith(PowerMockRunner.class)

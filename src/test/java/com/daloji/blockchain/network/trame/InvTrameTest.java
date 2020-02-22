@@ -76,7 +76,7 @@ public class InvTrameTest {
 
 
 	@Test
-	public void checkInVDeserialize_001() {
+	public void checkInVDeserialize001() {
 		InvTrame inv = new InvTrame();
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");
@@ -94,7 +94,7 @@ public class InvTrameTest {
 		Assert.assertEquals(Utils.allZero(data),true);
 	}
 	@Test
-	public void checkInVDeserialize_002() {
+	public void checkInVDeserialize002() {
 
 		InvTrame inv = new InvTrame();
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
@@ -111,7 +111,7 @@ public class InvTrameTest {
 
 	}
 	@Test
-	public void checkInvDeserialize_003() {
+	public void checkInvDeserialize003() {
 		
 		InvTrame inv = new InvTrame();
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
@@ -132,7 +132,7 @@ public class InvTrameTest {
 	 * cas reception de plus de 50 messages Inventory
 	 */
 	@Test
-	public void checkInvDeserialize_004() {
+	public void checkInvDeserialize004() {
 		
 		InvTrame inv = new InvTrame();
 		PeerNode peer = new PeerNode(IPVersion.IPV4);

@@ -25,7 +25,7 @@ public class SendHeadersTrameTest {
 	
 	
 	@Test
-	public void checkDeserialaize_001() {
+	public void checkDeserialaize001() {
 		String trame = "F9BEB4D973656E646865616465727300000000005DF6E0E2";
 		SendHeadersTrame sendHeader = new SendHeadersTrame();
 		byte[] data = sendHeader.deserialise(Utils.hexStringToByteArray(trame));

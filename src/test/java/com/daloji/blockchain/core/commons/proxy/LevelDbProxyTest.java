@@ -98,7 +98,7 @@ public class LevelDbProxyTest {
 	}
 
 	@Test
-	public void addBloc_001() throws Exception {
+	public void addBloc001() throws Exception {
 		Block expectbloc = new Block();
 		expectbloc.setPrevBlockHash("6FE28C0AB6F1B372C1A6A246AE63F74F931E8365E15A089C68D6190000000000");
 		expectbloc.setTime(122223300);
