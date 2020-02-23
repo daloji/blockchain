@@ -37,7 +37,6 @@ public class TxInput extends  TransactionInput{
 			buffer = new byte[4];
 			System.arraycopy(data, offset, buffer, 0, buffer.length);
 			String sequence = Utils.bytesToHex(buffer);
-			sequence = Utils.StrLittleEndian(sequence);
 			transactinput.setSequence(sequence);
 			offset = offset + buffer.length;
 			size = data.length - offset;

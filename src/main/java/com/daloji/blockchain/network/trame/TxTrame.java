@@ -1,8 +1,11 @@
 package com.daloji.blockchain.network.trame;
 
+import java.time.Instant;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daloji.blockchain.core.Crypto;
 import com.daloji.blockchain.core.TxTransaction;
 import com.daloji.blockchain.core.commons.Pair;
 import com.daloji.blockchain.core.utils.Utils;
@@ -26,8 +29,23 @@ public class TxTrame extends TrameHeader{
 
 	@Override
 	public String generatePayload(NetParameters network) {
-		// TODO Auto-generated method stub
-		return null;
+		String info = "";
+		info = info + version;
+		info = info + Utils.intHexpadding((int)transaction.getTxInCount(),1);
+		for(int i=0;i<transaction.getTxInCount();i++) {
+			info = info +transaction.getTxIn().get(i).getHash();
+			info = info + Utils.intHexpadding((int)transaction.getTxIn().get(i).getSciptLeng(),1);
+			info = info + transaction.getTxIn().get(i).getSignatureScript();
+			info = info + transaction.getTxIn().get(i).getSequence();
+		}
+		info = info + Utils.intHexpadding((int)transaction.getTxOutCount(),1);
+		for(int i=0;i<transaction.getTxOutCount();i++) {
+			info = info +transaction.getTxOut().get(i).getValue();
+			info = info + Utils.intHexpadding((int)transaction.getTxOut().get(i).getPkScriptLength(),1);
+			info = info + transaction.getTxOut().get(i).getPkScript();
+		}
+		info = info +Utils.intHexpadding((int)transaction.getLockTime(), 4);
+		return info;
 	}
 
 	@Override
@@ -82,8 +100,20 @@ public class TxTrame extends TrameHeader{
 
 	@Override
 	public String generateMessage(NetParameters network, PeerNode peer) {
-		// TODO Auto-generated method stub
-		return null;
+		setMagic(network.getMagic());
+		String message ="";
+		message = message +getMagic();
+		message = message + Utils.convertStringToHex(commande,12);
+		String payload = generatePayload(network);
+		int length = payload.length()/2;
+		message= message +Utils.intHexpadding(length, 4);
+		byte[] payloadbyte = Utils.hexStringToByteArray(payload);
+		byte[] array = Crypto.doubleSha256(payloadbyte);
+		String checksum =Utils.bytesToHex(array);
+		checksum =checksum.substring(0, 8);
+		message = message +checksum;
+		message = message +payload;
+		return message;
 	}
 
 	@Override
@@ -107,6 +137,25 @@ public class TxTrame extends TrameHeader{
 	public void setVersion(String version) {
 		this.version = version;
 	}
-
+	public String generateHash() {
+		String info = "";
+		info = info + version;
+		info = info + Utils.intHexpadding((int)transaction.getTxInCount(),1);
+		for(int i=0;i<transaction.getTxInCount();i++) {
+			info = info +transaction.getTxIn().get(i).getHash();
+			info = info + Utils.intHexpadding((int)transaction.getTxIn().get(i).getSciptLeng(),1);
+			info = info + transaction.getTxIn().get(i).getSignatureScript();
+			info = info + transaction.getTxIn().get(i).getSequence();
+		}
+		info = info + Utils.intHexpadding((int)transaction.getTxOutCount(),1);
+		for(int i=0;i<transaction.getTxOutCount();i++) {
+			info = info +transaction.getTxOut().get(i).getValue();
+			info = info + Utils.intHexpadding((int)transaction.getTxOut().get(i).getPkScriptLength(),1);
+			info = info + transaction.getTxOut().get(i).getPkScript();
+		}
+		info = info +Utils.intHexpadding((int)transaction.getLockTime(), 4);
+		byte[] hashbyte = Crypto.doubleSha256(Utils.hexStringToByteArray(info));	 
+		return Utils.bytesToHex(hashbyte);
+	}
 
 }
