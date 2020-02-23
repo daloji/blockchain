@@ -141,7 +141,6 @@ public class TxTransaction  implements Serializable{
 					buffer = data;
 				}
 			}
-			System.out.println(Utils.bytesToHex(data));
 			transaction.setTxOut(listout);
 			offset = 0;
 			buffer = new byte[4];
