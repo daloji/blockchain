@@ -3,8 +3,6 @@ package com.daloji.blockchain.network.trame;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import org.junit.Assert;
@@ -12,9 +10,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.daloji.blockchain.core.Crypto;
-import com.daloji.blockchain.core.TxInput;
-import com.daloji.blockchain.core.TxOutput;
-import com.daloji.blockchain.core.TxTransaction;
 import com.daloji.blockchain.core.utils.Utils;
 import com.daloji.blockchain.network.IPVersion;
 import com.daloji.blockchain.network.NetParameters;

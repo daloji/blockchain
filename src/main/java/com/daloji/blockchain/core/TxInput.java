@@ -31,7 +31,7 @@ public class TxInput extends  TransactionInput{
 			offset = compactsize.second;
 			transactinput.setSciptLeng(size);
 			buffer = new byte[(int)size];
-			System.arraycopy(data, offset, buffer, 0,buffer.length);
+			System.arraycopy(data, offset, buffer, 0,buffer.length);	
 			offset = offset + buffer.length;
 			transactinput.setSignatureScript(Utils.bytesToHex(buffer));
 			buffer = new byte[4];

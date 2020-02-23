@@ -2,6 +2,7 @@ import java.io.IOException;
 
 import org.iq80.leveldb.DBIterator;
 
+import com.daloji.blockchain.core.Crypto;
 import com.daloji.blockchain.core.commons.database.proxy.LevelDbProxy;
 import com.daloji.blockchain.core.utils.Utils;
 
@@ -14,7 +15,7 @@ public class Test {
 			for(dbiterator.seekToFirst(); dbiterator.hasNext(); dbiterator.next()) {
 				String key = Utils.bytesToHex(dbiterator.peekNext().getKey());
 				byte[] block = dbiterator.peekNext().getValue();
-				System.out.println(" keys :"+Utils.StrLittleEndian(key));
+			//	System.out.println(" keys :"+Utils.StrLittleEndian(key));
 			}
 		}catch (Exception e) {
 			// TODO: handle exception
@@ -23,9 +24,14 @@ public class Test {
 			dbiterator.close();
 		}
 		
-		System.out.println(Utils.StrLittleEndian("69E01E2D00D6F87ADC1F552002ABA2B7DF61AC076DD61861BE09EC7200000000"));
+		System.out.println(Utils.StrLittleEndian("12C94A527AD80F95136357F3DD26AFE1EE71E5EE59F646DFC2C6FAD8D8DEC810"));
 
+		String str ="0200000001881AD35B628BE9CEB3D2A44F90E122C10B0C2FD11B3AB51CAA4A0F77F6E6D1DA010000006B4830450221008DD4B719B7316F5D26EE0CC22B3FF05B6F49699EA2E3BCB059C91463C7353B16022042E3A73CE1374D772F03A1F9E3EA5C4CDBC20C9D9AAFA6438EE6ACCC443C10B4012102DE587BA3B6F64E8BD70D8078DBC33FDD80B44024A4D4A1FE6BFF840B4B669B8EFDFFFFFF0236282000000000001976A914101CE1EB6EEE436E5753286ECEA48D5B7097BE7D88AC36CE9909000000001976A914D90B315D8C162E638A9CF477A602A394123E7F1F88ACF26F0900";
 		
+	
+		byte[] hashbyte = Crypto.doubleSha256(Utils.hexStringToByteArray(str));
+		
+		System.out.println(Utils.bytesToHex(hashbyte));
 		//LevelDbProxy.getInstance().checkBlocChainStatus();
 		/*Date date = new Date(1231469665);
 		System.out.println(date);
