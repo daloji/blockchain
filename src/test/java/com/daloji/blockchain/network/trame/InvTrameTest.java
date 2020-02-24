@@ -32,6 +32,8 @@ public class InvTrameTest {
 	
 	private static String trame_001;
 	
+	private static String trame_inv_005;
+	
 	private static String trame_receive;
 	
 	
@@ -50,6 +52,7 @@ public class InvTrameTest {
         trame_001 = (prop.getProperty("trame_001"));
         trame_receive = (prop.getProperty("trame_receive"));
         trame_004  = (prop.getProperty("trame_004"));
+        trame_inv_005 = (prop.getProperty("trame_inv_005"));
         
 	}
 	
@@ -147,6 +150,21 @@ public class InvTrameTest {
 		Assert.assertEquals(Utils.allZero(data),true);
 
 
+	}
+	
+	@Test
+	public void checkInvDeserialize005() {
+	InvTrame inv = new InvTrame();
+	PeerNode peer = new PeerNode(IPVersion.IPV4);
+	peer.setHost("127.0.0.1");
+	inv.setFromPeer(peer);
+	byte[] data = inv.deserialise(Utils.hexStringToByteArray(trame_inv_005));
+	Assert.assertEquals(inv.getMagic(),"F9BEB4D9");
+	Assert.assertEquals(inv.getChecksum(),"1642B0F4");
+	Assert.assertEquals(inv.getCommande(),"696E76000000000000000000");
+	Assert.assertEquals(inv.getLength(),217);
+	Assert.assertEquals(inv.getListinv().size(),2);
+	Assert.assertEquals(Utils.allZero(data),false);
 	}
 
 }

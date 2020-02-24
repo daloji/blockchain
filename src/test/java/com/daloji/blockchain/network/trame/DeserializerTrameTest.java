@@ -42,6 +42,8 @@ public class DeserializerTrameTest {
 	 
 	 private static String trame_receive_0017;
 	 
+	 private static String trame_inv_005;
+	 
 	 private static String bloc_receive_003;
 	 
 	
@@ -61,6 +63,7 @@ public class DeserializerTrameTest {
         trame_receive_0016 = (prop.getProperty("trame_receive_0016"));
         trame_receive_0017 = (prop.getProperty("trame_receive_0017"));
         bloc_receive_003 = (prop.getProperty("bloc_receive_003"));
+        trame_inv_005 =  (prop.getProperty("trame_inv_005"));
 	}
 	@Test
 	public  void  deserialiseTest_OK() {
@@ -363,6 +366,19 @@ public class DeserializerTrameTest {
 		InvTrame inv = (InvTrame) stackCommand.poll();
 		Assert.assertEquals(inv instanceof InvTrame, true);
 		Assert.assertEquals(inv.getListinv().size(), 35);
+	}
+	
+	
+	@Test
+	public void deserialise018() {
+		
+		PeerNode peer = new PeerNode(IPVersion.IPV4);
+		peer.setHost("127.0.0.1");
+		peer.setPort(8333);
+		ArrayDeque<TrameHeader> stackCommand = DeserializerTrame.getInstance().deserialise(null,Utils.hexStringToByteArray(trame_inv_005), peer);
+		Assert.assertNotNull(stackCommand); 
+		Assert.assertEquals(stackCommand.size(), 22);
+
 	}
 	
 	@Test

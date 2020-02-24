@@ -144,15 +144,15 @@ public class InvTrame extends TrameHeader{
 
 
 		}
-		byte[] info =new byte[offset];
-		System.arraycopy(msg,0, info, 0, info.length);
-		if(logger.isDebugEnabled()) {
-			String extractZero =Utils.bytesToHex(info);
-			extractZero = Utils.deleteEndZero(extractZero);
-			logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Inv   "+extractZero);
-		}
+	
 		if(offset<msg.length) {
-
+			byte[] info =new byte[offset];
+			System.arraycopy(msg,0, info, 0, info.length);
+			if(logger.isDebugEnabled()) {
+				String extractZero =Utils.bytesToHex(info);
+				extractZero = Utils.deleteEndZero(extractZero);
+				logger.debug("["+getFromPeer().getHost()+"]"+"<IN> Inv   "+extractZero);
+			}
 			buffer = new byte[msg.length -offset];
 			System.arraycopy(msg, offset, buffer, 0,buffer.length);
 		}else {

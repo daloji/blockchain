@@ -37,6 +37,8 @@ public class BlockChainWareHouseThreadFactory {
 	private ThreadPoolExecutor threadPoolExecutor;
 	
 	private ThreadPoolExecutor threadPoolExecutorServer;
+	
+	private ThreadPoolExecutor threadPoolExecutorSPV;
 
 	private static  ScheduledExecutorService executorsWatchDog;
 
@@ -62,8 +64,10 @@ public class BlockChainWareHouseThreadFactory {
 		logger.info("Initialisation BlockChainWareHouseThreadFactory");
 		threadPoolExecutor =  new ThreadPoolExecutor(SIZE_POOL, SIZE_POOL,2, TimeUnit.MINUTES,new LinkedBlockingQueue<Runnable>());
 		threadPoolExecutorServer =  new ThreadPoolExecutor(SIZE_CLIENT_POOL, SIZE_CLIENT_POOL,2, TimeUnit.MINUTES,new LinkedBlockingQueue<Runnable>());
+		threadPoolExecutorSPV =  new ThreadPoolExecutor(SIZE_CLIENT_POOL, SIZE_CLIENT_POOL,2, TimeUnit.MINUTES,new LinkedBlockingQueue<Runnable>());
 		threadPoolExecutor.allowCoreThreadTimeOut(true);
 		threadPoolExecutorServer.allowCoreThreadTimeOut(true);
+		threadPoolExecutorSPV.allowCoreThreadTimeOut(true);
 		executorsWatchDog = Executors.newScheduledThreadPool(1,	new ThreadFactory() {
 			public Thread newThread(Runnable r) {
 				Thread t = Executors.defaultThreadFactory().newThread(r);

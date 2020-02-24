@@ -33,7 +33,7 @@ public class  NetworkOrchestrator implements NetworkEventHandler,BlockChainEvent
 
 	protected final ReentrantLock lock = BlockChainWareHouseThreadFactory.lockThisObject(NetworkOrchestrator.class);
 
-	private static final int NB_THREAD = 1;
+	private static final int NB_THREAD = 3;
 
 	private  CopyOnWriteArrayList<AbstractCallable> listPeerConnected = new CopyOnWriteArrayList<AbstractCallable>(); 
 

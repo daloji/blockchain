@@ -12,9 +12,11 @@ public class BlockChain implements Serializable{
 	
 	private ConcurrentHashMap<String, Block> blockChain;
 	
+
 	
 	public BlockChain() {
 		blockChain = new ConcurrentHashMap<>();
+
 	}
 
 	public ConcurrentHashMap<String, Block> getBlockChain() {
@@ -24,5 +26,5 @@ public class BlockChain implements Serializable{
 	public void setBlock(String hash, Block block) {
 		blockChain.put(hash, block);
 	}
-	
+
 }

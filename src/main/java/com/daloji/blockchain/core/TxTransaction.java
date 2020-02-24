@@ -113,7 +113,8 @@ public class TxTransaction  implements Serializable{
 					listInput.add(tansactionInput);
 				}
 				if(txInputBuild.second !=null) {
-					data = 	txInputBuild.second;
+					data = txInputBuild.second;
+					buffer = data;
 				}
 
 			}

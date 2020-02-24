@@ -48,7 +48,6 @@ public class TxTrame extends TrameHeader{
 
 	@Override
 	public <T> T deserialise(byte[] msg) {
-		logger.info("TX =>" + Utils.bytesToHex(msg));
 		byte[] buffer = new byte[4];
 		int offset = 0;
 		System.arraycopy(msg, offset, buffer, 0, buffer.length);
@@ -76,23 +75,40 @@ public class TxTrame extends TrameHeader{
 				buffer = new byte[4];
 				System.arraycopy(msg, offset, buffer, 0, buffer.length);
 				version = Utils.bytesToHex(buffer);
-				offset = offset + buffer.length;
-				buffer = new byte[msg.length -offset];
-				System.arraycopy(msg, offset, buffer, 0,buffer.length);
-				Pair<TxTransaction,byte[]> transactionBuild = TxTransaction.buildTxTransaction(buffer);
-				transaction = transactionBuild.first;
-				buffer = transactionBuild.second;
-								
+				long ver=Utils.little2big(version);
+				//version transaction doit etre 1 ou 2
+				if(ver>=1 && ver<=2) {
+					offset = offset + buffer.length;
+					buffer = new byte[msg.length -offset];
+					System.arraycopy(msg, offset, buffer, 0,buffer.length);
+					Pair<TxTransaction,byte[]> transactionBuild = TxTransaction.buildTxTransaction(buffer);
+					transaction = transactionBuild.first;
+					buffer = transactionBuild.second;
+
+					if(logger.isDebugEnabled()) {
+						String extractZero =Utils.bytesToHex(msg);
+						extractZero = Utils.deleteEndZero(extractZero);
+						logger.debug("["+getFromPeer().getHost()+"]"+"<IN> TX   "+extractZero);
+					}
+
+				}else {
+					logger.error("Rejet de la transaction version non conforme :" +ver);
+					info =new byte[msg.length -(int)length];
+					System.arraycopy(msg,offset, info, 0, info.length);
+					buffer=info;
+				}
+			}else {
+				info =new byte[msg.length -offset];
+				System.arraycopy(msg,offset, info, 0, info.length);
+				buffer=info;	
 			}
 
-			info =new byte[msg.length -buffer.length];
-			System.arraycopy(msg,0, info, 0, info.length);
-			if(logger.isDebugEnabled()) {
-				String extractZero =Utils.bytesToHex(info);
-				extractZero = Utils.deleteEndZero(extractZero);
-				logger.debug("["+getFromPeer().getHost()+"]"+"<IN> TX   "+extractZero);
-			}
+		}else {
+			byte[] info =new byte[msg.length -offset];
+			System.arraycopy(msg,offset, info, 0, info.length);
+			buffer=info;	
 		}
+
 		return (T) buffer;
 	}
 
