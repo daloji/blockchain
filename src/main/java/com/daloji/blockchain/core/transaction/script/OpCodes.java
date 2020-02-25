@@ -1,5 +1,9 @@
 package com.daloji.blockchain.core.transaction.script;
-
+/**
+ * 
+ * @author daloji
+ *
+ */
 public interface OpCodes {
 	// push value
     public static final int OP_0 = 0x00; // push empty vector
