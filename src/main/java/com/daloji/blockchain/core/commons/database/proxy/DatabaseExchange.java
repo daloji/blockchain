@@ -32,4 +32,10 @@ public interface DatabaseExchange {
 	
 	public String getLastHash();
 	
+	public void  addBlockChainDepth(long nbblock);
+	
+	public long  getBlockChainDepth();
+	
+	public boolean isInitialDownloadBlock();
+	
 }

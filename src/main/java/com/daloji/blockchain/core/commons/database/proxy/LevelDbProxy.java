@@ -37,6 +37,12 @@ public class LevelDbProxy implements DatabaseExchange {
 	private static String NB_HASH = "NB_HASH";
 
 	private static String SIZE_HASH = "SIZE_HASH";
+	
+	private static String BLOCKCHAIN_NETWORK_SIZE ="BLOCKCHAIN_NETWORK_SIZE";
+	
+	
+	private static String IDB_STOP ="IDB_STOP";
+
 
 	protected final ReentrantLock lock = BlockChainWareHouseThreadFactory.lockThisObject(LevelDbProxy.class);
 
@@ -219,6 +225,12 @@ public class LevelDbProxy implements DatabaseExchange {
 				String strnb =String.valueOf(nb);
 				database.put(bytes(SIZE_HASH), bytes(strnb));
 				database.put(bytes(LAST_HASH), Utils.hexStringToByteArray(hash));
+				long depthblock = getBlockChainDepth();
+				String idb = "true";
+				if(depthblock-1000<nb) {
+					idb = "false";
+				}
+				database.put(bytes(IDB_STOP), bytes(idb));
 			}else {
 				if(nbhash ==0) {
 					database.put(bytes(LAST_HASH), bytes(genesisHash));	
@@ -282,6 +294,35 @@ public class LevelDbProxy implements DatabaseExchange {
 			nbhash = Integer.parseInt(value);
 		}
 		return nbhash;
+	}
+
+
+	@Override
+	public void addBlockChainDepth(long nbblock) {
+		String strnb =String.valueOf(nbblock);
+		database.put(bytes(BLOCKCHAIN_NETWORK_SIZE), bytes(strnb));	
+	}
+
+
+	@Override
+	public long getBlockChainDepth() {
+		int nbhash = 0;
+		String value = asString(database.get(bytes(BLOCKCHAIN_NETWORK_SIZE)));
+		if(value !=null) {
+			nbhash = Integer.parseInt(value);
+		}
+		return nbhash;
+	}
+
+
+	@Override
+	public boolean isInitialDownloadBlock() {
+		String value = asString(database.get(bytes(IDB_STOP)));
+		boolean isIdb = false;
+		if(value !=null) {
+			isIdb = Boolean.parseBoolean(value);
+		}
+		return isIdb;
 	}
 
 }

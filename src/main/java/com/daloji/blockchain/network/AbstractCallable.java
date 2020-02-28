@@ -428,7 +428,9 @@ public abstract class AbstractCallable  implements Callable<Object>{
 				blockChainListener.onBlockHeaderReceive(listBlock);
 			}
 			if(!listTx.isEmpty()){
-				sendGetData(outPut, netparam, peernode, listTx);	
+				if(!LevelDbProxy.getInstance().isInitialDownloadBlock()) {
+					sendGetData(outPut, netparam, peernode, listTx);		
+				}		
 				arrayTrame.removeAll(listTx);
 			}
 
