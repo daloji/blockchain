@@ -38,8 +38,10 @@ public class VersionTrameTest {
 	
 	@Test
 	public  void checkVersionDeserialisation() {
+		
+
 		EasyMock.expect(LevelDbProxy.getInstance()).andReturn(leveldb).anyTimes();
-		EasyMock.expect(leveldb.getNbHash()).andReturn(1);
+		leveldb.addBlockChainDepth(EasyMock.anyLong());
 		VersionTrameMessage version = new VersionTrameMessage(false);
 		PeerNode peer = new PeerNode(IPVersion.IPV4);
 		peer.setHost("127.0.0.1");

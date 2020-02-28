@@ -160,7 +160,7 @@ public class ConnectionNodeTest  {
 		EasyMock.expect(LevelDbProxy.getInstance()).andReturn(leveldb).anyTimes();
 		EasyMock.expect(leveldb.getLastHash()).andReturn("hash");
 		EasyMock.expect(leveldb.getNbHash()).andReturn(1);
-
+		EasyMock.expect(leveldb.isInitialDownloadBlock()).andReturn(true);
 		byte[] content = Utils.hexStringToByteArray(trame_block);
 		InputStream anyInputStream = new ByteArrayInputStream(content);
 		datainput = new DataInputStream(anyInputStream);

@@ -390,7 +390,6 @@ public class VersionTrameMessage  extends TrameHeader{
 			long startheigth = Long.parseLong(startheigthStr,16);
 			this.startHeigth = (int)startheigth;
 			//verification hauteur de la blockchain
-			int nbhash = LevelDbProxy.getInstance().getNbHash();
 			LevelDbProxy.getInstance().addBlockChainDepth(startheigth);
 			offset = offset +buffer.length;
 			if(msg.length>offset) {
