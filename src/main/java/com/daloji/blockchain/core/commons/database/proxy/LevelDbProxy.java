@@ -318,7 +318,7 @@ public class LevelDbProxy implements DatabaseExchange {
 	@Override
 	public boolean isInitialDownloadBlock() {
 		String value = asString(database.get(bytes(IDB_STOP)));
-		boolean isIdb = false;
+		boolean isIdb = true;
 		if(value !=null) {
 			isIdb = Boolean.parseBoolean(value);
 		}
