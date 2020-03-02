@@ -76,7 +76,8 @@ public class ConnectionNode  extends AbstractCallable implements InitialDownload
 				case VER_ACK_RECEIVE:state = sendVerAck(outPut,netParameters,peerNode);
 				networkListener.onNodeConnected(this);
 				listState.add(state);
-
+				state = sendGetAddr(outPut,netParameters,peerNode);
+				listState.add(state);
 				break;
 				case VERSION_SEND: //state = sendVerAck(outPut,netParameters,peerNode);
 					break;

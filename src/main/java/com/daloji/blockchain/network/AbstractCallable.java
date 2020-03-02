@@ -24,6 +24,7 @@ import com.daloji.blockchain.network.listener.NetworkEventHandler;
 import com.daloji.blockchain.network.peers.PeerNode;
 import com.daloji.blockchain.network.trame.AddrTrame;
 import com.daloji.blockchain.network.trame.BlockTrame;
+import com.daloji.blockchain.network.trame.GetAddrTrame;
 import com.daloji.blockchain.network.trame.GetBlocksTrame;
 import com.daloji.blockchain.network.trame.GetDataTrame;
 import com.daloji.blockchain.network.trame.InvTrame;
@@ -403,6 +404,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 				}
 				if(trame instanceof AddrTrame) {
 					networkListener.onAddresseReceive(((AddrTrame) trame).getListAddr());
+					sendAddr(outPut, netparam, peernode);
 				}
 				if(trame instanceof GetBlocksTrame) {
 					//TODO	
@@ -574,6 +576,7 @@ public abstract class AbstractCallable  implements Callable<Object>{
 	}
 
 
+	
 	/**
 	 * send Addr 
 	 * @param outPut
@@ -594,5 +597,27 @@ public abstract class AbstractCallable  implements Callable<Object>{
 		}
 		return state;
 	}
+	
+	
+	/**
+	 * envoi de Message GETADDR
+	 * @param outPut
+	 * @param netparam
+	 * @param peernode
+	 * @return
+	 * @throws IOException
+	 */
+	protected STATE_ENGINE sendGetAddr(DataOutputStream outPut,NetParameters netparam,PeerNode peernode) throws IOException {
+		state = STATE_ENGINE.GET_ADDR_SEND;
+		GetAddrTrame getaddr = new GetAddrTrame();
+		String trame = getaddr.generateMessage(netparam, peernode);
+		byte[] dataoutput = Utils.hexStringToByteArray(trame);
+		outPut.write(dataoutput, 0, dataoutput.length);
+		if(logger.isDebugEnabled()) {
+			logger.debug("<OUT>  getaddr " +trame);
+		}
+		return state;
+	}
+
 
 }

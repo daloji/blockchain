@@ -46,6 +46,8 @@ public enum STATE_ENGINE {
 	
 	STOP("stop"),
 	
+	GET_ADDR_SEND("getAddr send"),
+	
 	ERROR_PROTOCOLE("ERROR"),
 	
 	ERROR("ERROR");

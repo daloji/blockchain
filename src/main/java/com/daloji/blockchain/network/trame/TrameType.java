@@ -30,6 +30,8 @@ public enum TrameType {
 	
 	REJECT("72656A656374000000000000"),
 	
+	GETADDR("676574616464720000000000"),
+	
 	ERROR("error");
 	
 		
