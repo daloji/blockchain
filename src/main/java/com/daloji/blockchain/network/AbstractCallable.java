@@ -417,7 +417,10 @@ public abstract class AbstractCallable  implements Callable<Object>{
 							listTx.add(inventory);
 						}
 						if(inventory.getType() ==InvType.MSG_BLOCK) {
-							listBlock.add(inventory);
+							//verification si le bloc est deja telecharge
+							if(!LevelDbProxy.getInstance().existKeys(inventory.getHash())) {
+								listBlock.add(inventory);	
+							}
 						}
 					}
 				}
